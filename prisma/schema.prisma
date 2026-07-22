@@ -19,44 +19,48 @@ model League {
 }
 
 model Club {
-  id        String   @id
-  name      String
-  slug      String   @unique
-  logoUrl   String?
+  id                String @id
+  transfermarktId   String @unique
 
-  leagueId  String
-  league    League   @relation(fields: [leagueId], references: [id])
+  name              String
 
-  players   Player[]
+  players           Player[]
 
-  incomingTransfers Transfer[] @relation("IncomingTransfers")
   outgoingTransfers Transfer[] @relation("OutgoingTransfers")
+  incomingTransfers Transfer[] @relation("IncomingTransfers")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  leagueId          String?
+  league            League? @relation(
+    fields: [leagueId],
+    references: [id]
+  )
 
-  @@index([leagueId])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Player {
-  id          String   @id
-  name        String
-  position    String?
-  nationality String?
-  dateOfBirth DateTime?
+  id              String   @id
+  transfermarktId String   @unique
 
-  currentClubId String?
-  currentClub   Club? @relation(fields: [currentClubId], references: [id])
+  name            String
+  position        String?
+  dateOfBirth     DateTime?
+  nationality     String?
+  foot            String?
 
-  transfers     Transfer[]
-  marketValues  MarketValue[]
+  marketValue     Int?
 
-  injuries Injury[]
+  currentClubId   String?
+  currentClub     Club? @relation(
+    fields: [currentClubId],
+    references: [id]
+  )
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  transfers       Transfer[]
 
-  @@index([currentClubId])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Season {

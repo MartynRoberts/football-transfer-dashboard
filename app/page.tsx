@@ -1,7 +1,15 @@
 import { prisma } from "@/lib/prisma";
+import { searchCompetition, getCompetitionClubs } from "@/lib/transfermarkt";
 
 export default async function Home() {
   const leagues = await prisma.league.findMany();
+
+  const competition: any = await searchCompetition("Premier League");
+
+  const clubId: any = await getCompetitionClubs(competition.results[0].id);
+
+  //console.log("competition", competition);
+  console.log("clubId", clubId);
 
   return (
     <main className="p-8">
