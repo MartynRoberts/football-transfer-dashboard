@@ -16,6 +16,30 @@ async function main() {
     ],
     skipDuplicates: true,
   });
+
+  await prisma.club.createMany({
+    data: [
+      {
+        id: "arsenal",
+        name: "Arsenal",
+        slug: "arsenal",
+        leagueId: "premier-league",
+      },
+      {
+        id: "liverpool",
+        name: "Liverpool",
+        slug: "liverpool",
+        leagueId: "premier-league",
+      },
+      {
+        id: "man-city",
+        name: "Manchester City",
+        slug: "manchester-city",
+        leagueId: "premier-league",
+      },
+    ],
+    skipDuplicates: true,
+  });
 }
 
 main()
