@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model League {
+  id    String @id
+  name  String
+
+  clubs Club[]
+}
+
+model Club {
+  id       String @id
+  name     String
+  slug     String @unique
+
+  leagueId String
+  league   League @relation(fields: [leagueId], references: [id])
+
+  incomingTransfers Transfer[] @relation("IncomingTransfers")
+  outgoingTransfers Transfer[] @relation("OutgoingTransfers")
+}
+
+model Player {
+  id   String @id
+  name String
+
+  transfers Transfer[]
+}
+
+model Transfer {
+  id           String @id
+
+  playerId     String
+  fromClubId   String?
+  toClubId     String?
+
+  fee          Int?
+  season       String?
+  transferDate DateTime?
+
+  player       Player @relation(fields: [playerId], references: [id])
+
+  fromClub     Club? @relation("OutgoingTransfers", fields: [fromClubId], references: [id])
+  toClub       Club? @relation("IncomingTransfers", fields: [toClubId], references: [id])
+
+  createdAt    DateTime @default(now())
+}
