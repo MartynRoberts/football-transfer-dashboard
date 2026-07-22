@@ -25,7 +25,8 @@ export async function syncTransfers() {
       },
       data: {
         status: "completed",
-        records: imported,
+        recordsCreated: imported,
+        recordsUpdated: 0,
         completedAt: new Date(),
       },
     });
@@ -42,7 +43,7 @@ export async function syncTransfers() {
       },
       data: {
         status: "failed",
-        error: error instanceof Error ? error.message : "Unknown error",
+        errorMessage: error instanceof Error ? error.message : "Unknown error",
         completedAt: new Date(),
       },
     });
