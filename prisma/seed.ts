@@ -79,6 +79,65 @@ async function main() {
     });
   }
 
+  const players = [
+    {
+      id: "bukayo-saka",
+      transfermarktId: "433177",
+      name: "Bukayo Saka",
+      position: "Right Winger",
+      nationality: "England",
+      currentClubId: "arsenal",
+    },
+    {
+      id: "martin-odegaard",
+      transfermarktId: "316641",
+      name: "Martin Ødegaard",
+      position: "Attacking Midfielder",
+      nationality: "Norway",
+      currentClubId: "arsenal",
+    },
+    {
+      id: "mohamed-salah",
+      transfermarktId: "148455",
+      name: "Mohamed Salah",
+      position: "Right Winger",
+      nationality: "Egypt",
+      currentClubId: "liverpool",
+    },
+    {
+      id: "erling-haaland",
+      transfermarktId: "418560",
+      name: "Erling Haaland",
+      position: "Striker",
+      nationality: "Norway",
+      currentClubId: "man-city",
+    },
+    {
+      id: "vinicius-jr",
+      transfermarktId: "371998",
+      name: "Vinicius Junior",
+      position: "Left Winger",
+      nationality: "Brazil",
+      currentClubId: "real-madrid",
+    },
+  ];
+
+  for (const player of players) {
+    await prisma.player.upsert({
+      where: {
+        id: player.id,
+      },
+      update: {
+        transfermarktId: player.transfermarktId,
+        name: player.name,
+        position: player.position,
+        nationality: player.nationality,
+        currentClubId: player.currentClubId,
+      },
+      create: player,
+    });
+  }
+
   await prisma.season.upsert({
     where: {
       id: "2025-26",
@@ -96,7 +155,8 @@ async function main() {
     data: {
       type: "seed",
       status: "completed",
-      records: 7,
+      recordsCreated: 7,
+      recordsUpdated: 0,
       completedAt: new Date(),
     },
   });

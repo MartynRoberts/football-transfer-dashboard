@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE "League" (
     "id" TEXT NOT NULL,
+    "transfermarktId" TEXT,
     "name" TEXT NOT NULL,
     "country" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -12,6 +13,7 @@ CREATE TABLE "League" (
 -- CreateTable
 CREATE TABLE "Club" (
     "id" TEXT NOT NULL,
+    "transfermarktId" TEXT,
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "logoUrl" TEXT,
@@ -96,6 +98,12 @@ CREATE TABLE "SyncLog" (
 
     CONSTRAINT "SyncLog_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "League_transfermarktId_key" ON "League"("transfermarktId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Club_transfermarktId_key" ON "Club"("transfermarktId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Club_slug_key" ON "Club"("slug");

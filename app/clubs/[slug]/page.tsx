@@ -1,17 +1,22 @@
-import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 
-export default async function ClubPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+type Props = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+export default async function ClubPage({ params }: Props) {
   const { slug } = await params;
 
-  const club = await prisma.club.findUnique({
-    where: { slug },
+  const club = await prisma.club.findFirst({
+    where: {
+      slug,
+    },
     include: {
       league: true,
+      players: true,
     },
   });
 
@@ -21,9 +26,30 @@ export default async function ClubPage({
 
   return (
     <main className="p-8">
-      <h1 className="text-3xl font-bold">{club.name}</h1>
+      <h1 className="text-4xl font-bold">{club.name}</h1>
 
-      <p>{club.league.name}</p>
+      <p className="text-gray-500 mb-8">{club.league.name}</p>
+
+      <h2 className="text-2xl font-semibold mb-4">Squad</h2>
+
+      <table className="w-full border">
+        <thead>
+          <tr>
+            <th className="text-left p-2">Player</th>
+            <th className="text-left p-2">Position</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {club.players.map((player) => (
+            <tr key={player.id}>
+              <td className="p-2">{player.name}</td>
+
+              <td className="p-2">{player.position}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </main>
   );
 }

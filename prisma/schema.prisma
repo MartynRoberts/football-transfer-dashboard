@@ -136,8 +136,10 @@ model SyncLog {
   type   String
   status String
 
-  records Int?
-  error   String?
+  recordsCreated Int @default(0)
+  recordsUpdated Int @default(0)
+
+  errorMessage String?
 
   startedAt   DateTime  @default(now())
   completedAt DateTime?
