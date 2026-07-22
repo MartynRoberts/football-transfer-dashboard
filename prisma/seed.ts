@@ -7,11 +7,14 @@ async function main() {
     where: {
       id: "premier-league",
     },
-    update: {},
+    update: {
+      transfermarktId: "GB1",
+    },
     create: {
       id: "premier-league",
       name: "Premier League",
       country: "England",
+      transfermarktId: "GB1",
     },
   });
 
@@ -19,43 +22,62 @@ async function main() {
     where: {
       id: "la-liga",
     },
-    update: {},
+    update: {
+      transfermarktId: "ES1",
+    },
     create: {
       id: "la-liga",
       name: "La Liga",
       country: "Spain",
+      transfermarktId: "ES1",
     },
   });
 
-  await prisma.club.createMany({
-    data: [
-      {
-        id: "arsenal",
-        name: "Arsenal",
-        slug: "arsenal",
-        leagueId: premierLeague.id,
+  const clubs = [
+    {
+      id: "arsenal",
+      name: "Arsenal",
+      slug: "arsenal",
+      leagueId: premierLeague.id,
+      transfermarktId: "11",
+    },
+    {
+      id: "liverpool",
+      name: "Liverpool",
+      slug: "liverpool",
+      leagueId: premierLeague.id,
+      transfermarktId: "12",
+    },
+    {
+      id: "man-city",
+      name: "Manchester City",
+      slug: "manchester-city",
+      leagueId: premierLeague.id,
+      transfermarktId: "13",
+    },
+    {
+      id: "real-madrid",
+      name: "Real Madrid",
+      slug: "real-madrid",
+      leagueId: laLiga.id,
+      transfermarktId: "14",
+    },
+  ];
+
+  for (const club of clubs) {
+    await prisma.club.upsert({
+      where: {
+        id: club.id,
       },
-      {
-        id: "liverpool",
-        name: "Liverpool",
-        slug: "liverpool",
-        leagueId: premierLeague.id,
+      update: {
+        name: club.name,
+        slug: club.slug,
+        leagueId: club.leagueId,
+        transfermarktId: club.transfermarktId,
       },
-      {
-        id: "man-city",
-        name: "Manchester City",
-        slug: "manchester-city",
-        leagueId: premierLeague.id,
-      },
-      {
-        id: "real-madrid",
-        name: "Real Madrid",
-        slug: "real-madrid",
-        leagueId: laLiga.id,
-      },
-    ],
-    skipDuplicates: true,
-  });
+      create: club,
+    });
+  }
 
   await prisma.season.upsert({
     where: {
@@ -78,6 +100,8 @@ async function main() {
       completedAt: new Date(),
     },
   });
+
+  console.log("Seed completed successfully");
 }
 
 main()

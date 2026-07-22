@@ -8,26 +8,30 @@ datasource db {
 }
 
 model League {
-  id        String   @id
-  name      String
-  country   String?
+  id              String  @id
+  transfermarktId String? @unique
 
-  clubs     Club[]
+  name    String
+  country String?
+
+  clubs Club[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Club {
-  id        String   @id
-  name      String
-  slug      String   @unique
-  logoUrl   String?
+  id              String  @id
+  transfermarktId String? @unique
 
-  leagueId  String
-  league    League   @relation(fields: [leagueId], references: [id])
+  name    String
+  slug    String  @unique
+  logoUrl String?
 
-  players   Player[]
+  leagueId String
+  league   League @relation(fields: [leagueId], references: [id])
+
+  players Player[]
 
   incomingTransfers Transfer[] @relation("IncomingTransfers")
   outgoingTransfers Transfer[] @relation("OutgoingTransfers")
@@ -39,19 +43,20 @@ model Club {
 }
 
 model Player {
-  id          String   @id
+  id              String  @id
+  transfermarktId String? @unique
+
   name        String
   position    String?
   nationality String?
   dateOfBirth DateTime?
 
   currentClubId String?
-  currentClub   Club? @relation(fields: [currentClubId], references: [id])
+  currentClub   Club?   @relation(fields: [currentClubId], references: [id])
 
-  transfers     Transfer[]
-  marketValues  MarketValue[]
-
-  injuries Injury[]
+  transfers    Transfer[]
+  marketValues MarketValue[]
+  injuries     Injury[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -71,27 +76,25 @@ model Season {
 }
 
 model Transfer {
-  id            String   @id
+  id String @id
 
-  playerId      String
-  fromClubId    String?
-  toClubId      String?
+  playerId String
+  player   Player @relation(fields: [playerId], references: [id])
 
-  seasonId      String
+  fromClubId String?
+  fromClub   Club?   @relation("OutgoingTransfers", fields: [fromClubId], references: [id])
 
-  fee           Int?
-  transferDate  DateTime?
-  transferType  String?
+  toClubId String?
+  toClub   Club?   @relation("IncomingTransfers", fields: [toClubId], references: [id])
 
-  player        Player @relation(fields: [playerId], references: [id])
+  seasonId String
+  season   Season @relation(fields: [seasonId], references: [id])
 
-  fromClub      Club? @relation("OutgoingTransfers", fields: [fromClubId], references: [id])
+  fee          Int?
+  transferDate DateTime?
+  transferType String?
 
-  toClub        Club? @relation("IncomingTransfers", fields: [toClubId], references: [id])
-
-  season        Season @relation(fields: [seasonId], references: [id])
-
-  createdAt     DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@index([playerId])
   @@index([fromClubId])
@@ -100,45 +103,42 @@ model Transfer {
 }
 
 model MarketValue {
-  id          String @id
+  id String @id
 
-  playerId    String
+  playerId String
+  player   Player @relation(fields: [playerId], references: [id])
 
-  value       Int
-  capturedAt  DateTime @default(now())
-
-  player      Player @relation(fields: [playerId], references: [id])
+  value      Int
+  capturedAt DateTime @default(now())
 
   @@index([playerId])
   @@index([capturedAt])
 }
 
 model Injury {
-  id              String @id
+  id String @id
 
-  playerId        String
+  playerId String
+  player   Player @relation(fields: [playerId], references: [id])
 
-  description     String?
-  startDate       DateTime?
-  expectedReturn  DateTime?
+  description    String?
+  startDate      DateTime?
+  expectedReturn DateTime?
 
-  player          Player @relation(fields: [playerId], references: [id])
-
-  createdAt       DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@index([playerId])
 }
 
 model SyncLog {
-  id          String @id @default(cuid())
+  id String @id @default(cuid())
 
-  type        String
-  status      String
+  type   String
+  status String
 
-  records     Int?
+  records Int?
+  error   String?
 
-  error       String?
-
-  startedAt   DateTime @default(now())
+  startedAt   DateTime  @default(now())
   completedAt DateTime?
 }
