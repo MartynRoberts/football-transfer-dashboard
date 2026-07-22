@@ -1,6 +1,7 @@
-export async function GET() {
-  // Fetch latest transfers
-  // Store in database
+import { syncTransfers } from "@/lib/sync/transfers";
 
-  return Response.json({ success: true });
+export async function GET() {
+  const result = await syncTransfers();
+
+  return Response.json(result);
 }
