@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE "League" (
     "id" TEXT NOT NULL,
+    "transfermarktId" TEXT,
     "name" TEXT NOT NULL,
     "country" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -12,6 +13,7 @@ CREATE TABLE "League" (
 -- CreateTable
 CREATE TABLE "Club" (
     "id" TEXT NOT NULL,
+    "transfermarktId" TEXT,
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "logoUrl" TEXT,
@@ -25,10 +27,12 @@ CREATE TABLE "Club" (
 -- CreateTable
 CREATE TABLE "Player" (
     "id" TEXT NOT NULL,
+    "transfermarktId" TEXT,
     "name" TEXT NOT NULL,
     "position" TEXT,
     "nationality" TEXT,
     "dateOfBirth" TIMESTAMP(3),
+    "foot" TEXT,
     "currentClubId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -54,9 +58,9 @@ CREATE TABLE "Transfer" (
     "fromClubId" TEXT,
     "toClubId" TEXT,
     "seasonId" TEXT NOT NULL,
-    "fee" INTEGER,
     "transferDate" TIMESTAMP(3),
     "transferType" TEXT,
+    "fee" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Transfer_pkey" PRIMARY KEY ("id")
@@ -89,8 +93,9 @@ CREATE TABLE "SyncLog" (
     "id" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "status" TEXT NOT NULL,
-    "records" INTEGER,
-    "error" TEXT,
+    "recordsCreated" INTEGER NOT NULL DEFAULT 0,
+    "recordsUpdated" INTEGER NOT NULL DEFAULT 0,
+    "errorMessage" TEXT,
     "startedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "completedAt" TIMESTAMP(3),
 
@@ -98,34 +103,16 @@ CREATE TABLE "SyncLog" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "League_transfermarktId_key" ON "League"("transfermarktId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Club_transfermarktId_key" ON "Club"("transfermarktId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Club_slug_key" ON "Club"("slug");
 
 -- CreateIndex
-CREATE INDEX "Club_leagueId_idx" ON "Club"("leagueId");
-
--- CreateIndex
-CREATE INDEX "Player_currentClubId_idx" ON "Player"("currentClubId");
-
--- CreateIndex
-CREATE INDEX "Transfer_playerId_idx" ON "Transfer"("playerId");
-
--- CreateIndex
-CREATE INDEX "Transfer_fromClubId_idx" ON "Transfer"("fromClubId");
-
--- CreateIndex
-CREATE INDEX "Transfer_toClubId_idx" ON "Transfer"("toClubId");
-
--- CreateIndex
-CREATE INDEX "Transfer_seasonId_idx" ON "Transfer"("seasonId");
-
--- CreateIndex
-CREATE INDEX "MarketValue_playerId_idx" ON "MarketValue"("playerId");
-
--- CreateIndex
-CREATE INDEX "MarketValue_capturedAt_idx" ON "MarketValue"("capturedAt");
-
--- CreateIndex
-CREATE INDEX "Injury_playerId_idx" ON "Injury"("playerId");
+CREATE UNIQUE INDEX "Player_transfermarktId_key" ON "Player"("transfermarktId");
 
 -- AddForeignKey
 ALTER TABLE "Club" ADD CONSTRAINT "Club_leagueId_fkey" FOREIGN KEY ("leagueId") REFERENCES "League"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

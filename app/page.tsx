@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { searchCompetition, getCompetitionClubs } from "@/lib/transfermarkt";
 
 export default async function Home() {
   const leagues = await prisma.league.findMany();

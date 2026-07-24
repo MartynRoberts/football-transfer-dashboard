@@ -8,137 +8,130 @@ datasource db {
 }
 
 model League {
-  id        String   @id
-  name      String
-  country   String?
+  id                String   @id
+  transfermarktId   String?  @unique
 
-  clubs     Club[]
+  name              String
+  country           String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  clubs             Club[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Club {
-  id        String   @id
-  name      String
-  slug      String   @unique
-  logoUrl   String?
+  id                String   @id
+  transfermarktId   String?  @unique
 
-  leagueId  String
-  league    League   @relation(fields: [leagueId], references: [id])
+  name              String
+  slug              String   @unique
+  logoUrl           String?
 
-  players   Player[]
+  leagueId          String
+  league            League   @relation(fields: [leagueId], references: [id])
 
-  incomingTransfers Transfer[] @relation("IncomingTransfers")
+  players           Player[]
+
   outgoingTransfers Transfer[] @relation("OutgoingTransfers")
+  incomingTransfers Transfer[] @relation("IncomingTransfers")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([leagueId])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Player {
-  id          String   @id
-  name        String
-  position    String?
-  nationality String?
-  dateOfBirth DateTime?
+  id                String   @id
+  transfermarktId   String?  @unique
 
-  currentClubId String?
-  currentClub   Club? @relation(fields: [currentClubId], references: [id])
+  name              String
+  position          String?
+  nationality       String?
+  dateOfBirth       DateTime?
+  foot              String?
 
-  transfers     Transfer[]
-  marketValues  MarketValue[]
+  currentClubId     String?
+  currentClub       Club?    @relation(fields: [currentClubId], references: [id])
 
-  injuries Injury[]
+  transfers         Transfer[]
+  marketValues      MarketValue[]
+  injuries          Injury[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([currentClubId])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Season {
-  id        String @id
-  name      String
-  startYear Int
-  endYear   Int
+  id                String   @id
 
-  transfers Transfer[]
+  name              String
+  startYear         Int
+  endYear           Int
 
-  createdAt DateTime @default(now())
+  transfers         Transfer[]
+
+  createdAt         DateTime @default(now())
 }
 
 model Transfer {
-  id            String   @id
+  id                String   @id
 
-  playerId      String
-  fromClubId    String?
-  toClubId      String?
+  playerId          String
+  player            Player   @relation(fields: [playerId], references: [id])
 
-  seasonId      String
+  fromClubId        String?
+  fromClub          Club?    @relation("OutgoingTransfers", fields: [fromClubId], references: [id])
 
-  fee           Int?
-  transferDate  DateTime?
-  transferType  String?
+  toClubId          String?
+  toClub            Club?    @relation("IncomingTransfers", fields: [toClubId], references: [id])
 
-  player        Player @relation(fields: [playerId], references: [id])
+  seasonId          String
+  season            Season   @relation(fields: [seasonId], references: [id])
 
-  fromClub      Club? @relation("OutgoingTransfers", fields: [fromClubId], references: [id])
+  transferDate      DateTime?
+  transferType      String?
 
-  toClub        Club? @relation("IncomingTransfers", fields: [toClubId], references: [id])
+  fee               Int?
 
-  season        Season @relation(fields: [seasonId], references: [id])
-
-  createdAt     DateTime @default(now())
-
-  @@index([playerId])
-  @@index([fromClubId])
-  @@index([toClubId])
-  @@index([seasonId])
+  createdAt         DateTime @default(now())
 }
 
 model MarketValue {
-  id          String @id
+  id                String   @id
 
-  playerId    String
+  playerId          String
+  player            Player   @relation(fields: [playerId], references: [id])
 
-  value       Int
-  capturedAt  DateTime @default(now())
+  value             Int
 
-  player      Player @relation(fields: [playerId], references: [id])
-
-  @@index([playerId])
-  @@index([capturedAt])
+  capturedAt        DateTime @default(now())
 }
 
 model Injury {
-  id              String @id
+  id                String   @id
 
-  playerId        String
+  playerId          String
+  player            Player   @relation(fields: [playerId], references: [id])
 
-  description     String?
-  startDate       DateTime?
-  expectedReturn  DateTime?
+  description       String?
 
-  player          Player @relation(fields: [playerId], references: [id])
+  startDate         DateTime?
+  expectedReturn    DateTime?
 
-  createdAt       DateTime @default(now())
-
-  @@index([playerId])
+  createdAt         DateTime @default(now())
 }
 
 model SyncLog {
-  id          String @id @default(cuid())
+  id                String   @id @default(cuid())
 
-  type        String
-  status      String
+  type              String
+  status            String
 
-  records     Int?
+  recordsCreated    Int      @default(0)
+  recordsUpdated    Int      @default(0)
 
-  error       String?
+  errorMessage      String?
 
-  startedAt   DateTime @default(now())
-  completedAt DateTime?
+  startedAt         DateTime @default(now())
+  completedAt       DateTime?
 }

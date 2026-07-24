@@ -74,7 +74,8 @@ async function main() {
     data: {
       type: "seed",
       status: "completed",
-      records: 7,
+      recordsCreated: 7,
+      recordsUpdated: 0,
       completedAt: new Date(),
     },
   });
