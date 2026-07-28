@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { searchCompetition, getCompetitionClubs } from "@/lib/transfermarkt";
 
 export const revalidate = 60;
 
