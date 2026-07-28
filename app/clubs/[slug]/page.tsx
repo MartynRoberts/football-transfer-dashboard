@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import ClubIdentity from "@/components/clubs/ClubIdentity";
+import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
 export default async function ClubPage({
   params,
@@ -60,16 +62,10 @@ export default async function ClubPage({
     <main className="container mx-auto px-4 py-8 space-y-10">
       {/* Header */}
       <section>
-        <h1 className="text-4xl font-bold">{club.name}</h1>
-
-        {club.league && (
-          <Link
-            href={`/leagues/${club.league.slug}`}
-            className="text-blue-600 hover:underline"
-          >
-            {club.league.name}
-          </Link>
-        )}
+        <div className="flex justify-between items-center">
+          <ClubIdentity club={club} showLeague={false} link={false} />
+          {club.league && <LeagueIdentity league={club.league} link={true} />}
+        </div>
 
         <div className="grid grid-cols-3 gap-4 mt-6">
           <div className="border rounded-lg p-4">

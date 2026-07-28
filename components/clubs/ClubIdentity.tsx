@@ -8,14 +8,19 @@ export default function ClubIdentity({
   link = true,
   linkLeague = false,
 }: ClubIdentityProps) {
+  let width = 40;
+  if (!link) {
+    width = 64;
+  }
+
   const content = (
     <div className="flex items-center gap-3">
       {club.logoUrl ? (
         <Image
           src={club.logoUrl}
           alt={`${club.name} badge`}
-          width={40}
-          height={40}
+          width={width}
+          height={width}
           className="object-contain"
         />
       ) : (
@@ -25,7 +30,13 @@ export default function ClubIdentity({
       )}
 
       <div>
-        <p className="font-semibold text-slate-900">{club.name}</p>
+        {!link ? (
+          <h1 className="text-3xl font-bold">{club.name}</h1>
+        ) : showLeague ? (
+          <p className="font-semibold text-slate-900">{club.name}</p>
+        ) : (
+          <h1 className="font-semibold text-slate-900">{club.name}</h1>
+        )}
 
         {showLeague && club.league && (
           <p className="text-xs text-slate-500">
