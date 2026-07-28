@@ -4,6 +4,7 @@ CREATE TABLE "League" (
     "transfermarktId" TEXT,
     "name" TEXT NOT NULL,
     "country" TEXT,
+    "slug" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -17,9 +18,10 @@ CREATE TABLE "Club" (
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "logoUrl" TEXT,
-    "leagueId" TEXT NOT NULL,
+    "leagueId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "syncEnabled" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Club_pkey" PRIMARY KEY ("id")
 );
@@ -28,11 +30,22 @@ CREATE TABLE "Club" (
 CREATE TABLE "Player" (
     "id" TEXT NOT NULL,
     "transfermarktId" TEXT,
+<<<<<<<< HEAD:prisma/migrations/20260727112139_init/migration.sql
+    "slug" TEXT NOT NULL,
+========
+>>>>>>>> 2d612ae1361b552f67b6e00bda0af93a931206a5:prisma/migrations/20260722113522_init/migration.sql
     "name" TEXT NOT NULL,
+    "imageUrl" TEXT,
     "position" TEXT,
     "nationality" TEXT,
     "dateOfBirth" TIMESTAMP(3),
     "foot" TEXT,
+<<<<<<<< HEAD:prisma/migrations/20260727112139_init/migration.sql
+    "height" INTEGER,
+    "contract" TIMESTAMP(3),
+    "joinedOn" TIMESTAMP(3),
+========
+>>>>>>>> 2d612ae1361b552f67b6e00bda0af93a931206a5:prisma/migrations/20260722113522_init/migration.sql
     "currentClubId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -54,10 +67,18 @@ CREATE TABLE "Season" (
 -- CreateTable
 CREATE TABLE "Transfer" (
     "id" TEXT NOT NULL,
+    "transfermarktId" TEXT,
     "playerId" TEXT NOT NULL,
     "fromClubId" TEXT,
     "toClubId" TEXT,
+<<<<<<<< HEAD:prisma/migrations/20260727112139_init/migration.sql
+    "seasonId" TEXT,
+    "fee" INTEGER,
+    "marketValue" INTEGER,
+    "upcoming" BOOLEAN NOT NULL DEFAULT false,
+========
     "seasonId" TEXT NOT NULL,
+>>>>>>>> 2d612ae1361b552f67b6e00bda0af93a931206a5:prisma/migrations/20260722113522_init/migration.sql
     "transferDate" TIMESTAMP(3),
     "transferType" TEXT,
     "fee" INTEGER,
@@ -106,31 +127,77 @@ CREATE TABLE "SyncLog" (
 CREATE UNIQUE INDEX "League_transfermarktId_key" ON "League"("transfermarktId");
 
 -- CreateIndex
+<<<<<<<< HEAD:prisma/migrations/20260727112139_init/migration.sql
+CREATE UNIQUE INDEX "League_slug_key" ON "League"("slug");
+
+-- CreateIndex
+========
+>>>>>>>> 2d612ae1361b552f67b6e00bda0af93a931206a5:prisma/migrations/20260722113522_init/migration.sql
 CREATE UNIQUE INDEX "Club_transfermarktId_key" ON "Club"("transfermarktId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Club_slug_key" ON "Club"("slug");
 
 -- CreateIndex
+<<<<<<<< HEAD:prisma/migrations/20260727112139_init/migration.sql
+CREATE INDEX "Club_leagueId_idx" ON "Club"("leagueId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Player_transfermarktId_key" ON "Player"("transfermarktId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Player_slug_key" ON "Player"("slug");
+
+-- CreateIndex
+CREATE INDEX "Player_currentClubId_idx" ON "Player"("currentClubId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Season_name_key" ON "Season"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Transfer_transfermarktId_key" ON "Transfer"("transfermarktId");
+
+-- CreateIndex
+CREATE INDEX "Transfer_playerId_idx" ON "Transfer"("playerId");
+
+-- CreateIndex
+CREATE INDEX "Transfer_fromClubId_idx" ON "Transfer"("fromClubId");
+
+-- CreateIndex
+CREATE INDEX "Transfer_toClubId_idx" ON "Transfer"("toClubId");
+
+-- CreateIndex
+CREATE INDEX "Transfer_seasonId_idx" ON "Transfer"("seasonId");
+
+-- CreateIndex
+CREATE INDEX "MarketValue_playerId_idx" ON "MarketValue"("playerId");
+
+-- CreateIndex
+CREATE INDEX "MarketValue_capturedAt_idx" ON "MarketValue"("capturedAt");
+
+-- CreateIndex
+CREATE INDEX "Injury_playerId_idx" ON "Injury"("playerId");
+========
+CREATE UNIQUE INDEX "Player_transfermarktId_key" ON "Player"("transfermarktId");
+>>>>>>>> 2d612ae1361b552f67b6e00bda0af93a931206a5:prisma/migrations/20260722113522_init/migration.sql
+
 -- AddForeignKey
-ALTER TABLE "Club" ADD CONSTRAINT "Club_leagueId_fkey" FOREIGN KEY ("leagueId") REFERENCES "League"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Club" ADD CONSTRAINT "Club_leagueId_fkey" FOREIGN KEY ("leagueId") REFERENCES "League"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Player" ADD CONSTRAINT "Player_currentClubId_fkey" FOREIGN KEY ("currentClubId") REFERENCES "Club"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_fromClubId_fkey" FOREIGN KEY ("fromClubId") REFERENCES "Club"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_toClubId_fkey" FOREIGN KEY ("toClubId") REFERENCES "Club"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_seasonId_fkey" FOREIGN KEY ("seasonId") REFERENCES "Season"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_seasonId_fkey" FOREIGN KEY ("seasonId") REFERENCES "Season"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_toClubId_fkey" FOREIGN KEY ("toClubId") REFERENCES "Club"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "MarketValue" ADD CONSTRAINT "MarketValue_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

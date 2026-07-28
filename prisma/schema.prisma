@@ -8,130 +8,153 @@ datasource db {
 }
 
 model League {
-  id                String   @id
-  transfermarktId   String?  @unique
-
-  name              String
-  country           String?
-
-  clubs             Club[]
-
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id              String   @id @default(cuid())
+  transfermarktId String?  @unique
+  name            String
+  country         String?
+  slug            String   @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  clubs           Club[]
 }
 
 model Club {
-  id                String   @id
-  transfermarktId   String?  @unique
-
+  id                String     @id @default(cuid())
+  transfermarktId   String?    @unique
   name              String
-  slug              String   @unique
+  slug              String     @unique
   logoUrl           String?
-
-  leagueId          String
-  league            League   @relation(fields: [leagueId], references: [id])
-
+  leagueId          String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  league            League?    @relation(fields: [leagueId], references: [id])
+  syncEnabled       Boolean    @default(false)
   players           Player[]
-
   outgoingTransfers Transfer[] @relation("OutgoingTransfers")
   incomingTransfers Transfer[] @relation("IncomingTransfers")
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  @@index([leagueId])
 }
 
 model Player {
-  id                String   @id
-  transfermarktId   String?  @unique
+  id              String        @id @default(cuid())
+  transfermarktId String?       @unique
+  slug            String        @unique
+  name            String
+  imageUrl        String?
+  position        String?
+  nationality     String?
+  dateOfBirth     DateTime?
+  foot            String?
+  height          Int?
+  contract        DateTime?
+  joinedOn        DateTime?
+  currentClubId   String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  injuries        Injury[]
+  marketValues    MarketValue[] @relation("PlayerMarketValues")
+  currentClub     Club?         @relation(fields: [currentClubId], references: [id])
+  transfers       Transfer[]
 
-  name              String
-  position          String?
-  nationality       String?
-  dateOfBirth       DateTime?
-  foot              String?
+  marketValue          Int?
+  worldwideRank        Int?
+  leagueRank           Int?
+  clubRank             Int?
+  positionRank         Int?
+  marketValueHistories MarketValueHistory[] @relation("PlayerMarketValueHistory")
 
-  currentClubId     String?
-  currentClub       Club?    @relation(fields: [currentClubId], references: [id])
-
-  transfers         Transfer[]
-  marketValues      MarketValue[]
-  injuries          Injury[]
-
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  @@index([currentClubId])
 }
 
 model Season {
-  id                String   @id
-
-  name              String
-  startYear         Int
-  endYear           Int
-
-  transfers         Transfer[]
-
-  createdAt         DateTime @default(now())
+  id        String     @id @default(cuid())
+  name      String     @unique
+  startYear Int
+  endYear   Int
+  createdAt DateTime   @default(now())
+  transfers Transfer[]
 }
 
 model Transfer {
-  id                String   @id
+  id              String    @id @default(cuid())
+  transfermarktId String?   @unique
+  playerId        String
+  fromClubId      String?
+  toClubId        String?
+  seasonId        String?
+  fee             Int?
+  marketValue     Int?
+  upcoming        Boolean   @default(false)
+  transferDate    DateTime?
+  transferType    String?
+  createdAt       DateTime  @default(now())
+  fromClub        Club?     @relation("OutgoingTransfers", fields: [fromClubId], references: [id])
+  player          Player    @relation(fields: [playerId], references: [id])
+  season          Season?   @relation(fields: [seasonId], references: [id])
+  toClub          Club?     @relation("IncomingTransfers", fields: [toClubId], references: [id])
 
-  playerId          String
-  player            Player   @relation(fields: [playerId], references: [id])
-
-  fromClubId        String?
-  fromClub          Club?    @relation("OutgoingTransfers", fields: [fromClubId], references: [id])
-
-  toClubId          String?
-  toClub            Club?    @relation("IncomingTransfers", fields: [toClubId], references: [id])
-
-  seasonId          String
-  season            Season   @relation(fields: [seasonId], references: [id])
-
-  transferDate      DateTime?
-  transferType      String?
-
-  fee               Int?
-
-  createdAt         DateTime @default(now())
+  @@index([playerId])
+  @@index([fromClubId])
+  @@index([toClubId])
+  @@index([seasonId])
 }
 
 model MarketValue {
-  id                String   @id
+  id         String   @id @default(cuid())
+  playerId   String
+  value      Int
+  capturedAt DateTime @default(now())
 
-  playerId          String
-  player            Player   @relation(fields: [playerId], references: [id])
+  player Player @relation("PlayerMarketValues", fields: [playerId], references: [id])
 
-  value             Int
+  @@index([playerId])
+  @@index([capturedAt])
+}
 
-  capturedAt        DateTime @default(now())
+model MarketValueHistory {
+  id String @id
+
+  playerId String
+
+  date DateTime
+  age  Int?
+
+  marketValue Int
+
+  clubName String?
+
+  player Player @relation("PlayerMarketValueHistory", fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+  @@index([date])
 }
 
 model Injury {
-  id                String   @id
+  id       String @id
+  playerId String
 
-  playerId          String
-  player            Player   @relation(fields: [playerId], references: [id])
+  season      String?
+  description String
 
-  description       String?
+  startDate      DateTime
+  expectedReturn DateTime?
 
-  startDate         DateTime?
-  expectedReturn    DateTime?
+  days        Int?
+  gamesMissed Int?
 
-  createdAt         DateTime @default(now())
+  player Player @relation(fields: [playerId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 model SyncLog {
-  id                String   @id @default(cuid())
-
-  type              String
-  status            String
-
-  recordsCreated    Int      @default(0)
-  recordsUpdated    Int      @default(0)
-
-  errorMessage      String?
-
-  startedAt         DateTime @default(now())
-  completedAt       DateTime?
+  id             String    @id @default(cuid())
+  type           String
+  status         String
+  recordsCreated Int       @default(0)
+  recordsUpdated Int       @default(0)
+  errorMessage   String?
+  startedAt      DateTime  @default(now())
+  completedAt    DateTime?
 }

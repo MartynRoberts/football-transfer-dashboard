@@ -3,59 +3,57 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  const premierLeague = await prisma.league.upsert({
-    where: {
-      id: "premier-league",
-    },
-    update: {},
-    create: {
+  const leagues = [
+    {
       id: "premier-league",
       name: "Premier League",
       country: "England",
+      slug: "premier-league",
+      transfermarktId: "GB1",
     },
-  });
-
-  const laLiga = await prisma.league.upsert({
-    where: {
-      id: "la-liga",
+    {
+      id: "bundesliga",
+      name: "Bundesliga",
+      country: "Germany",
+      slug: "bundesliga",
+      transfermarktId: "L1",
     },
-    update: {},
-    create: {
+    {
       id: "la-liga",
       name: "La Liga",
       country: "Spain",
+      slug: "la-liga",
+      transfermarktId: "ES1",
     },
-  });
+    {
+      id: "serie-a",
+      name: "Serie A",
+      country: "Italy",
+      slug: "serie-a",
+      transfermarktId: "IT1",
+    },
+    {
+      id: "ligue-1",
+      name: "Ligue 1",
+      country: "France",
+      slug: "ligue-1",
+      transfermarktId: "FR1",
+    },
+  ];
 
-  await prisma.club.createMany({
-    data: [
-      {
-        id: "arsenal",
-        name: "Arsenal",
-        slug: "arsenal",
-        leagueId: premierLeague.id,
+  for (const league of leagues) {
+    await prisma.league.upsert({
+      where: {
+        transfermarktId: league.transfermarktId,
       },
-      {
-        id: "liverpool",
-        name: "Liverpool",
-        slug: "liverpool",
-        leagueId: premierLeague.id,
+      update: {
+        name: league.name,
+        country: league.country,
+        slug: league.slug,
       },
-      {
-        id: "man-city",
-        name: "Manchester City",
-        slug: "manchester-city",
-        leagueId: premierLeague.id,
-      },
-      {
-        id: "real-madrid",
-        name: "Real Madrid",
-        slug: "real-madrid",
-        leagueId: laLiga.id,
-      },
-    ],
-    skipDuplicates: true,
-  });
+      create: league,
+    });
+  }
 
   await prisma.season.upsert({
     where: {
@@ -70,20 +68,12 @@ async function main() {
     },
   });
 
-  await prisma.syncLog.create({
-    data: {
-      type: "seed",
-      status: "completed",
-      recordsCreated: 7,
-      recordsUpdated: 0,
-      completedAt: new Date(),
-    },
-  });
+  console.log("Seed completed successfully");
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
+  .catch((error) => {
+    console.error(error);
     process.exit(1);
   })
   .finally(async () => {
