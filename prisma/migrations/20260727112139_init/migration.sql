@@ -4,6 +4,7 @@ CREATE TABLE "League" (
     "transfermarktId" TEXT,
     "name" TEXT NOT NULL,
     "country" TEXT,
+    "slug" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -17,9 +18,10 @@ CREATE TABLE "Club" (
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "logoUrl" TEXT,
-    "leagueId" TEXT NOT NULL,
+    "leagueId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "syncEnabled" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Club_pkey" PRIMARY KEY ("id")
 );
@@ -27,10 +29,17 @@ CREATE TABLE "Club" (
 -- CreateTable
 CREATE TABLE "Player" (
     "id" TEXT NOT NULL,
+    "transfermarktId" TEXT,
+    "slug" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "imageUrl" TEXT,
     "position" TEXT,
     "nationality" TEXT,
     "dateOfBirth" TIMESTAMP(3),
+    "foot" TEXT,
+    "height" INTEGER,
+    "contract" TIMESTAMP(3),
+    "joinedOn" TIMESTAMP(3),
     "currentClubId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -52,11 +61,14 @@ CREATE TABLE "Season" (
 -- CreateTable
 CREATE TABLE "Transfer" (
     "id" TEXT NOT NULL,
+    "transfermarktId" TEXT,
     "playerId" TEXT NOT NULL,
     "fromClubId" TEXT,
     "toClubId" TEXT,
-    "seasonId" TEXT NOT NULL,
+    "seasonId" TEXT,
     "fee" INTEGER,
+    "marketValue" INTEGER,
+    "upcoming" BOOLEAN NOT NULL DEFAULT false,
     "transferDate" TIMESTAMP(3),
     "transferType" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -91,8 +103,9 @@ CREATE TABLE "SyncLog" (
     "id" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "status" TEXT NOT NULL,
-    "records" INTEGER,
-    "error" TEXT,
+    "recordsCreated" INTEGER NOT NULL DEFAULT 0,
+    "recordsUpdated" INTEGER NOT NULL DEFAULT 0,
+    "errorMessage" TEXT,
     "startedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "completedAt" TIMESTAMP(3),
 
@@ -101,6 +114,9 @@ CREATE TABLE "SyncLog" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "League_transfermarktId_key" ON "League"("transfermarktId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "League_slug_key" ON "League"("slug");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Club_transfermarktId_key" ON "Club"("transfermarktId");
@@ -112,7 +128,19 @@ CREATE UNIQUE INDEX "Club_slug_key" ON "Club"("slug");
 CREATE INDEX "Club_leagueId_idx" ON "Club"("leagueId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Player_transfermarktId_key" ON "Player"("transfermarktId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Player_slug_key" ON "Player"("slug");
+
+-- CreateIndex
 CREATE INDEX "Player_currentClubId_idx" ON "Player"("currentClubId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Season_name_key" ON "Season"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Transfer_transfermarktId_key" ON "Transfer"("transfermarktId");
 
 -- CreateIndex
 CREATE INDEX "Transfer_playerId_idx" ON "Transfer"("playerId");
@@ -136,22 +164,22 @@ CREATE INDEX "MarketValue_capturedAt_idx" ON "MarketValue"("capturedAt");
 CREATE INDEX "Injury_playerId_idx" ON "Injury"("playerId");
 
 -- AddForeignKey
-ALTER TABLE "Club" ADD CONSTRAINT "Club_leagueId_fkey" FOREIGN KEY ("leagueId") REFERENCES "League"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Club" ADD CONSTRAINT "Club_leagueId_fkey" FOREIGN KEY ("leagueId") REFERENCES "League"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Player" ADD CONSTRAINT "Player_currentClubId_fkey" FOREIGN KEY ("currentClubId") REFERENCES "Club"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_fromClubId_fkey" FOREIGN KEY ("fromClubId") REFERENCES "Club"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_toClubId_fkey" FOREIGN KEY ("toClubId") REFERENCES "Club"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_seasonId_fkey" FOREIGN KEY ("seasonId") REFERENCES "Season"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_seasonId_fkey" FOREIGN KEY ("seasonId") REFERENCES "Season"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_toClubId_fkey" FOREIGN KEY ("toClubId") REFERENCES "Club"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "MarketValue" ADD CONSTRAINT "MarketValue_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

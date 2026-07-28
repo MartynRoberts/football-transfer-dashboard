@@ -24,7 +24,9 @@ export default async function ClubsPage() {
           >
             <h2 className="font-semibold">{club.name}</h2>
 
-            <p className="text-sm text-gray-500">{club.league.name}</p>
+            <p className="text-sm text-gray-500">
+              {club.league?.name ?? "Unspecified League"}
+            </p>
           </Link>
         ))}
       </div>
