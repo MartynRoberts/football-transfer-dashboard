@@ -1,17 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { fetchFromApi } from "./api";
-
-interface InjuryResponse {
-  injuries: Array<{
-    season: string;
-    injury: string;
-    fromDate: string;
-    untilDate?: string;
-    days?: number;
-    gamesMissed?: number;
-    gamesMissedClubs?: string[];
-  }>;
-}
+import { InjuryResponse } from "./types";
 
 export async function syncPlayerInjuries(
   playerId: string,

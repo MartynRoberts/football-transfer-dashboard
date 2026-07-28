@@ -1,28 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import slugify from "./helpers/slugify";
 import { fetchFromApi } from "./api";
-
-interface PlayerProfileResponse {
-  id: string;
-  name: string;
-  imageUrl?: string;
-  height?: number;
-  citizenship?: string[];
-  foot?: string;
-
-  position?: {
-    main?: string;
-  };
-
-  club?: {
-    id: string;
-    name: string;
-    joined?: string;
-    contractExpires?: string;
-  };
-
-  marketValue?: number;
-}
+import { PlayerProfileResponse, TransfermarktPlayer } from "./types";
 
 export async function syncPlayerProfile(playerId: string, tmPlayerId: string) {
   const data = await fetchFromApi<PlayerProfileResponse>(
@@ -90,17 +69,6 @@ export async function syncPlayerProfile(playerId: string, tmPlayerId: string) {
   }
 
   return true;
-}
-
-interface TransfermarktPlayer {
-  id: string;
-  name: string;
-  position?: string;
-  nationality?: string[] | string;
-  foot?: string;
-  height?: number;
-  joinedOn?: string;
-  contract?: string;
 }
 
 const API_URL = process.env.TRANSFERMARKT_API_URL;

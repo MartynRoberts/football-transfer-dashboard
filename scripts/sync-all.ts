@@ -4,6 +4,8 @@ import { syncPlayerTransfers } from "../lib/sync/transfers";
 import { syncPlayerProfile } from "../lib/sync/players";
 import { syncPlayerInjuries } from "../lib/sync/injuries";
 import { syncPlayerMarketValue } from "../lib/sync/market-values";
+import { syncClubProfile } from "../lib/sync/clubs";
+import { ClubPlayersResponse } from "../lib/sync/types";
 import slugify from "../lib/sync/helpers/slugify";
 
 const TARGET_CLUB_ALIASES = [
@@ -14,9 +16,15 @@ const TARGET_CLUB_ALIASES = [
   ["Barcelona", "FC Barcelona"],
   ["Bayern", "Bayern München", "Bayern Munich"],
   ["Paris Saint-Germain", "PSG", "Paris SG"],
-  ["Inter", "Internazionale", "Inter Milan"],
+  ["Inter Milan", "Internazionale", "FC Internazionale"],
   ["Juventus"],
 ];
+
+const syncedPlayers = new Set<string>();
+
+let clubsProcessed = 0;
+let playersProcessed = 0;
+let playersEnriched = 0;
 
 function isTargetClub(name: string) {
   const normalised = name.toLowerCase();
@@ -26,15 +34,9 @@ function isTargetClub(name: string) {
   );
 }
 
-// Interface for API club squad response
-interface ClubPlayersResponse {
-  id: string;
-  name: string;
-  players: Array<{
-    id: string;
-    name: string;
-    position?: string;
-  }>;
+async function delay(ms: number) {
+  // Add a delay to avoid hammering the API
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // 1. Sync all players for a specific club from Transfermarkt
@@ -78,15 +80,34 @@ async function syncClubSquad(tmClubId: string, leagueId?: string) {
     },
   });
 
+  try {
+    await syncClubProfile(club.transfermarktId!);
+    await delay(250);
+  } catch (err) {
+    console.warn(`Failed club profile sync for ${club.name}`);
+  }
+  await delay(250);
+
   console.log(`  ✓ Syncing ${data.players.length} players for ${club.name}...`);
 
   let playerCount = 0;
 
   // Upsert each player into Prisma
   for (const p of data.players) {
+    if (syncedPlayers.has(p.id)) {
+      console.log(`Skipping duplicate player: ${p.name}`);
+      continue;
+    }
+
+    syncedPlayers.add(p.id);
+
+    const alreadySynced = syncedPlayers.has(p.id);
+
     playerCount++;
 
-    console.log(`[${playerCount}/${data.players.length}] Syncing ${p.name}`);
+    console.log(
+      `[${playerCount}/${data.players.length}] ${alreadySynced ? "Updating" : "Syncing"} ${p.name}`,
+    );
 
     const player = await prisma.player.upsert({
       where: {
@@ -109,17 +130,30 @@ async function syncClubSquad(tmClubId: string, leagueId?: string) {
       },
     });
 
+    playersProcessed++;
+
+    if (alreadySynced) {
+      continue;
+    }
+
+    syncedPlayers.add(p.id);
+    playersEnriched++;
+
     if (player.transfermarktId) {
       try {
-        await syncPlayerTransfers(player.id, player.transfermarktId);
         await syncPlayerProfile(player.id, player.transfermarktId);
+        await delay(250);
+        await syncPlayerTransfers(player.id, player.transfermarktId);
+        await delay(250);
         await syncPlayerMarketValue(player.id, player.transfermarktId);
+        await delay(250);
       } catch (err) {
         console.error(`Failed syncing ${player.name}`, err);
       }
 
       try {
         await syncPlayerInjuries(player.id, player.transfermarktId);
+        await delay(250);
       } catch (err) {
         console.warn(`No injuries synced for ${player.name}`);
       }
@@ -150,11 +184,17 @@ async function main() {
 
   for (const club of targetClubs) {
     await syncClubSquad(club.transfermarktId!, club.leagueId ?? undefined);
+    clubsProcessed++;
   }
 
-  console.log(
-    "\n✅ Pipeline complete! All squad players and transfers synced.",
-  );
+  console.log(`
+  ✅ Pipeline complete!
+
+  Clubs processed: ${clubsProcessed}
+  Players processed: ${playersProcessed}
+  Players enriched: ${playersEnriched}
+  Unique players synced: ${syncedPlayers.size}
+  `);
 }
 
 main()
