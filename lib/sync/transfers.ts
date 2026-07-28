@@ -2,33 +2,7 @@
 import { prisma } from "../prisma";
 import { fetchFromApi } from "./api";
 import slugify from "./helpers/slugify";
-
-interface TransfermarktTransfer {
-  id: string;
-  season?: string;
-  date?: string;
-
-  fee?: number;
-  marketValue?: number;
-
-  clubFrom?: {
-    id: string;
-    name: string;
-  };
-
-  clubTo?: {
-    id: string;
-    name: string;
-  };
-
-  upcoming?: boolean;
-}
-
-interface PlayerTransferResponse {
-  id: string;
-  name: string;
-  transfers: TransfermarktTransfer[];
-}
+import { PlayerTransferResponse } from "./types";
 
 export async function syncPlayerTransfers(
   playerId: string,

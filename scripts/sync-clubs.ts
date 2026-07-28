@@ -1,6 +1,7 @@
 import { prisma } from "../lib/prisma";
 import { fetchFromApi } from "../lib/sync/api";
 import slugify from "../lib/sync/helpers/slugify";
+import { ClubProfileResponse } from "../lib/sync/types";
 
 interface LeagueClubsResponse {
   id: string;
@@ -55,6 +56,10 @@ async function syncLeagueClubs(
   console.log(`Found ${data.clubs.length} clubs`);
 
   for (const club of data.clubs) {
+    const profile = await fetchFromApi<ClubProfileResponse>(
+      `/clubs/${club.id}/profile`,
+    );
+
     await prisma.club.upsert({
       where: {
         transfermarktId: club.id,
@@ -63,9 +68,7 @@ async function syncLeagueClubs(
       update: {
         name: club.name,
         leagueId,
-        ...(club.logoUrl && {
-          logoUrl: club.logoUrl,
-        }),
+        logoUrl: profile?.image ?? undefined,
       },
 
       create: {
@@ -73,41 +76,44 @@ async function syncLeagueClubs(
         transfermarktId: club.id,
         name: club.name,
         slug: `${slugify(club.name)}-${club.id}`,
-        logoUrl: club.logoUrl ?? null,
+        logoUrl: profile?.image ?? null,
         leagueId,
       },
     });
 
     console.log(`  ✓ ${club.name}`);
+
+    // Small delay to avoid hammering API
+    await new Promise((resolve) => setTimeout(resolve, 200));
   }
-}
 
-async function main() {
-  console.log("🚀 Starting club sync...\n");
+  async function main() {
+    console.log("🚀 Starting club sync...\n");
 
-  for (const targetLeague of TARGET_LEAGUES) {
-    const league = await prisma.league.findUnique({
-      where: {
-        transfermarktId: targetLeague.transfermarktId,
-      },
-    });
+    for (const targetLeague of TARGET_LEAGUES) {
+      const league = await prisma.league.findUnique({
+        where: {
+          transfermarktId: targetLeague.transfermarktId,
+        },
+      });
 
-    if (!league) {
-      console.warn(`⚠️ League missing in database: ${targetLeague.name}`);
-      continue;
+      if (!league) {
+        console.warn(`⚠️ League missing in database: ${targetLeague.name}`);
+        continue;
+      }
+
+      await syncLeagueClubs(league.id, targetLeague.transfermarktId);
     }
 
-    await syncLeagueClubs(league.id, targetLeague.transfermarktId);
+    console.log("\n✅ Club sync complete");
   }
 
-  console.log("\n✅ Club sync complete");
+  main()
+    .catch((error) => {
+      console.error("❌ Club sync failed:", error);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
 }
-
-main()
-  .catch((error) => {
-    console.error("❌ Club sync failed:", error);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });

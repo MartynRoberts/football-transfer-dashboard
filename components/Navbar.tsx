@@ -22,8 +22,11 @@ export default function Navbar() {
 
         <nav className="flex items-center space-x-6 text-sm font-medium">
           <Link href="/">Home</Link>
+
           <Link href="/leagues">Leagues</Link>
+
           <Link href="/clubs">Clubs</Link>
+
           <Link href="/players">Players</Link>
         </nav>
       </div>

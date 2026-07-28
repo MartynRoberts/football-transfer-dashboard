@@ -1,26 +1,6 @@
 import { prisma } from "../prisma";
 import { fetchFromApi } from "./api";
-
-interface MarketValueResponse {
-  marketValue: number;
-
-  ranking?: {
-    Worldwide?: number;
-    "Premier League"?: number;
-    Bundesliga?: number;
-    "La Liga"?: number;
-    "Serie A"?: number;
-    "Ligue 1"?: number;
-    [key: string]: number | undefined;
-  };
-
-  marketValueHistory: Array<{
-    age: number;
-    date: string;
-    marketValue: number;
-    clubName?: string;
-  }>;
-}
+import { MarketValueResponse } from "./types";
 
 export async function syncPlayerMarketValue(
   playerId: string,

@@ -1,13 +1,26 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import ClubIdentity from "@/components/clubs/ClubIdentity";
 
 export default async function ClubsPage() {
   const clubs = await prisma.club.findMany({
-    include: {
-      league: true,
+    where: {
+      league: {
+        transfermarktId: {
+          in: ["GB1", "L1", "ES1", "IT1", "FR1"],
+        },
+      },
     },
     orderBy: {
       name: "asc",
+    },
+    include: {
+      league: true,
+      _count: {
+        select: {
+          players: true,
+        },
+      },
     },
   });
 
@@ -22,11 +35,7 @@ export default async function ClubsPage() {
             href={`/clubs/${club.slug}`}
             className="border rounded p-4 hover:bg-gray-50"
           >
-            <h2 className="font-semibold">{club.name}</h2>
-
-            <p className="text-sm text-gray-500">
-              {club.league?.name ?? "Unspecified League"}
-            </p>
+            <ClubIdentity club={club} />
           </Link>
         ))}
       </div>
