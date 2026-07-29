@@ -50,28 +50,68 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
   const latestMarketValue = player.marketValues[0];
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      {/* Header */}
-      <section className="flex items-center gap-6">
-        {player.imageUrl && (
-          <Image
-            src={player.imageUrl}
-            alt={player.name}
-            width={180}
-            height={240}
-            className="rounded-lg object-cover"
-          />
-        )}
+    <main className="container mx-auto px-4 py-8 space-y-10">
+      <div className="flex justify-between">
+        <section className="flex items-center gap-6">
+          {player.imageUrl && (
+            <Image
+              src={player.imageUrl}
+              alt={player.name}
+              width={180}
+              height={240}
+              className="rounded-lg object-cover"
+            />
+          )}
 
-        <div>
-          <h1 className="text-4xl font-bold">{player.name}</h1>
+          <div>
+            <h1 className="text-4xl font-bold">{player.name}</h1>
 
-          <p className="text-gray-500 mt-2">
-            {player.position ?? "Unknown position"}
-          </p>
-        </div>
-      </section>
+            <p className="text-gray-500 mt-2">
+              {player.position ?? "Unknown position"}
+              {player.secondaryPositions ??
+                player.secondaryPositions.map((position) => (
+                  <p key={position} className="text-sm text-slate-500">
+                    {position}
+                  </p>
+                ))}
+            </p>
+          </div>
+        </section>
+
+        {/* Club / contract */}
+        <section className="grid grid-cols-2 gap-4">
+          <div className="border rounded-lg p-4">
+            <div className="text-sm text-gray-500">Current Club</div>
+
+            {player.currentClub ? (
+              <Link
+                href={`/clubs/${player.currentClub.slug}`}
+                className="text-blue-600 hover:underline text-xl font-semibold"
+              >
+                {player.currentClub.name}
+              </Link>
+            ) : (
+              "-"
+            )}
+          </div>
+
+          <div className="border rounded-lg p-4">
+            <div className="text-sm text-gray-500">Contract Until</div>
+
+            <div className="text-xl font-semibold">
+              {player.contract ? player.contract.toLocaleDateString() : "-"}
+            </div>
+          </div>
+
+          <div className="border rounded-lg p-4">
+            <div className="text-sm text-gray-500">Joined Club</div>
+
+            <div className="text-xl font-semibold">
+              {player.joinedOn ? player.joinedOn.toLocaleDateString() : "-"}
+            </div>
+          </div>
+        </section>
+      </div>
 
       {/* Profile cards */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -101,40 +141,6 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
             {latestMarketValue
               ? `€${latestMarketValue.value.toLocaleString()}`
               : "-"}
-          </div>
-        </div>
-      </section>
-
-      {/* Club / contract */}
-      <section className="grid grid-cols-2 gap-4">
-        <div className="border rounded-lg p-4">
-          <div className="text-sm text-gray-500">Current Club</div>
-
-          {player.currentClub ? (
-            <Link
-              href={`/clubs/${player.currentClub.slug}`}
-              className="text-blue-600 hover:underline text-xl font-semibold"
-            >
-              {player.currentClub.name}
-            </Link>
-          ) : (
-            "-"
-          )}
-        </div>
-
-        <div className="border rounded-lg p-4">
-          <div className="text-sm text-gray-500">Contract Until</div>
-
-          <div className="text-xl font-semibold">
-            {player.contract ? player.contract.toLocaleDateString() : "-"}
-          </div>
-        </div>
-
-        <div className="border rounded-lg p-4">
-          <div className="text-sm text-gray-500">Joined Club</div>
-
-          <div className="text-xl font-semibold">
-            {player.joinedOn ? player.joinedOn.toLocaleDateString() : "-"}
           </div>
         </div>
       </section>
@@ -241,6 +247,6 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
           </table>
         )}
       </section>
-    </div>
+    </main>
   );
 }

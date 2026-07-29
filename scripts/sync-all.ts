@@ -6,6 +6,8 @@ import { syncPlayerInjuries } from "../lib/sync/injuries";
 import { syncPlayerMarketValue } from "../lib/sync/market-values";
 import { syncClubProfile } from "../lib/sync/clubs";
 import { ClubPlayersResponse } from "../lib/sync/types";
+import { syncPlayerStats } from "../lib/sync/stats";
+import { getPositionGroup } from "../lib/sync/helpers/position-group";
 import slugify from "../lib/sync/helpers/slugify";
 
 const TARGET_CLUB_ALIASES = [
@@ -117,6 +119,7 @@ async function syncClubSquad(tmClubId: string, leagueId?: string) {
       update: {
         name: p.name,
         position: p.position,
+        positionGroup: getPositionGroup(p.position),
         currentClubId: club.id,
       },
 
@@ -126,6 +129,7 @@ async function syncClubSquad(tmClubId: string, leagueId?: string) {
         name: p.name,
         slug: `${slugify(p.name)}-${p.id}`,
         position: p.position,
+        positionGroup: getPositionGroup(p.position),
         currentClubId: club.id,
       },
     });
@@ -146,6 +150,8 @@ async function syncClubSquad(tmClubId: string, leagueId?: string) {
         await syncPlayerTransfers(player.id, player.transfermarktId);
         await delay(250);
         await syncPlayerMarketValue(player.id, player.transfermarktId);
+        await delay(250);
+        await syncPlayerStats(player.id, player.transfermarktId);
         await delay(250);
       } catch (err) {
         console.error(`Failed syncing ${player.name}`, err);

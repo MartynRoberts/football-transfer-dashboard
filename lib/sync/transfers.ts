@@ -16,7 +16,7 @@ export async function syncPlayerTransfers(
   for (const t of data.transfers) {
     let fromClubId: string | null = null;
     let toClubId: string | null = null;
-    let seasonId: string | null = null;
+    let season: string | null = null;
 
     // 1. Upsert Origin Club
     if (t.clubFrom?.id) {
@@ -78,7 +78,7 @@ export async function syncPlayerTransfers(
           endYear,
         },
       });
-      seasonId = season.id;
+      season = season.id;
     }
 
     // 4. Upsert Transfer (Idempotent)
@@ -87,7 +87,7 @@ export async function syncPlayerTransfers(
       update: {
         fromClubId,
         toClubId,
-        seasonId,
+        season,
         fee: t.fee ?? null,
         marketValue: t.marketValue ?? null,
         upcoming: t.upcoming ?? false,
@@ -98,7 +98,7 @@ export async function syncPlayerTransfers(
         playerId,
         fromClubId,
         toClubId,
-        seasonId,
+        season,
         fee: t.fee ?? null,
         marketValue: t.marketValue ?? null,
         upcoming: t.upcoming ?? false,

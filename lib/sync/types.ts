@@ -37,6 +37,7 @@ export interface ClubPlayersResponse {
 export interface PlayerProfileResponse {
   id: string;
   name: string;
+  shirtNumber?: number;
   imageUrl?: string;
   height?: number;
   citizenship?: string[];

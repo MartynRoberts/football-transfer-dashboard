@@ -1,6 +1,7 @@
 import Link from "next/link";
 import MobileMenu from "./MobileMenu";
 import SearchBar from "./SearchBar";
+import SeasonSwitcher from "@/components/navigation/SeasonSwitcher";
 
 export default function Navbar() {
   return (
@@ -49,6 +50,10 @@ export default function Navbar() {
 
         {/* Desktop search */}
         <SearchBar />
+
+        <div className="flex items-center gap-3">
+          <SeasonSwitcher />
+        </div>
 
         {/* Mobile menu */}
         <MobileMenu />

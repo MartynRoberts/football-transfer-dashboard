@@ -46,6 +46,8 @@ export async function syncPlayerProfile(playerId: string, tmPlayerId: string) {
       foot: data.foot ?? null,
 
       position: data.position?.main ?? undefined,
+      secondaryPositions: data.position?.other ?? [],
+      shirtNumber: data.shirtNumber ?? null,
 
       currentClubId,
 
