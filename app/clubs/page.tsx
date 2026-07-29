@@ -25,7 +25,7 @@ export default async function ClubsPage() {
   });
 
   return (
-    <main className="p-8">
+    <main className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Clubs</h1>
 
       <div className="grid gap-4">
@@ -35,7 +35,7 @@ export default async function ClubsPage() {
             href={`/clubs/${club.slug}`}
             className="border rounded p-4 hover:bg-gray-50"
           >
-            <ClubIdentity club={club} />
+            <ClubIdentity club={club} link={false} />
           </Link>
         ))}
       </div>

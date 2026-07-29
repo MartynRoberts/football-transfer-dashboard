@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import ClubIdentity from "@/components/clubs/ClubIdentity";
+import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
 export default async function LeaguePage({
   params,
@@ -39,15 +41,10 @@ export default async function LeaguePage({
     <main className="container mx-auto px-4 py-8 space-y-10">
       {/* Header */}
       <section>
-        <h1 className="text-4xl font-bold">{league.name}</h1>
-
-        <p className="text-gray-500 mt-2">
-          {league.country ?? "Unknown country"}
-        </p>
+        <LeagueIdentity league={league} h1={true} country={true} />
 
         <div className="mt-6 border rounded-lg p-4 inline-block">
           <p className="text-sm text-gray-500">Clubs</p>
-
           <p className="text-3xl font-bold">{league.clubs.length}</p>
         </div>
       </section>
@@ -63,11 +60,7 @@ export default async function LeaguePage({
               href={`/clubs/${club.slug}`}
               className="border rounded-lg p-4 hover:border-blue-500 hover:shadow-sm"
             >
-              <p className="font-semibold">{club.name}</p>
-
-              <p className="text-sm text-gray-500">
-                {club._count.players} players
-              </p>
+              <ClubIdentity club={club} link={false} />
             </Link>
           ))}
         </div>

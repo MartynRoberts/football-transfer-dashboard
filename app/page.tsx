@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { searchCompetition, getCompetitionClubs } from "@/lib/transfermarkt";
+import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
 export const revalidate = 60;
 
@@ -42,11 +43,11 @@ export default async function HomePage() {
       {/* Hero Header */}
       <section className="mb-12 text-center py-10 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl shadow-lg px-6">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-          Football Transfer Dashboard
+          TransferDashboard
         </h1>
         <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-          Explore transfer activity, squad valuations, net spend insights, and
-          league analytics.
+          Explore football transfer activity, squad valuations, net spend
+          insights, and league analytics.
         </p>
       </section>
 
@@ -55,6 +56,7 @@ export default async function HomePage() {
         {/* Leagues Section */}
         <div className="lg:col-span-2">
           <h2 className="text-2xl font-bold mb-4">Leagues</h2>
+          <p className="mb-8">View full league stats & top transfers</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {leagues.map((league) => (
               <Link
@@ -63,16 +65,11 @@ export default async function HomePage() {
                 className="p-5 border rounded-xl bg-white hover:border-blue-500 hover:shadow-md transition-all block group"
               >
                 <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-lg text-slate-900 group-hover:text-blue-600 transition-colors">
-                    {league.name}
-                  </h3>
+                  <LeagueIdentity league={league} />
                   <span className="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded-full">
                     {league._count.clubs} Clubs
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-2">
-                  View full league stats & top transfers →
-                </p>
               </Link>
             ))}
           </div>
@@ -134,29 +131,6 @@ export default async function HomePage() {
           )}
         </div>
       </div>
-
-      {/* Clubs Directory Section */}
-      <section>
-        <h2 className="text-2xl font-bold mb-4">Clubs Directory</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {topClubs.map((club) => (
-            <Link
-              key={club.id}
-              href={`/clubs/${club.slug}`}
-              className="p-4 border rounded-lg bg-white hover:border-blue-500 hover:shadow-sm text-center transition-all block group"
-            >
-              <p className="font-bold text-slate-800 group-hover:text-blue-600 transition-colors text-sm truncate">
-                {club.name}
-              </p>
-              {club.league && (
-                <p className="text-xs text-slate-400 mt-1 truncate">
-                  {club.league.name}
-                </p>
-              )}
-            </Link>
-          ))}
-        </div>
-      </section>
     </main>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
 export const revalidate = 60;
 
@@ -26,13 +27,14 @@ export default async function LeaguesPage() {
           <Link
             key={league.id}
             href={`/leagues/${league.slug}`}
-            className="border rounded-lg p-5 hover:border-blue-500"
+            className="p-5 border rounded-xl bg-white hover:border-blue-500 hover:shadow-md transition-all block group"
           >
-            <h2 className="font-bold text-lg">{league.name}</h2>
-
-            <p className="text-sm text-slate-500">
-              {league._count.clubs} clubs
-            </p>
+            <div className="flex justify-between items-center">
+              <LeagueIdentity league={league} />
+              <span className="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded-full">
+                {league._count.clubs} Clubs
+              </span>
+            </div>
           </Link>
         ))}
       </div>
