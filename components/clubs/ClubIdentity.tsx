@@ -7,6 +7,7 @@ export default function ClubIdentity({
   showLeague = true,
   link = true,
   linkLeague = false,
+  h1 = false,
 }: ClubIdentityProps) {
   let width = 40;
   if (!link) {
@@ -30,7 +31,7 @@ export default function ClubIdentity({
       )}
 
       <div>
-        {!link ? (
+        {h1 ? (
           <h1 className="text-3xl font-bold">{club.name}</h1>
         ) : showLeague ? (
           <p className="font-semibold text-slate-900">{club.name}</p>
@@ -57,7 +58,7 @@ export default function ClubIdentity({
     </div>
   );
 
-  if (!link) {
+  if (!link || linkLeague) {
     return content;
   }
 

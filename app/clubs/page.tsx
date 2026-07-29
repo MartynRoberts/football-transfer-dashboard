@@ -35,7 +35,7 @@ export default async function ClubsPage() {
             href={`/clubs/${club.slug}`}
             className="border rounded p-4 hover:bg-gray-50"
           >
-            <ClubIdentity club={club} />
+            <ClubIdentity club={club} link={false} />
           </Link>
         ))}
       </div>

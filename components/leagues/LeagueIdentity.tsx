@@ -7,7 +7,7 @@ interface Props {
     name: string;
     transfermarktId?: string | null;
     slug: string;
-    country?: string;
+    country?: string | null;
   };
 
   link?: boolean;

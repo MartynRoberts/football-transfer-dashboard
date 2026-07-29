@@ -60,7 +60,7 @@ export default async function LeaguePage({
               href={`/clubs/${club.slug}`}
               className="border rounded-lg p-4 hover:border-blue-500 hover:shadow-sm"
             >
-              <ClubIdentity club={club} />
+              <ClubIdentity club={club} link={false} />
             </Link>
           ))}
         </div>

@@ -63,7 +63,7 @@ export default async function ClubPage({
       {/* Header */}
       <section>
         <div className="flex justify-between items-center">
-          <ClubIdentity club={club} showLeague={false} link={false} />
+          <ClubIdentity club={club} showLeague={false} link={false} h1={true} />
           {club.league && <LeagueIdentity league={club.league} link={true} />}
         </div>
 

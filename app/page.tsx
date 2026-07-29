@@ -131,29 +131,6 @@ export default async function HomePage() {
           )}
         </div>
       </div>
-
-      {/* Clubs Directory Section */}
-      <section>
-        <h2 className="text-2xl font-bold mb-4">Clubs Directory</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {topClubs.map((club) => (
-            <Link
-              key={club.id}
-              href={`/clubs/${club.slug}`}
-              className="p-4 border rounded-lg bg-white hover:border-blue-500 hover:shadow-sm text-center transition-all block group"
-            >
-              <p className="font-bold text-slate-800 group-hover:text-blue-600 transition-colors text-sm truncate">
-                {club.name}
-              </p>
-              {club.league && (
-                <p className="text-xs text-slate-400 mt-1 truncate">
-                  {club.league.name}
-                </p>
-              )}
-            </Link>
-          ))}
-        </div>
-      </section>
     </main>
   );
 }
