@@ -22,6 +22,7 @@ export interface ClubIdentityProps {
   link?: boolean;
   linkLeague?: boolean;
   h1?: boolean;
+  playerProfile?: boolean;
 }
 
 export interface ClubPlayersResponse {

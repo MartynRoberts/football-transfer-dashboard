@@ -60,6 +60,29 @@ export interface PerformanceRankings {
   topFivePositionAssists: PerformanceRank;
 }
 
+export interface AvailabilityRank {
+  rank: number | null;
+  total: number;
+}
+
+export interface RecurrentInjuryWarning {
+  hasWarning: boolean;
+  description: string | null;
+  occurrences: number;
+}
+
+export interface PlayerInjuryInsights {
+  lastSeasonGamesMissed: number;
+  lastSeasonTeamGames: number;
+  lastSeasonInjuryPercentage: number | null;
+  careerGamesMissed: number;
+  careerTeamGames: number;
+  careerInjuryPercentage: number | null;
+  premierLeagueAvailabilityRank: AvailabilityRank;
+  topFiveAvailabilityRank: AvailabilityRank;
+  recurrentInjury: RecurrentInjuryWarning;
+}
+
 export interface SeasonPerformance {
   season: string;
   appearances: number;

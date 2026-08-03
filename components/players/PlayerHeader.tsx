@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import type { PlayerWithPageRelations } from "@/lib/players/types";
 import { getNationalityCode } from "@/lib/players/nationality-code";
