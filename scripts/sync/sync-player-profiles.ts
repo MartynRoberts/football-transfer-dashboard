@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma";
+import { normalizeRemoteImageUrl } from "../../lib/images/normalize-remote-image-url";
 import { fetchFromApi } from "../../lib/sync/api";
 import { getPositionGroup } from "../../lib/sync/helpers/position-group";
 import { TOP_FIVE_LEAGUE_IDS } from "../../lib/sync/scope";
@@ -115,7 +116,9 @@ export async function syncPlayerProfiles() {
         },
 
         data: {
-          imageUrl: profile.imageUrl ?? undefined,
+          imageUrl: profile.imageUrl
+            ? normalizeRemoteImageUrl(profile.imageUrl)
+            : undefined,
 
           height: profile.height ?? undefined,
 

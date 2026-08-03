@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import slugify from "./helpers/slugify";
 import { fetchFromApi } from "./api";
 import { PlayerProfileResponse, TransfermarktPlayer } from "./types";
+import { normalizeRemoteImageUrl } from "@/lib/images/normalize-remote-image-url";
 
 function parseOptionalDate(value?: string): Date | null {
   if (!value) return null;
@@ -48,7 +49,7 @@ export async function syncPlayerProfile(playerId: string, tmPlayerId: string) {
       id: playerId,
     },
     data: {
-      imageUrl: data.imageUrl ?? null,
+      imageUrl: data.imageUrl ? normalizeRemoteImageUrl(data.imageUrl) : null,
       nationality: data.citizenship?.join(", ") ?? null,
       height: data.height ?? null,
       dateOfBirth: parseOptionalDate(data.dateOfBirth),

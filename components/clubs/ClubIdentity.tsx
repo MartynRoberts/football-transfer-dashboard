@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ClubIdentityProps } from "@/lib/sync/types";
+import { normalizeRemoteImageUrl } from "@/lib/images/normalize-remote-image-url";
 
 export default function ClubIdentity({
   club,
@@ -17,7 +18,7 @@ export default function ClubIdentity({
 
   const clubBadge = club.logoUrl ? (
     <Image
-      src={club.logoUrl}
+      src={normalizeRemoteImageUrl(club.logoUrl)}
       alt={`${club.name} badge`}
       width={width}
       height={width}

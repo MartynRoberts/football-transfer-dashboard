@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { fetchFromApi } from "@/lib/sync/api";
+import { normalizeRemoteImageUrl } from "@/lib/images/normalize-remote-image-url";
 
 import { ClubProfileResponse } from "./types";
 
@@ -18,7 +19,7 @@ export async function syncClubProfile(clubId: string) {
       transfermarktId: clubId,
     },
     data: {
-      logoUrl: profile.image ?? null,
+      logoUrl: profile.image ? normalizeRemoteImageUrl(profile.image) : null,
     },
   });
 
