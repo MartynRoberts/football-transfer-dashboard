@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { normalizeRemoteImageUrl } from "@/lib/images/normalize-remote-image-url";
 import type { PlayerWithPageRelations } from "@/lib/players/types";
 import { getNationalityCode } from "@/lib/players/nationality-code";
 import PlayerPositionsPitch from "@/components/players/PlayerPositionsPitch";
@@ -24,7 +25,7 @@ export default function PlayerHeader({
         <div className="flex items-center gap-6">
           {player.imageUrl && (
             <Image
-              src={player.imageUrl}
+              src={normalizeRemoteImageUrl(player.imageUrl)}
               alt={player.name}
               width={180}
               height={240}
