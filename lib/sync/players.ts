@@ -3,6 +3,14 @@ import slugify from "./helpers/slugify";
 import { fetchFromApi } from "./api";
 import { PlayerProfileResponse, TransfermarktPlayer } from "./types";
 
+function parseOptionalDate(value?: string): Date | null {
+  if (!value) return null;
+
+  const date = new Date(value);
+
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
 export async function syncPlayerProfile(playerId: string, tmPlayerId: string) {
   const data = await fetchFromApi<PlayerProfileResponse>(
     `/players/${tmPlayerId}/profile`,
@@ -43,6 +51,7 @@ export async function syncPlayerProfile(playerId: string, tmPlayerId: string) {
       imageUrl: data.imageUrl ?? null,
       nationality: data.citizenship?.join(", ") ?? null,
       height: data.height ?? null,
+      dateOfBirth: parseOptionalDate(data.dateOfBirth),
       foot: data.foot ?? null,
 
       position: data.position?.main ?? undefined,
@@ -51,23 +60,32 @@ export async function syncPlayerProfile(playerId: string, tmPlayerId: string) {
 
       currentClubId,
 
-      joinedOn: data.club?.joined ? new Date(data.club.joined) : null,
+      joinedOn: parseOptionalDate(data.club?.joined),
 
-      contract: data.club?.contractExpires
-        ? new Date(data.club.contractExpires)
-        : null,
+      contract: parseOptionalDate(data.club?.contractExpires),
     },
   });
 
   // Market value history
   if (data.marketValue) {
-    await prisma.marketValue.create({
-      data: {
+    const latestMarketValue = await prisma.marketValue.findFirst({
+      where: {
         playerId,
-        value: data.marketValue,
-        capturedAt: new Date(),
+      },
+      orderBy: {
+        capturedAt: "desc",
       },
     });
+
+    if (latestMarketValue?.value !== data.marketValue) {
+      await prisma.marketValue.create({
+        data: {
+          playerId,
+          value: data.marketValue,
+          capturedAt: new Date(),
+        },
+      });
+    }
   }
 
   return true;
@@ -101,7 +119,7 @@ export async function syncPlayers() {
 
     let created = 0;
     let updated = 0;
-    let failed = 0;
+    const failed = 0;
 
     for (const club of clubs) {
       const response = await fetch(

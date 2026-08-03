@@ -1,6 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { fetchFromApi } from "../../lib/sync/api";
 import { getPositionGroup } from "../../lib/sync/helpers/position-group";
+import { TOP_FIVE_LEAGUE_IDS } from "../../lib/sync/scope";
 
 interface PlayerProfileResponse {
   id: string;
@@ -10,6 +11,8 @@ interface PlayerProfileResponse {
   imageUrl?: string;
 
   height?: number;
+
+  dateOfBirth?: string;
 
   citizenship?: string[];
 
@@ -56,6 +59,17 @@ export async function syncPlayerProfiles() {
       transfermarktId: {
         not: null,
       },
+      currentClub: {
+        is: {
+          league: {
+            is: {
+              transfermarktId: {
+                in: [...TOP_FIVE_LEAGUE_IDS],
+              },
+            },
+          },
+        },
+      },
       OR: [
         {
           profileSyncedAt: null,
@@ -87,6 +101,14 @@ export async function syncPlayerProfiles() {
         continue;
       }
 
+      const secondaryPositions = Array.isArray(profile.position?.other)
+        ? profile.position.other.filter(
+            (position): position is string => typeof position === "string",
+          )
+        : typeof profile.position?.other === "string"
+          ? [profile.position.other]
+          : [];
+
       await prisma.player.update({
         where: {
           id: player.id,
@@ -97,13 +119,15 @@ export async function syncPlayerProfiles() {
 
           height: profile.height ?? undefined,
 
+          dateOfBirth: parseDate(profile.dateOfBirth),
+
           nationality: profile.citizenship?.[0] ?? undefined,
 
           position: profile.position?.main ?? undefined,
 
           positionGroup: getPositionGroup(profile.position?.main),
 
-          secondaryPositions: profile.position?.other ?? [],
+          secondaryPositions,
 
           foot: profile.foot ?? undefined,
 

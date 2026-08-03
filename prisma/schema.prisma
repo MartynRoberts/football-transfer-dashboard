@@ -8,28 +8,35 @@ datasource db {
 }
 
 model League {
-  id              String   @id @default(cuid())
-  transfermarktId String?  @unique
+  id              String  @id @default(cuid())
+  transfermarktId String? @unique
   name            String
   country         String?
-  slug            String   @unique
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  clubs           Club[]
+  slug            String  @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clubs Club[]
 }
 
 model Club {
-  id                String     @id @default(cuid())
-  transfermarktId   String?    @unique
-  name              String
-  slug              String     @unique
-  logoUrl           String?
-  leagueId          String?
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-  league            League?    @relation(fields: [leagueId], references: [id])
-  syncEnabled       Boolean    @default(false)
-  players           Player[]
+  id              String  @id @default(cuid())
+  transfermarktId String? @unique
+  name            String
+  slug            String  @unique
+  logoUrl         String?
+  leagueId        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  league League? @relation(fields: [leagueId], references: [id])
+
+  syncEnabled Boolean @default(false)
+
+  players Player[]
+
   outgoingTransfers Transfer[] @relation("OutgoingTransfers")
   incomingTransfers Transfer[] @relation("IncomingTransfers")
 
@@ -98,7 +105,6 @@ model PlayerStat {
   player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
   @@unique([playerId, competitionId, season, clubId])
-
   @@index([playerId])
   @@index([season])
   @@index([competitionId])
@@ -113,6 +119,10 @@ model PlayerMetric {
 
   marketValueChange    Int?
   marketValueChangePct Float?
+
+  marketValuePercentileWorldwide Float?
+  marketValuePercentileLeague    Float?
+  marketValuePercentilePosition  Float?
 
   worldwideValueRank Int?
   leagueValueRank    Int?
@@ -253,4 +263,20 @@ model SyncLog {
   errorMessage   String?
   startedAt      DateTime  @default(now())
   completedAt    DateTime?
+}
+
+model SyncState {
+  id String @id @default(cuid())
+
+  entityType String
+  entityId   String
+
+  syncType String
+
+  season String?
+
+  syncedAt DateTime @default(now())
+
+  @@unique([entityType, entityId, syncType, season])
+  @@index([entityType, syncType, season])
 }

@@ -10,35 +10,71 @@ export async function syncPlayerInjuries(
     `/players/${transfermarktId}/injuries`,
   );
 
-  if (!data?.injuries?.length) {
-    return;
+  if (!data || !Array.isArray(data.injuries)) {
+    return false;
   }
 
-  console.log(`  ↳ Syncing ${data.injuries.length} injuries`);
+  const injuries = data.injuries
+    .map((injury) => {
+      const startDate = new Date(injury.fromDate);
+      const description = injury.injury?.trim();
 
-  for (const injury of data.injuries) {
-    const id = `${playerId}-${injury.fromDate}-${injury.injury}`
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "-");
+      if (!description || Number.isNaN(startDate.getTime())) {
+        return null;
+      }
 
+      const expectedReturn = injury.untilDate
+        ? new Date(injury.untilDate)
+        : null;
+      const validExpectedReturn =
+        expectedReturn && !Number.isNaN(expectedReturn.getTime())
+          ? expectedReturn
+          : null;
+      const id = `${playerId}-${startDate.toISOString()}-${description}`
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, "-");
+
+      return {
+        id,
+        playerId,
+        season: injury.season?.trim() || null,
+        description,
+        startDate,
+        expectedReturn: validExpectedReturn,
+        days: Number.isFinite(injury.days) ? injury.days : null,
+        gamesMissed: Number.isFinite(injury.gamesMissed)
+          ? injury.gamesMissed
+          : null,
+      };
+    })
+    .filter((injury): injury is NonNullable<typeof injury> => injury !== null);
+
+  const uniqueInjuries = [
+    ...new Map(injuries.map((injury) => [injury.id, injury])).values(),
+  ];
+
+  console.log(
+    `  ↳ Importing ${uniqueInjuries.length}/${data.injuries.length} injuries`,
+  );
+
+  for (const injury of uniqueInjuries) {
     await prisma.injury.upsert({
       where: {
-        id,
+        id: injury.id,
       },
 
       update: {
-        description: injury.injury,
-        startDate: new Date(injury.fromDate),
-        expectedReturn: injury.untilDate ? new Date(injury.untilDate) : null,
+        season: injury.season,
+        description: injury.description,
+        startDate: injury.startDate,
+        expectedReturn: injury.expectedReturn,
+        days: injury.days,
+        gamesMissed: injury.gamesMissed,
       },
 
-      create: {
-        id,
-        playerId,
-        description: injury.injury,
-        startDate: new Date(injury.fromDate),
-        expectedReturn: injury.untilDate ? new Date(injury.untilDate) : null,
-      },
+      create: injury,
     });
   }
+
+  return true;
 }

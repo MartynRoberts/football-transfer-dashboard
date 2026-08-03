@@ -1,14 +1,11 @@
 import { prisma } from "../../lib/prisma";
 import { fetchFromApi } from "../../lib/sync/api";
 import slugify from "../../lib/sync/helpers/slugify";
-
-const LEAGUES = ["GB1", "L1", "ES1", "IT1", "FR1"];
+import { TOP_FIVE_LEAGUE_IDS } from "../../lib/sync/scope";
 
 interface LeagueClubsResponse {
   id: string;
-
   name: string;
-
   clubs: Array<{
     id: string;
     name: string;
@@ -21,19 +18,22 @@ export async function syncClubs() {
   const leagues = await prisma.league.findMany({
     where: {
       transfermarktId: {
-        in: LEAGUES,
+        in: [...TOP_FIVE_LEAGUE_IDS],
       },
     },
   });
 
   for (const league of leagues) {
+    if (!league.transfermarktId) {
+      continue;
+    }
+
     const data = await fetchFromApi<LeagueClubsResponse>(
-      `/leagues/${league.transfermarktId}/clubs`,
+      `/competitions/${league.transfermarktId}/clubs`,
     );
 
     if (!data?.clubs) {
       console.warn(`No clubs found for ${league.name}`);
-
       continue;
     }
 
@@ -44,21 +44,16 @@ export async function syncClubs() {
         where: {
           transfermarktId: club.id,
         },
-
         update: {
           name: club.name,
+          slug: `${slugify(club.name)}-${club.id}`,
           leagueId: league.id,
         },
-
         create: {
           id: `tm-${club.id}`,
-
           transfermarktId: club.id,
-
           name: club.name,
-
           slug: `${slugify(club.name)}-${club.id}`,
-
           leagueId: league.id,
         },
       });
@@ -70,6 +65,11 @@ export async function syncClubs() {
   console.log("\n✅ Clubs synced");
 }
 
-if (require.main === module) {
-  syncClubs().finally(() => prisma.$disconnect());
-}
+syncClubs()
+  .catch((error) => {
+    console.error("Club sync failed:", error);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

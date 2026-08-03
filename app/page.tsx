@@ -13,7 +13,7 @@ export default async function HomePage({
     season?: string;
   }>;
 }) {
-  const { season = "2025-26" } = await searchParams;
+  const { season = "2026-27" } = await searchParams;
 
   const [leagues, topClubs, latestTransfers] = await Promise.all([
     prisma.league.findMany({
@@ -38,9 +38,7 @@ export default async function HomePage({
 
     prisma.transfer.findMany({
       where: {
-        season: {
-          name: toApiSeason(season),
-        },
+        season: toApiSeason(season),
       },
       take: 8,
       orderBy: { transferDate: "desc" },

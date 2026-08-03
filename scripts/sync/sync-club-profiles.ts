@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/prisma";
 import { syncClubProfile } from "../../lib/sync/clubs";
+import { TOP_FIVE_LEAGUE_IDS } from "../../lib/sync/scope";
 
 export async function syncClubProfiles() {
   console.log("🛡 Syncing club profiles...");
@@ -12,7 +13,7 @@ export async function syncClubProfiles() {
 
       league: {
         transfermarktId: {
-          in: ["GB1", "L1", "ES1", "IT1", "FR1"],
+          in: [...TOP_FIVE_LEAGUE_IDS],
         },
       },
     },
