@@ -22,6 +22,7 @@ export interface ClubIdentityProps {
   link?: boolean;
   linkLeague?: boolean;
   h1?: boolean;
+  playerProfile?: boolean;
 }
 
 export interface ClubPlayersResponse {
@@ -37,14 +38,17 @@ export interface ClubPlayersResponse {
 export interface PlayerProfileResponse {
   id: string;
   name: string;
+  shirtNumber?: number;
   imageUrl?: string;
   height?: number;
+  dateOfBirth?: string;
   citizenship?: string[];
   foot?: string;
 
   position?: {
-    main?: string;
-  };
+    main?: string | null;
+    other?: string[] | string | null;
+  } | null;
 
   club?: {
     id: string;
@@ -119,6 +123,7 @@ export interface TransfermarktTransfer {
   };
 
   upcoming?: boolean;
+  transferType?: string;
 }
 
 export interface PlayerTransferResponse {

@@ -4,7 +4,13 @@ import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
 export const revalidate = 60;
 
-export default async function LeaguesPage() {
+export default async function LeaguesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ season?: string }>;
+}) {
+  const { season = "2025-26" } = await searchParams;
+
   const leagues = await prisma.league.findMany({
     orderBy: {
       name: "asc",

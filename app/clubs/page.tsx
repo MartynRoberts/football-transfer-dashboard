@@ -2,7 +2,13 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ClubIdentity from "@/components/clubs/ClubIdentity";
 
-export default async function ClubsPage() {
+export default async function ClubsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ season?: string }>;
+}) {
+  const { season = "2025-26" } = await searchParams;
+
   const clubs = await prisma.club.findMany({
     where: {
       league: {

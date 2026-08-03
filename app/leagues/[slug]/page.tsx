@@ -6,8 +6,10 @@ import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
 export default async function LeaguePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ season?: string }>;
 }) {
   const { slug } = await params;
 

@@ -2,10 +2,19 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { searchCompetition, getCompetitionClubs } from "@/lib/transfermarkt";
 import LeagueIdentity from "@/components/leagues/LeagueIdentity";
+import { toApiSeason } from "@/lib/season";
 
 export const revalidate = 60;
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    season?: string;
+  }>;
+}) {
+  const { season = "2026-27" } = await searchParams;
+
   const [leagues, topClubs, latestTransfers] = await Promise.all([
     prisma.league.findMany({
       orderBy: { name: "asc" },
@@ -28,6 +37,9 @@ export default async function HomePage() {
     }),
 
     prisma.transfer.findMany({
+      where: {
+        season: toApiSeason(season),
+      },
       take: 8,
       orderBy: { transferDate: "desc" },
       include: {

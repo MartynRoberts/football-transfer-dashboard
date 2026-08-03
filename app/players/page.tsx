@@ -3,7 +3,13 @@ import { prisma } from "@/lib/prisma";
 
 export const revalidate = 60;
 
-export default async function PlayersPage() {
+export default async function PlayersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ season?: string }>;
+}) {
+  const { season = "2025-26" } = await searchParams;
+
   const players = await prisma.player.findMany({
     orderBy: {
       name: "asc",
@@ -24,7 +30,9 @@ export default async function PlayersPage() {
             href={`/players/${player.slug}`}
             className="border rounded-lg p-4 hover:border-blue-500"
           >
-            <h2 className="font-bold">{player.name}</h2>
+            <h2 className="font-bold">
+              #{player.shirtNumber ?? "—"} {player.name}
+            </h2>
 
             <p className="text-sm text-slate-500">{player.currentClub?.name}</p>
           </Link>

@@ -10,47 +10,84 @@ export async function syncPlayerMarketValue(
     `/players/${transfermarktId}/market_value`,
   );
 
-  if (!data) return;
+  if (!data || !Number.isFinite(data.marketValue)) return false;
 
-  await prisma.player.update({
+  const player = await prisma.player.findUnique({
     where: {
       id: playerId,
     },
-
-    data: {
-      marketValue: data.marketValue,
-
-      worldwideRank: data.ranking?.Worldwide ?? null,
-
-      leagueRank:
-        data.ranking?.["Premier League"] ??
-        data.ranking?.Bundesliga ??
-        data.ranking?.["La Liga"] ??
-        data.ranking?.["Serie A"] ??
-        data.ranking?.["Ligue 1"] ??
-        null,
+    select: {
+      position: true,
+      currentClub: {
+        select: {
+          name: true,
+        },
+      },
     },
   });
 
-  await prisma.marketValueHistory.deleteMany({
-    where: {
-      playerId,
-    },
-  });
+  const ranking = data.ranking;
 
-  await prisma.marketValueHistory.createMany({
-    data: data.marketValueHistory.map((item) => ({
-      id: `${playerId}-${item.date}`,
+  const history = Array.isArray(data.marketValueHistory)
+    ? data.marketValueHistory
+        .map((item) => {
+          const date = new Date(item.date);
 
-      playerId,
+          if (
+            Number.isNaN(date.getTime()) ||
+            !Number.isFinite(item.marketValue)
+          ) {
+            return null;
+          }
 
-      date: new Date(item.date),
+          return {
+            id: `${playerId}-${date.toISOString()}`,
+            playerId,
+            date,
+            age: Number.isFinite(item.age) ? item.age : null,
+            marketValue: item.marketValue,
+            clubName: item.clubName?.trim() || null,
+          };
+        })
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+    : [];
 
-      age: item.age,
+  const uniqueHistory = [
+    ...new Map(history.map((item) => [item.id, item])).values(),
+  ];
 
-      marketValue: item.marketValue,
+  await prisma.$transaction([
+    prisma.player.update({
+      where: {
+        id: playerId,
+      },
+      data: {
+        marketValue: data.marketValue,
+        worldwideRank: ranking?.Worldwide ?? null,
+        leagueRank:
+          ranking?.["Premier League"] ??
+          ranking?.Bundesliga ??
+          ranking?.["La Liga"] ??
+          ranking?.["Serie A"] ??
+          ranking?.["Ligue 1"] ??
+          null,
+        clubRank: player?.currentClub?.name
+          ? (ranking?.[player.currentClub.name] ?? null)
+          : null,
+        positionRank: player?.position
+          ? (ranking?.[player.position] ?? null)
+          : null,
+      },
+    }),
+    prisma.marketValueHistory.deleteMany({
+      where: {
+        playerId,
+      },
+    }),
+    prisma.marketValueHistory.createMany({
+      data: uniqueHistory,
+    }),
+  ]);
 
-      clubName: item.clubName ?? null,
-    })),
-  });
+  return true;
 }

@@ -6,10 +6,13 @@ import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
 export default async function ClubPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ season?: string }>;
 }) {
   const { slug } = await params;
+  const { season = "2025-26" } = await searchParams;
 
   const club = await prisma.club.findUnique({
     where: { slug },
@@ -100,7 +103,9 @@ export default async function ClubPage({
               href={`/players/${player.slug}`}
               className="border rounded-lg p-4 hover:border-blue-500"
             >
-              <p className="font-semibold">{player.name}</p>
+              <p className="font-semibold">
+                <span>#{player.shirtNumber ?? "—"}</span> {player.name}
+              </p>
 
               <p className="text-sm text-gray-500">
                 {player.position ?? "Unknown"}

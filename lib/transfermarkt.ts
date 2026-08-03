@@ -18,14 +18,14 @@ export function searchCompetition(name: string) {
   return apiRequest(`/competitions/search/${encodeURIComponent(name)}`);
 }
 
-export function getCompetitionClubs(competitionId: string, seasonId?: string) {
-  const query = seasonId ? `?season_id=${seasonId}` : "";
+export function getCompetitionClubs(competitionId: string, season?: string) {
+  const query = season ? `?season_id=${season}` : "";
 
   return apiRequest(`/competitions/${competitionId}/clubs${query}`);
 }
 
-export function getClubPlayers(clubId: string, seasonId?: string) {
-  const query = seasonId ? `?season_id=${seasonId}` : "";
+export function getClubPlayers(clubId: string, season?: string) {
+  const query = season ? `?season_id=${season}` : "";
 
   return apiRequest(`/clubs/${clubId}/players${query}`);
 }
