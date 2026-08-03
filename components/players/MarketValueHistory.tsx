@@ -33,8 +33,8 @@ export default function MarketValueHistory({
       {histories.length === 0 ? (
         <p className="text-gray-500">No market values recorded.</p>
       ) : (
-        <div className="space-y-6">
-          <div className="rounded-lg border p-4 md:p-6">
+        <div className="flex gap-4">
+          <div className="rounded-lg border p-4 md:p-6 flex-1">
             <MarketValueChart data={chartData} />
           </div>
 
@@ -73,6 +73,8 @@ export default function MarketValueHistory({
             </div>
           )}
 
+          {/* Full market value history table */}
+          {/*
           <div className="overflow-x-auto rounded-lg border">
             <table className="w-full">
               <thead>
@@ -95,6 +97,7 @@ export default function MarketValueHistory({
               </tbody>
             </table>
           </div>
+          */}
         </div>
       )}
     </section>

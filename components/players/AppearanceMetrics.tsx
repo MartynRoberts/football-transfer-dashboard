@@ -1,5 +1,5 @@
-import { ordinal } from "@/lib/players/formatters";
 import type { PlayerWithPageRelations } from "@/lib/players/types";
+import { formatRank } from "@/utils/formatRank";
 
 export default function AppearanceMetrics({
   metric,
@@ -19,22 +19,21 @@ export default function AppearanceMetrics({
     },
     {
       label: "Club minutes rank",
-      value:
-        metric.clubMinutesRank !== null ? ordinal(metric.clubMinutesRank) : "-",
+      value: formatRank(metric.clubMinutesRank, metric.clubMinutesRankTotal),
     },
     {
       label: "League minutes rank",
-      value:
-        metric.leagueMinutesRank !== null
-          ? ordinal(metric.leagueMinutesRank)
-          : "-",
+      value: formatRank(
+        metric.leagueMinutesRank,
+        metric.leagueMinutesRankTotal,
+      ),
     },
     {
       label: "Position minutes rank",
-      value:
-        metric.positionMinutesRank !== null
-          ? ordinal(metric.positionMinutesRank)
-          : "-",
+      value: formatRank(
+        metric.positionMinutesRank,
+        metric.positionMinutesRankTotal,
+      ),
     },
   ];
 

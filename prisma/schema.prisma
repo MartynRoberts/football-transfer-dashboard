@@ -136,6 +136,9 @@ model PlayerMetric {
   clubMinutesRank     Int?
   leagueMinutesRank   Int?
   positionMinutesRank Int?
+  clubMinutesRankTotal     Int?
+  leagueMinutesRankTotal   Int?
+  positionMinutesRankTotal Int?
 
   // Attacking
   goals   Int?
@@ -165,6 +168,20 @@ model PlayerMetric {
 
   clubInjuryRank   Int?
   leagueInjuryRank Int?
+
+  // Injury insights
+  seasonInjuryGamesPercentage Float?
+  careerInjuryGamesPercentage Float?
+
+  premierLeagueAvailabilityRank      Int?
+  premierLeagueAvailabilityRankTotal Int?
+
+  topFiveAvailabilityRank      Int?
+  topFiveAvailabilityRankTotal Int?
+
+  recurrentInjuryWarning Boolean @default(false)
+  recurrentInjuryGroup   String?
+  recurrentInjuryCount   Int?
 
   // Physical
   heightPercentileOverall  Float?

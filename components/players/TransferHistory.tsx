@@ -1,4 +1,5 @@
 import type { PlayerWithPageRelations } from "@/lib/players/types";
+import TransferValueRating from "@/components/transfers/TransferValueRating";
 
 export default function TransferHistory({
   transfers,
@@ -20,6 +21,7 @@ export default function TransferHistory({
                 <th className="p-3 text-left">To</th>
                 <th className="p-3 text-left">Fee</th>
                 <th className="p-3 text-left">Market Value</th>
+                <th className="p-3 text-left">Value rating</th>
               </tr>
             </thead>
             <tbody>
@@ -31,14 +33,22 @@ export default function TransferHistory({
                   <td className="p-3">{transfer.fromClub?.name ?? "-"}</td>
                   <td className="p-3">{transfer.toClub?.name ?? "-"}</td>
                   <td className="p-3">
-                    {transfer.fee
-                      ? `€${transfer.fee.toLocaleString()}`
-                      : "Free"}
+                    {transfer.fee === null
+                      ? "Undisclosed"
+                      : transfer.fee === 0
+                        ? "Free"
+                        : `€${transfer.fee.toLocaleString()}`}
                   </td>
                   <td className="p-3">
-                    {transfer.marketValue
+                    {transfer.marketValue !== null
                       ? `€${transfer.marketValue.toLocaleString()}`
                       : "-"}
+                  </td>
+                  <td className="p-3">
+                    <TransferValueRating
+                      fee={transfer.fee}
+                      marketValue={transfer.marketValue}
+                    />
                   </td>
                 </tr>
               ))}

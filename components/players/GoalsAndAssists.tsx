@@ -1,4 +1,7 @@
+import type { ReactNode } from "react";
+
 import type { SeasonPerformance } from "@/lib/players/types";
+import { formatRank } from "@/utils/formatRank";
 
 export default function GoalsAndAssists({
   seasons,
@@ -37,6 +40,41 @@ export default function GoalsAndAssists({
                 <PerformanceCard
                   label="Minutes per contribution"
                   value={season.minutesPerContribution?.toLocaleString() ?? "-"}
+                />
+                <PerformanceCard
+                  label="Goals rank in league"
+                  value={formatRank(
+                    season.rankings.leaguePositionGoals.rank,
+                    season.rankings.leaguePositionGoals.total,
+                  )}
+                  detail="Players in the same position"
+                />
+
+                <PerformanceCard
+                  label="Assists rank in league"
+                  value={formatRank(
+                    season.rankings.leaguePositionAssists.rank,
+                    season.rankings.leaguePositionAssists.total,
+                  )}
+                  detail="Players in the same position"
+                />
+
+                <PerformanceCard
+                  label="Goals rank in top five leagues"
+                  value={formatRank(
+                    season.rankings.topFivePositionGoals.rank,
+                    season.rankings.topFivePositionGoals.total,
+                  )}
+                  detail="Players in the same position"
+                />
+
+                <PerformanceCard
+                  label="Assists rank in top five leagues"
+                  value={formatRank(
+                    season.rankings.topFivePositionAssists.rank,
+                    season.rankings.topFivePositionAssists.total,
+                  )}
+                  detail="Players in the same position"
                 />
                 {/* COMMENT OUT UNTIL FIX IMPLEMENTED FOR TOAL TEAM GOALS */}
                 {/*}
@@ -90,7 +128,7 @@ function PerformanceCard({
   detail,
 }: {
   label: string;
-  value: number | string;
+  value: ReactNode;
   detail?: string;
 }) {
   return (

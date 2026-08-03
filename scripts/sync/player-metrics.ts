@@ -7,8 +7,35 @@ interface HeightPercentiles {
 
 interface PlayingTimeRanks {
   club: number | null;
+  clubTotal: number;
+
   league: number | null;
+  leagueTotal: number;
+
   position: number | null;
+  positionTotal: number;
+}
+
+interface InjuryMetrics {
+  careerInjuries: number;
+  careerGamesMissed: number;
+  careerDaysInjured: number;
+
+  seasonGamesMissed: number;
+  seasonDaysInjured: number;
+
+  seasonInjuryGamesPercentage: number | null;
+  careerInjuryGamesPercentage: number | null;
+
+  premierLeagueAvailabilityRank: number | null;
+  premierLeagueAvailabilityRankTotal: number;
+
+  topFiveAvailabilityRank: number | null;
+  topFiveAvailabilityRankTotal: number;
+
+  recurrentInjuryWarning: boolean;
+  recurrentInjuryGroup: string | null;
+  recurrentInjuryCount: number;
 }
 
 interface MarketValuePercentiles {
@@ -37,6 +64,7 @@ export async function syncPlayerMetrics(
   season: string,
   heightPercentiles: HeightPercentiles,
   playingTimeRanks: PlayingTimeRanks,
+  injuryMetrics: InjuryMetrics,
 ) {
   const player = await prisma.player.findUnique({
     where: {
@@ -51,7 +79,6 @@ export async function syncPlayerMetrics(
           season,
         },
       },
-      injuries: true,
 
       marketValueHistories: {
         orderBy: {
@@ -109,32 +136,6 @@ export async function syncPlayerMetrics(
         )
       : null;
 
-  const careerInjuries = player.injuries.length;
-
-  const careerDaysInjured = player.injuries.reduce(
-    (sum, injury) => sum + (injury.days ?? 0),
-    0,
-  );
-
-  const careerGamesMissed = player.injuries.reduce(
-    (sum, injury) => sum + (injury.gamesMissed ?? 0),
-    0,
-  );
-
-  const seasonInjuries = player.injuries.filter(
-    (injury) => injury.season === season,
-  );
-
-  const seasonDaysInjured = seasonInjuries.reduce(
-    (sum, injury) => sum + (injury.days ?? 0),
-    0,
-  );
-
-  const seasonGamesMissed = seasonInjuries.reduce(
-    (sum, injury) => sum + (injury.gamesMissed ?? 0),
-    0,
-  );
-
   const marketValuePercentiles: MarketValuePercentiles = {
     worldwide: null,
     league: null,
@@ -148,6 +149,7 @@ export async function syncPlayerMetrics(
           not: null,
         },
       },
+
       select: {
         marketValue: true,
       },
@@ -168,10 +170,14 @@ export async function syncPlayerMetrics(
           marketValue: {
             not: null,
           },
+
           currentClub: {
-            leagueId: player.currentClub.leagueId,
+            is: {
+              leagueId: player.currentClub.leagueId,
+            },
           },
         },
+
         select: {
           marketValue: true,
         },
@@ -191,10 +197,12 @@ export async function syncPlayerMetrics(
       const positionPlayers = await prisma.player.findMany({
         where: {
           position: player.position,
+
           marketValue: {
             not: null,
           },
         },
+
         select: {
           marketValue: true,
         },
@@ -211,91 +219,87 @@ export async function syncPlayerMetrics(
     }
   }
 
+  const metricData = {
+    appearances,
+    minutesPlayed,
+
+    goals,
+    assists,
+
+    yellowCards,
+    redCards,
+
+    currentMarketValue,
+    previousMarketValue,
+
+    marketValueChange,
+    marketValueChangePct,
+
+    marketValuePercentileWorldwide: marketValuePercentiles.worldwide,
+
+    marketValuePercentileLeague: marketValuePercentiles.league,
+
+    marketValuePercentilePosition: marketValuePercentiles.position,
+
+    worldwideValueRank: player.worldwideRank,
+    leagueValueRank: player.leagueRank,
+    clubValueRank: player.clubRank,
+    positionValueRank: player.positionRank,
+
+    heightPercentileOverall: heightPercentiles.overall,
+
+    heightPercentilePosition: heightPercentiles.position,
+
+    clubMinutesRank: playingTimeRanks.club,
+    clubMinutesRankTotal: playingTimeRanks.clubTotal,
+
+    leagueMinutesRank: playingTimeRanks.league,
+    leagueMinutesRankTotal: playingTimeRanks.leagueTotal,
+
+    positionMinutesRank: playingTimeRanks.position,
+
+    positionMinutesRankTotal: playingTimeRanks.positionTotal,
+
+    careerInjuries: injuryMetrics.careerInjuries,
+
+    careerGamesMissed: injuryMetrics.careerGamesMissed,
+
+    careerDaysInjured: injuryMetrics.careerDaysInjured,
+
+    seasonGamesMissed: injuryMetrics.seasonGamesMissed,
+
+    seasonDaysInjured: injuryMetrics.seasonDaysInjured,
+
+    seasonInjuryGamesPercentage: injuryMetrics.seasonInjuryGamesPercentage,
+
+    careerInjuryGamesPercentage: injuryMetrics.careerInjuryGamesPercentage,
+
+    premierLeagueAvailabilityRank: injuryMetrics.premierLeagueAvailabilityRank,
+
+    premierLeagueAvailabilityRankTotal:
+      injuryMetrics.premierLeagueAvailabilityRankTotal,
+
+    topFiveAvailabilityRank: injuryMetrics.topFiveAvailabilityRank,
+
+    topFiveAvailabilityRankTotal: injuryMetrics.topFiveAvailabilityRankTotal,
+
+    recurrentInjuryWarning: injuryMetrics.recurrentInjuryWarning,
+
+    recurrentInjuryGroup: injuryMetrics.recurrentInjuryGroup,
+
+    recurrentInjuryCount: injuryMetrics.recurrentInjuryCount,
+  };
+
   await prisma.playerMetric.upsert({
     where: {
       playerId,
     },
 
-    update: {
-      appearances,
-      minutesPlayed,
-
-      goals,
-      assists,
-
-      yellowCards,
-      redCards,
-
-      currentMarketValue,
-      previousMarketValue,
-
-      marketValueChange,
-      marketValueChangePct,
-
-      marketValuePercentileWorldwide: marketValuePercentiles.worldwide,
-      marketValuePercentileLeague: marketValuePercentiles.league,
-      marketValuePercentilePosition: marketValuePercentiles.position,
-
-      careerInjuries,
-      careerDaysInjured,
-      careerGamesMissed,
-
-      seasonDaysInjured,
-      seasonGamesMissed,
-
-      worldwideValueRank: player.worldwideRank,
-      leagueValueRank: player.leagueRank,
-      clubValueRank: player.clubRank,
-      positionValueRank: player.positionRank,
-
-      heightPercentileOverall: heightPercentiles.overall,
-      heightPercentilePosition: heightPercentiles.position,
-
-      clubMinutesRank: playingTimeRanks.club,
-      leagueMinutesRank: playingTimeRanks.league,
-      positionMinutesRank: playingTimeRanks.position,
-    },
+    update: metricData,
 
     create: {
       playerId,
-
-      appearances,
-      minutesPlayed,
-
-      goals,
-      assists,
-
-      yellowCards,
-      redCards,
-
-      currentMarketValue,
-      previousMarketValue,
-
-      marketValueChange,
-      marketValueChangePct,
-
-      marketValuePercentileWorldwide: marketValuePercentiles.worldwide,
-      marketValuePercentileLeague: marketValuePercentiles.league,
-      marketValuePercentilePosition: marketValuePercentiles.position,
-
-      careerInjuries,
-      careerDaysInjured,
-      careerGamesMissed,
-
-      seasonDaysInjured,
-      seasonGamesMissed,
-
-      worldwideValueRank: player.worldwideRank,
-      leagueValueRank: player.leagueRank,
-      clubValueRank: player.clubRank,
-      positionValueRank: player.positionRank,
-
-      heightPercentileOverall: heightPercentiles.overall,
-      heightPercentilePosition: heightPercentiles.position,
-
-      clubMinutesRank: playingTimeRanks.club,
-      leagueMinutesRank: playingTimeRanks.league,
-      positionMinutesRank: playingTimeRanks.position,
+      ...metricData,
     },
   });
 }

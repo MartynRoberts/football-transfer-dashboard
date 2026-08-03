@@ -1,4 +1,5 @@
 import type { PlayerWithPageRelations } from "@/lib/players/types";
+import { capitalise } from "@/utils/capitalise";
 
 export default function PlayerProfileCards({
   player,
@@ -6,9 +7,6 @@ export default function PlayerProfileCards({
   player: PlayerWithPageRelations;
 }) {
   const cards = [
-    { label: "Nationality", value: player.nationality ?? "-" },
-    { label: "Preferred Foot", value: player.foot ?? "-" },
-    { label: "Height", value: player.height ? `${player.height} cm` : "-" },
     {
       label: "Market Value",
       value:
@@ -16,16 +14,20 @@ export default function PlayerProfileCards({
           ? `€${player.marketValue.toLocaleString()}`
           : "-",
     },
+    {
+      label: "Preferred Foot",
+      value: player.foot ? capitalise(player.foot) : "-",
+    },
   ];
 
   return (
-    <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
+    <>
       {cards.map((card) => (
         <div key={card.label} className="rounded-lg border p-4">
           <div className="text-sm text-gray-500">{card.label}</div>
-          <div className="text-xl font-semibold">{card.value}</div>
+          <div className="mt-1 text-xl font-semibold">{card.value}</div>
         </div>
       ))}
-    </section>
+    </>
   );
 }

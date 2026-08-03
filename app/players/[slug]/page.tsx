@@ -2,11 +2,9 @@ import { notFound } from "next/navigation";
 
 import AppearanceMetrics from "@/components/players/AppearanceMetrics";
 import GoalsAndAssists from "@/components/players/GoalsAndAssists";
-import HeightPercentiles from "@/components/players/HeightPercentiles";
 import InjuryHistory from "@/components/players/InjuryHistory";
 import MarketValueHistory from "@/components/players/MarketValueHistory";
 import PlayerHeader from "@/components/players/PlayerHeader";
-import PlayerProfileCards from "@/components/players/PlayerProfileCards";
 import TransferHistory from "@/components/players/TransferHistory";
 import { getPlayerPageData } from "@/lib/players/get-player-page-data";
 
@@ -30,8 +28,6 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
         player={player}
         secondaryPositions={data.secondaryPositions}
       />
-      <PlayerProfileCards player={player} />
-      <HeightPercentiles player={player} />
       <AppearanceMetrics metric={player.metric} />
       <GoalsAndAssists seasons={data.seasonPerformances} />
       <TransferHistory transfers={player.transfers} />
@@ -42,7 +38,7 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
         leagueName={player.currentClub?.league?.name ?? null}
         position={player.position}
       />
-      <InjuryHistory injuries={player.injuries} />
+      <InjuryHistory injuries={player.injuries} metric={player.metric} />
     </main>
   );
 }
