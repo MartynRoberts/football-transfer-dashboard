@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ClubIdentity from "@/components/clubs/ClubIdentity";
 import LeagueIdentity from "@/components/leagues/LeagueIdentity";
+import PlayerCardImage from "@/components/players/PlayerCardImage";
 import { CURRENT_SEASON } from "@/lib/sync/scope";
 import SquadPositionCounts from "@/components/clubs/SquadPositionCounts";
 import TransferValueRating from "@/components/transfers/TransferValueRating";
@@ -411,15 +412,19 @@ export default async function ClubPage({
             <Link
               key={player.id}
               href={`/players/${player.slug}`}
-              className="border rounded-lg p-4 hover:border-blue-500"
+              className="flex min-h-28 items-stretch overflow-hidden rounded-lg border p-0 transition hover:border-blue-500"
             >
-              <p className="font-semibold">
-                <span>#{player.shirtNumber ?? "—"}</span> {player.name}
-              </p>
+              <div className="min-w-0 flex-1 px-4 py-4">
+                <p className="font-semibold">
+                  <span>#{player.shirtNumber ?? "—"}</span> {player.name}
+                </p>
 
-              <p className="text-sm text-gray-500">
-                {player.position ?? "Unknown"}
-              </p>
+                <p className="text-sm text-gray-500">
+                  {player.position ?? "Unknown"}
+                </p>
+              </div>
+
+              <PlayerCardImage src={player.imageUrl} playerName={player.name} />
             </Link>
           ))}
         </div>
