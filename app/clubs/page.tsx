@@ -34,7 +34,7 @@ export default async function ClubsPage({
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Clubs</h1>
 
-      <div className="grid gap-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {clubs.map((club) => (
           <Link
             key={club.id}
