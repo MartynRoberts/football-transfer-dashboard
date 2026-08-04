@@ -52,6 +52,31 @@ function parseDate(value?: string) {
   return isNaN(date.getTime()) ? null : date;
 }
 
+function splitPlayerName(name: string): {
+  firstName: string | null;
+  lastName: string;
+  sortName: string;
+} {
+  const parts = name.trim().split(/\s+/);
+
+  if (parts.length === 1) {
+    return {
+      firstName: null,
+      lastName: parts[0],
+      sortName: parts[0],
+    };
+  }
+
+  const lastName = parts.pop()!;
+  const firstName = parts.join(" ");
+
+  return {
+    firstName,
+    lastName,
+    sortName: `${lastName}, ${firstName}`,
+  };
+}
+
 export async function syncPlayerProfiles() {
   console.log("👤 Syncing player profiles");
 
@@ -110,12 +135,20 @@ export async function syncPlayerProfiles() {
           ? [profile.position.other]
           : [];
 
+      const parsedName = splitPlayerName(profile.name || player.name);
+
       await prisma.player.update({
         where: {
           id: player.id,
         },
 
         data: {
+          name: profile.name || player.name,
+
+          firstName: parsedName.firstName,
+          lastName: parsedName.lastName,
+          sortName: parsedName.sortName,
+
           imageUrl: profile.imageUrl
             ? normalizeRemoteImageUrl(profile.imageUrl)
             : undefined,

@@ -1,43 +1,28 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 
-export const revalidate = 60;
+import { PLAYER_ALPHABET } from "@/lib/players/player-list";
 
-export default async function PlayersPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ season?: string }>;
-}) {
-  const { season = "2025-26" } = await searchParams;
-
-  const players = await prisma.player.findMany({
-    orderBy: {
-      name: "asc",
-    },
-    include: {
-      currentClub: true,
-    },
-  });
-
+export default function PlayersPage() {
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Players</h1>
+      <h1 className="mb-2 text-3xl font-bold">Players</h1>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        {players.map((player) => (
+      <p className="mb-6 text-slate-600">Browse players by surname.</p>
+
+      <nav
+        aria-label="Player surname index"
+        className="grid grid-cols-6 gap-2 sm:grid-cols-9 md:grid-cols-13"
+      >
+        {PLAYER_ALPHABET.map((letter) => (
           <Link
-            key={player.id}
-            href={`/players/${player.slug}`}
-            className="border rounded-lg p-4 hover:border-blue-500"
+            key={letter}
+            href={`/players/letter/${letter.toLowerCase()}`}
+            className="flex aspect-square items-center justify-center rounded-lg border text-lg font-semibold transition hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700"
           >
-            <h2 className="font-bold">
-              #{player.shirtNumber ?? "—"} {player.name}
-            </h2>
-
-            <p className="text-sm text-slate-500">{player.currentClub?.name}</p>
+            {letter}
           </Link>
         ))}
-      </div>
+      </nav>
     </main>
   );
 }

@@ -49,6 +49,9 @@ model Player {
   slug               String        @unique
   shirtNumber        Int?
   name               String
+  firstName          String?
+  lastName           String?
+  sortName           String?
   imageUrl           String?
   position           String?
   positionGroup      String?
@@ -80,6 +83,7 @@ model Player {
   metric PlayerMetric? @relation("PlayerMetrics")
 
   @@index([currentClubId])
+  @@index([sortName])
 }
 
 model PlayerStat {
