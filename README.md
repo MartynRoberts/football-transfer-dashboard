@@ -93,6 +93,12 @@ npm run lint     # Run ESLint
 
 ## Importing data
 
+Data is imported through the
+[felipeall/transfermarkt-api](https://github.com/felipeall/transfermarkt-api).
+For bulk imports, it is best to run the API in a local Docker container and
+point `TRANSFERMARKT_API_URL` at that instance. This keeps requests under your
+control and helps reduce the risk of being blocked by the upstream source.
+
 Import stages depend on records created by earlier stages. For a fresh
 database, run them in this order:
 
