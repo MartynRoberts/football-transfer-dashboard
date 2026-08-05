@@ -1,0 +1,112 @@
+import Link from "next/link";
+
+interface TopClubSpender {
+  id: string;
+  name: string;
+  slug: string;
+  leagueName: string | null;
+  totalSpend: number;
+  signingCount: number;
+}
+
+function formatMoney(value: number): string {
+  if (value >= 1_000_000_000) {
+    return `€${(value / 1_000_000_000).toFixed(2)}bn`;
+  }
+
+  if (value >= 1_000_000) {
+    return `€${(value / 1_000_000).toFixed(1)}m`;
+  }
+
+  if (value >= 1_000) {
+    return `€${(value / 1_000).toFixed(1)}k`;
+  }
+
+  return `€${value.toLocaleString()}`;
+}
+
+export default function TopClubSpenders({
+  clubs,
+  season,
+}: {
+  clubs: TopClubSpender[];
+  season: string;
+}) {
+  const maximumSpend = Math.max(...clubs.map((club) => club.totalSpend), 1);
+
+  return (
+    <section>
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold sm:text-2xl">
+          Top 10 biggest spenders
+        </h2>
+
+        <p className="mt-1 text-sm text-slate-500">
+          {season} season, based on known transfer fees.
+        </p>
+      </div>
+
+      {clubs.length === 0 ? (
+        <p className="text-sm text-slate-500">
+          No current-season spending data available.
+        </p>
+      ) : (
+        <div className="overflow-hidden rounded-lg border">
+          {clubs.map((club, index) => {
+            const width = (club.totalSpend / maximumSpend) * 100;
+
+            return (
+              <div
+                key={club.id}
+                className="grid grid-cols-[1.5rem_minmax(0,1fr)] items-center gap-2 border-b p-3 last:border-b-0 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:gap-3 sm:p-4"
+              >
+                <span className="text-sm font-bold text-slate-400">
+                  {index + 1}
+                </span>
+
+                <div className="min-w-0">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <Link
+                      href={`/clubs/${club.slug}`}
+                      className="truncate font-semibold text-blue-600 hover:underline"
+                    >
+                      {club.name}
+                    </Link>
+
+                    <span className="shrink-0 font-bold">
+                      {formatMoney(club.totalSpend)}
+                    </span>
+                  </div>
+
+                  <div className="mt-1 flex justify-between gap-3 text-xs text-slate-500">
+                    <span className="truncate">
+                      {club.leagueName ?? "Unknown league"}
+                    </span>
+
+                    <span className="shrink-0">
+                      {club.signingCount}{" "}
+                      {club.signingCount === 1 ? "signing" : "signings"}
+                    </span>
+                  </div>
+
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full rounded-full bg-blue-600"
+                      style={{
+                        width: `${Math.max(width, 2)}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <span aria-hidden="true" className="hidden sm:inline">
+                  ›
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}

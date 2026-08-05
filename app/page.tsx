@@ -1,21 +1,27 @@
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { searchCompetition, getCompetitionClubs } from "@/lib/transfermarkt";
-import LeagueIdentity from "@/components/leagues/LeagueIdentity";
-import { toApiSeason } from "@/lib/season";
+import TransferHistory from "@/components/players/TransferHistory";
+import { TOP_FIVE_LEAGUE_IDS, TRANSFER_SEASON } from "@/lib/sync/scope";
+import TopClubSpenders from "@/components/transfers/TopClubSpenders";
+import { getLastThreeTransferSeasons } from "@/lib/transfers/get-last-three-transfer-seasons";
+import MostEfficientClubSpending from "@/components/transfers/MostEfficientClubSpending";
+import BestValueTransfers from "@/components/transfers/BestValueTransfers";
+import WorstValueTransfers from "@/components/transfers/WorstValueTransfers";
+import MostExpensiveTransfers from "@/components/transfers/MostExpensiveTransfers";
 
 export const revalidate = 60;
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    season?: string;
-  }>;
-}) {
-  const { season = "2026-27" } = await searchParams;
+export default async function HomePage() {
+  const efficiencySeasons = getLastThreeTransferSeasons(TRANSFER_SEASON);
 
-  const [leagues, topClubs, latestTransfers] = await Promise.all([
+  const [
+    leagues,
+    topClubs,
+    latestTransfers,
+    spendingGroups,
+    efficiencyTransfers,
+    bestValueTransferRows,
+    mostExpensiveTransfers,
+  ] = await Promise.all([
     prisma.league.findMany({
       orderBy: { name: "asc" },
       include: {
@@ -38,111 +44,638 @@ export default async function HomePage({
 
     prisma.transfer.findMany({
       where: {
-        season: toApiSeason(season),
+        season: TRANSFER_SEASON,
+
+        OR: [
+          {
+            fromClub: {
+              is: {
+                league: {
+                  is: {
+                    transfermarktId: {
+                      in: [...TOP_FIVE_LEAGUE_IDS],
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            toClub: {
+              is: {
+                league: {
+                  is: {
+                    transfermarktId: {
+                      in: [...TOP_FIVE_LEAGUE_IDS],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
       },
-      take: 8,
-      orderBy: { transferDate: "desc" },
-      include: {
-        player: true,
-        fromClub: true,
-        toClub: true,
+
+      take: 10,
+
+      orderBy: [
+        {
+          transferDate: {
+            sort: "desc",
+            nulls: "last",
+          },
+        },
+        {
+          createdAt: "desc",
+        },
+      ],
+
+      select: {
+        id: true,
+        transferDate: true,
+        fee: true,
+        marketValue: true,
+
+        player: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+
+        fromClub: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+
+        toClub: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+      },
+    }),
+
+    prisma.transfer.groupBy({
+      by: ["toClubId"],
+
+      where: {
+        season: TRANSFER_SEASON,
+
+        toClubId: {
+          not: null,
+        },
+
+        fee: {
+          not: null,
+          gt: 0,
+        },
+
+        toClub: {
+          is: {
+            league: {
+              is: {
+                transfermarktId: {
+                  in: [...TOP_FIVE_LEAGUE_IDS],
+                },
+              },
+            },
+          },
+        },
+      },
+
+      _sum: {
+        fee: true,
+      },
+
+      _count: {
+        id: true,
+      },
+
+      orderBy: {
+        _sum: {
+          fee: "desc",
+        },
+      },
+
+      take: 10,
+    }),
+
+    prisma.transfer.findMany({
+      where: {
+        season: {
+          in: efficiencySeasons,
+        },
+
+        fee: {
+          not: null,
+        },
+
+        marketValue: {
+          not: null,
+          gt: 0,
+        },
+
+        OR: [
+          {
+            fromClub: {
+              is: {
+                league: {
+                  is: {
+                    transfermarktId: {
+                      in: [...TOP_FIVE_LEAGUE_IDS],
+                    },
+                  },
+                },
+              },
+            },
+          },
+
+          {
+            toClub: {
+              is: {
+                league: {
+                  is: {
+                    transfermarktId: {
+                      in: [...TOP_FIVE_LEAGUE_IDS],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+
+      select: {
+        id: true,
+        fee: true,
+        marketValue: true,
+
+        fromClubId: true,
+        toClubId: true,
+
+        fromClub: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+
+            league: {
+              select: {
+                name: true,
+                transfermarktId: true,
+              },
+            },
+          },
+        },
+
+        toClub: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+
+            league: {
+              select: {
+                name: true,
+                transfermarktId: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+
+    prisma.transfer.findMany({
+      where: {
+        season: TRANSFER_SEASON,
+
+        fee: {
+          not: null,
+        },
+
+        marketValue: {
+          not: null,
+          gt: 0,
+        },
+
+        toClub: {
+          is: {
+            league: {
+              is: {
+                transfermarktId: {
+                  in: [...TOP_FIVE_LEAGUE_IDS],
+                },
+              },
+            },
+          },
+        },
+      },
+
+      select: {
+        id: true,
+        fee: true,
+        marketValue: true,
+
+        player: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+
+        fromClub: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+
+        toClub: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+      },
+    }),
+
+    prisma.transfer.findMany({
+      where: {
+        season: TRANSFER_SEASON,
+
+        fee: {
+          not: null,
+          gt: 0,
+        },
+
+        OR: [
+          {
+            fromClub: {
+              is: {
+                league: {
+                  is: {
+                    transfermarktId: {
+                      in: [...TOP_FIVE_LEAGUE_IDS],
+                    },
+                  },
+                },
+              },
+            },
+          },
+
+          {
+            toClub: {
+              is: {
+                league: {
+                  is: {
+                    transfermarktId: {
+                      in: [...TOP_FIVE_LEAGUE_IDS],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+
+      take: 10,
+
+      orderBy: [
+        {
+          fee: "desc",
+        },
+        {
+          transferDate: {
+            sort: "desc",
+            nulls: "last",
+          },
+        },
+      ],
+
+      select: {
+        id: true,
+        fee: true,
+        marketValue: true,
+
+        player: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+
+        fromClub: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+
+        toClub: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
       },
     }),
   ]);
 
+  const expensiveTransfers = mostExpensiveTransfers.flatMap((transfer) => {
+    if (transfer.fee === null) {
+      return [];
+    }
+
+    return [
+      {
+        ...transfer,
+        fee: transfer.fee,
+      },
+    ];
+  });
+
+  const bestValueTransfers = bestValueTransferRows
+    .flatMap((transfer) => {
+      if (transfer.fee === null || transfer.marketValue === null) {
+        return [];
+      }
+
+      const valueDifference = transfer.marketValue - transfer.fee;
+
+      if (valueDifference <= 0) {
+        return [];
+      }
+
+      return [
+        {
+          id: transfer.id,
+          fee: transfer.fee,
+          marketValue: transfer.marketValue,
+          valueDifference,
+
+          player: transfer.player,
+          fromClub: transfer.fromClub,
+          toClub: transfer.toClub,
+        },
+      ];
+    })
+    .sort(
+      (first, second) =>
+        second.valueDifference - first.valueDifference ||
+        second.marketValue - first.marketValue,
+    )
+    .slice(0, 10);
+
+  const worstValueTransfers = bestValueTransferRows
+    .flatMap((transfer) => {
+      if (transfer.fee === null || transfer.marketValue === null) {
+        return [];
+      }
+
+      const valueDifference = transfer.fee - transfer.marketValue;
+
+      if (valueDifference <= 0) {
+        return [];
+      }
+
+      return [
+        {
+          id: transfer.id,
+          fee: transfer.fee,
+          marketValue: transfer.marketValue,
+          valueDifference,
+
+          player: transfer.player,
+          fromClub: transfer.fromClub,
+          toClub: transfer.toClub,
+        },
+      ];
+    })
+    .sort(
+      (first, second) =>
+        second.valueDifference - first.valueDifference ||
+        second.fee - first.fee,
+    )
+    .slice(0, 10);
+
+  interface ClubEfficiencyAccumulator {
+    id: string;
+    name: string;
+    slug: string;
+    leagueName: string | null;
+
+    incomingFees: number;
+    outgoingFees: number;
+
+    incomingValuation: number;
+    outgoingValuation: number;
+
+    incomingDeals: number;
+    outgoingDeals: number;
+  }
+
+  const topFiveLeagueIdSet = new Set<string>(TOP_FIVE_LEAGUE_IDS);
+
+  const efficiencyByClub = new Map<string, ClubEfficiencyAccumulator>();
+
+  function getClubAccumulator(club: {
+    id: string;
+    name: string;
+    slug: string;
+    league: {
+      name: string;
+      transfermarktId: string | null;
+    } | null;
+  }) {
+    const existing = efficiencyByClub.get(club.id);
+
+    if (existing) {
+      return existing;
+    }
+
+    const accumulator: ClubEfficiencyAccumulator = {
+      id: club.id,
+      name: club.name,
+      slug: club.slug,
+      leagueName: club.league?.name ?? null,
+
+      incomingFees: 0,
+      outgoingFees: 0,
+
+      incomingValuation: 0,
+      outgoingValuation: 0,
+
+      incomingDeals: 0,
+      outgoingDeals: 0,
+    };
+
+    efficiencyByClub.set(club.id, accumulator);
+
+    return accumulator;
+  }
+
+  for (const transfer of efficiencyTransfers) {
+    const fee = transfer.fee;
+    const marketValue = transfer.marketValue;
+
+    if (fee === null || marketValue === null) {
+      continue;
+    }
+
+    const buyingClub = transfer.toClub;
+    const sellingClub = transfer.fromClub;
+
+    const buyingClubIsTopFive =
+      buyingClub?.league?.transfermarktId &&
+      topFiveLeagueIdSet.has(buyingClub.league.transfermarktId);
+
+    const sellingClubIsTopFive =
+      sellingClub?.league?.transfermarktId &&
+      topFiveLeagueIdSet.has(sellingClub.league.transfermarktId);
+
+    if (buyingClub && buyingClubIsTopFive) {
+      const club = getClubAccumulator(buyingClub);
+
+      club.incomingFees += fee;
+      club.incomingValuation += marketValue;
+      club.incomingDeals += 1;
+    }
+
+    if (sellingClub && sellingClubIsTopFive) {
+      const club = getClubAccumulator(sellingClub);
+
+      club.outgoingFees += fee;
+      club.outgoingValuation += marketValue;
+      club.outgoingDeals += 1;
+    }
+  }
+
+  const mostEfficientClubs = Array.from(efficiencyByClub.values())
+    .map((club) => {
+      const purchaseValue = club.incomingValuation - club.incomingFees;
+
+      const saleValue = club.outgoingFees - club.outgoingValuation;
+
+      const efficiencyScore = purchaseValue + saleValue;
+
+      const netSpend = club.incomingFees - club.outgoingFees;
+
+      return {
+        id: club.id,
+        name: club.name,
+        slug: club.slug,
+        leagueName: club.leagueName,
+
+        netSpend,
+        efficiencyScore,
+        purchaseValue,
+        saleValue,
+
+        ratedDeals: club.incomingDeals + club.outgoingDeals,
+      };
+    })
+    .filter((club) => club.ratedDeals > 0)
+    .sort((first, second) => second.efficiencyScore - first.efficiencyScore)
+    .slice(0, 10);
+
+  const spendingClubIds = spendingGroups
+    .map((group) => group.toClubId)
+    .filter((id): id is string => id !== null);
+
+  const spendingClubs = await prisma.club.findMany({
+    where: {
+      id: {
+        in: spendingClubIds,
+      },
+    },
+
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+
+      league: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  const spendingClubMap = new Map(spendingClubs.map((club) => [club.id, club]));
+
+  const topSpenders = spendingGroups.flatMap((group) => {
+    if (!group.toClubId) {
+      return [];
+    }
+
+    const club = spendingClubMap.get(group.toClubId);
+
+    if (!club) {
+      return [];
+    }
+
+    return [
+      {
+        id: club.id,
+        name: club.name,
+        slug: club.slug,
+        leagueName: club.league?.name ?? null,
+        totalSpend: group._sum.fee ?? 0,
+        signingCount: group._count.id,
+      },
+    ];
+  });
+
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container mx-auto space-y-8 px-3 py-4 sm:space-y-10 sm:px-4 sm:py-8">
       {/* Hero Header */}
-      <section className="mb-12 text-center py-10 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl shadow-lg px-6">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+      <section className="mb-8 rounded-xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-8 text-center text-white shadow-lg sm:mb-12 sm:rounded-2xl sm:px-6 sm:py-10">
+        <h1 className="mb-3 text-3xl font-extrabold tracking-tight sm:mb-4 sm:text-4xl md:text-5xl">
           TransferDashboard
         </h1>
-        <p className="text-slate-300 text-lg max-w-2xl mx-auto">
+        <p className="mx-auto max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
           Explore football transfer activity, squad valuations, net spend
           insights, and league analytics.
         </p>
       </section>
 
-      {/* Main Grid: Leagues & Latest Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-        {/* Leagues Section */}
-        <div className="lg:col-span-2">
-          <h2 className="text-2xl font-bold mb-4">Leagues</h2>
-          <p className="mb-8">View full league stats & top transfers</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {leagues.map((league) => (
-              <Link
-                key={league.id}
-                href={`/leagues/${league.slug}`}
-                className="p-5 border rounded-xl bg-white hover:border-blue-500 hover:shadow-md transition-all block group"
-              >
-                <div className="flex justify-between items-center">
-                  <LeagueIdentity league={league} />
-                  <span className="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded-full">
-                    {league._count.clubs} Clubs
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+      {/* Recent Transfers Activity Sidebar */}
+      <TransferHistory
+        transfers={latestTransfers}
+        title="Latest transfers — top five leagues"
+        showPlayer
+      />
 
-        {/* Recent Transfers Activity Sidebar */}
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Latest Transfers</h2>
-          {latestTransfers.length === 0 ? (
-            <p className="text-gray-500 text-sm">
-              No transfer activity recorded yet.
-            </p>
-          ) : (
-            <div className="space-y-3">
-              {latestTransfers.map((t) => (
-                <div
-                  key={t.id}
-                  className="p-3 bg-white border rounded-lg shadow-sm text-sm"
-                >
-                  <div className="flex justify-between items-start mb-1">
-                    <Link
-                      href={`/players/${t.player.slug}`}
-                      className="font-semibold text-blue-600 hover:underline"
-                    >
-                      {t.player.name}
-                    </Link>
-                    <span className="font-bold text-green-700">
-                      {t.fee
-                        ? `€${t.fee.toLocaleString()}`
-                        : t.transferType || "Free"}
-                    </span>
-                  </div>
-                  <div className="text-xs text-slate-500 flex items-center gap-1">
-                    {t.fromClub ? (
-                      <Link
-                        href={`/clubs/${t.fromClub.slug}`}
-                        className="hover:underline font-medium text-slate-700"
-                      >
-                        {t.fromClub.name}
-                      </Link>
-                    ) : (
-                      "Free Agent"
-                    )}
-                    <span>➔</span>
-                    {t.toClub ? (
-                      <Link
-                        href={`/clubs/${t.toClub.slug}`}
-                        className="hover:underline font-medium text-slate-700"
-                      >
-                        {t.toClub.name}
-                      </Link>
-                    ) : (
-                      "Free Agent"
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      <div className="mb-8 grid gap-8 sm:mb-12 lg:grid-cols-2">
+        <TopClubSpenders clubs={topSpenders} season={TRANSFER_SEASON} />
+
+        <MostEfficientClubSpending
+          clubs={mostEfficientClubs}
+          seasons={efficiencySeasons}
+        />
       </div>
+
+      <BestValueTransfers
+        transfers={bestValueTransfers}
+        season={TRANSFER_SEASON}
+      />
+
+      <WorstValueTransfers
+        transfers={worstValueTransfers}
+        season={TRANSFER_SEASON}
+      />
+
+      <MostExpensiveTransfers
+        transfers={expensiveTransfers}
+        season={TRANSFER_SEASON}
+      />
     </main>
   );
 }

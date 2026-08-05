@@ -1,13 +1,12 @@
 import Link from "next/link";
 import TransferValueRating from "@/components/transfers/TransferValueRating";
 
-interface TransferHistoryItem {
+interface ExpensiveTransfer {
   id: string;
-  transferDate: Date | null;
-  fee: number | null;
+  fee: number;
   marketValue: number | null;
 
-  player?: {
+  player: {
     name: string;
     slug: string;
   };
@@ -23,87 +22,79 @@ interface TransferHistoryItem {
   } | null;
 }
 
-interface TransferHistoryProps {
-  transfers: TransferHistoryItem[];
-  title?: string;
-  showPlayer?: boolean;
-  emptyMessage?: string;
-}
-
-function formatFee(fee: number | null): string {
-  if (fee === null) {
-    return "Undisclosed";
+function formatMoney(value: number): string {
+  if (value >= 1_000_000_000) {
+    return `€${(value / 1_000_000_000).toFixed(2)}bn`;
   }
 
-  if (fee === 0) {
-    return "Free";
+  if (value >= 1_000_000) {
+    return `€${(value / 1_000_000).toFixed(1)}m`;
   }
 
-  return `€${fee.toLocaleString()}`;
-}
-
-function formatMarketValue(marketValue: number | null): string {
-  if (marketValue === null) {
-    return "-";
+  if (value >= 1_000) {
+    return `€${(value / 1_000).toFixed(1)}k`;
   }
 
-  return `€${marketValue.toLocaleString()}`;
+  return `€${value.toLocaleString()}`;
 }
 
-export default function TransferHistory({
+export default function MostExpensiveTransfers({
   transfers,
-  title = "Transfer History",
-  showPlayer = false,
-  emptyMessage = "No transfer history available.",
-}: TransferHistoryProps) {
+  season,
+}: {
+  transfers: ExpensiveTransfer[];
+  season: string;
+}) {
   return (
     <section>
-      <h2 className="mb-4 text-xl font-semibold sm:text-2xl">{title}</h2>
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold sm:text-2xl">
+          Most expensive player transfers
+        </h2>
+
+        <p className="mt-1 text-sm text-slate-500">
+          {season} — highest known transfer fees involving top-five league
+          clubs.
+        </p>
+      </div>
 
       {transfers.length === 0 ? (
-        <p className="text-gray-500">{emptyMessage}</p>
+        <p className="text-sm text-slate-500">
+          No current-season transfer fee data available.
+        </p>
       ) : (
         <div className="mobile-card-table overflow-x-auto">
           <table className="w-full border">
             <thead>
               <tr className="border-b bg-gray-50">
-                <th className="p-3 text-left">Date</th>
-
-                {showPlayer && <th className="p-3 text-left">Player</th>}
-
+                <th className="p-3 text-left">#</th>
+                <th className="p-3 text-left">Player</th>
                 <th className="p-3 text-left">From</th>
-
                 <th className="p-3 text-left">To</th>
-
                 <th className="p-3 text-left">Fee</th>
-
-                <th className="p-3 text-left">Market Value</th>
-
+                <th className="p-3 text-left">Valuation</th>
                 <th className="min-w-44 p-4 text-left">Value rating</th>
               </tr>
             </thead>
 
             <tbody>
-              {transfers.map((transfer) => (
+              {transfers.map((transfer, index) => (
                 <tr key={transfer.id} className="border-b">
-                  <td data-label="Date" className="whitespace-nowrap p-3">
-                    {transfer.transferDate?.toLocaleDateString("en-GB") ?? "-"}
+                  <td
+                    data-label="Rank"
+                    className="p-3 font-semibold text-slate-400"
+                  >
+                    {index + 1}
                   </td>
 
-                  {showPlayer && (
-                    <td data-label="Player" className="p-3">
-                      {transfer.player ? (
-                        <Link
-                          href={`/players/${transfer.player.slug}`}
-                          className="font-medium text-blue-600 hover:underline"
-                        >
-                          {transfer.player.name}
-                        </Link>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  )}
+                  <td data-label="Player" className="p-3">
+                    <Link
+                      href={`/players/${transfer.player.slug}`}
+                      className="font-medium text-blue-600 hover:underline"
+                    >
+                      {transfer.player.name}
+                    </Link>
+                  </td>
 
                   <td data-label="From" className="p-3">
                     {transfer.fromClub ? (
@@ -127,25 +118,28 @@ export default function TransferHistory({
                         {transfer.toClub.name}
                       </Link>
                     ) : (
-                      "Free Agent"
+                      "-"
                     )}
                   </td>
 
-                  <td data-label="Fee" className="whitespace-nowrap p-3">
-                    {formatFee(transfer.fee)}
+                  <td
+                    data-label="Fee"
+                    className="whitespace-nowrap p-3 font-semibold"
+                  >
+                    {formatMoney(transfer.fee)}
                   </td>
 
-                  <td
-                    data-label="Market value"
-                    className="whitespace-nowrap p-3"
-                  >
-                    {formatMarketValue(transfer.marketValue)}
+                  <td data-label="Valuation" className="whitespace-nowrap p-3">
+                    {transfer.marketValue === null
+                      ? "-"
+                      : formatMoney(transfer.marketValue)}
                   </td>
 
                   <td data-label="Rating" className="min-w-44 p-4">
                     <TransferValueRating
                       fee={transfer.fee}
                       marketValue={transfer.marketValue}
+                      perspective="buyer"
                     />
                   </td>
                 </tr>
