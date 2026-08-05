@@ -319,7 +319,7 @@ export async function getSquadAvailabilityDiscipline({
         favourableLabel: "Less available",
         unfavourableLabel: "More available",
         invertScale: true,
-        gradientDirection: "red-to-green",
+        gradientDirection: "red-to-green" as const,
       },
       rows: [
         {
@@ -357,7 +357,7 @@ export async function getSquadAvailabilityDiscipline({
         ),
         favourableLabel: "Fewer cards",
         unfavourableLabel: "More cards",
-        gradientDirection: "green-to-red",
+        gradientDirection: "green-to-red" as const,
       },
       rows: [
         {
