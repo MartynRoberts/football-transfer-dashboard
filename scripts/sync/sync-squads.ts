@@ -15,11 +15,27 @@ interface SquadResponse {
     name: string;
 
     position?: string;
+
+    dateOfBirth?: string;
   }>;
+}
+
+function parseDate(value?: string): Date | null {
+  if (!value) return null;
+
+  const date = new Date(value);
+
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 export async function syncSquads() {
   console.log("👥 Syncing squads...");
+
+  const force = process.argv.includes("--force");
+
+  if (force) {
+    console.log("⚠️ Force mode enabled: refreshing all eligible squads");
+  }
 
   const clubs = await prisma.club.findMany({
     where: {
@@ -53,7 +69,7 @@ export async function syncSquads() {
         },
       });
 
-      if (squadSync) {
+      if (squadSync && !force) {
         console.log(
           `⏭ Skipping ${club.name} (${CURRENT_SEASON} squad already synced)`,
         );
@@ -81,6 +97,8 @@ export async function syncSquads() {
 
             position: p.position,
 
+            dateOfBirth: p.dateOfBirth ? parseDate(p.dateOfBirth) : undefined,
+
             positionGroup: getPositionGroup(p.position),
 
             currentClubId: club.id,
@@ -96,6 +114,8 @@ export async function syncSquads() {
             slug: `${slugify(p.name)}-${p.id}`,
 
             position: p.position,
+
+            dateOfBirth: parseDate(p.dateOfBirth),
 
             positionGroup: getPositionGroup(p.position),
 

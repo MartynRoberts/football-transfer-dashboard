@@ -80,6 +80,14 @@ function splitPlayerName(name: string): {
 export async function syncPlayerProfiles() {
   console.log("👤 Syncing player profiles");
 
+  const force = process.argv.includes("--force");
+
+  if (force) {
+    console.log(
+      "⚠️ Force mode enabled: refreshing all eligible player profiles",
+    );
+  }
+
   const players = await prisma.player.findMany({
     where: {
       transfermarktId: {
@@ -96,16 +104,20 @@ export async function syncPlayerProfiles() {
           },
         },
       },
-      OR: [
-        {
-          profileSyncedAt: null,
-        },
-        {
-          profileSyncedAt: {
-            lt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-          },
-        },
-      ],
+      ...(force
+        ? {}
+        : {
+            OR: [
+              {
+                profileSyncedAt: null,
+              },
+              {
+                profileSyncedAt: {
+                  lt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+                },
+              },
+            ],
+          }),
     },
   });
 
@@ -155,7 +167,9 @@ export async function syncPlayerProfiles() {
 
           height: profile.height ?? undefined,
 
-          dateOfBirth: parseDate(profile.dateOfBirth),
+          dateOfBirth: profile.dateOfBirth
+            ? parseDate(profile.dateOfBirth)
+            : undefined,
 
           nationality: profile.citizenship?.[0] ?? undefined,
 

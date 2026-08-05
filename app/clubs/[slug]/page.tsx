@@ -4,9 +4,12 @@ import { notFound } from "next/navigation";
 import ClubIdentity from "@/components/clubs/ClubIdentity";
 import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 import PlayerCardImage from "@/components/players/PlayerCardImage";
-import { CURRENT_SEASON } from "@/lib/sync/scope";
+import { CURRENT_SEASON, TRANSFER_SEASON } from "@/lib/sync/scope";
 import SquadPositionCounts from "@/components/clubs/SquadPositionCounts";
 import TransferValueRating from "@/components/transfers/TransferValueRating";
+import SquadPyramids from "@/components/clubs/SquadPyramids";
+import SquadAvailabilityDiscipline from "@/components/clubs/SquadAvailabilityDiscipline";
+import { getSquadAvailabilityDiscipline } from "@/lib/clubs/getSquadAvailabilityDiscipline";
 
 function getLastThreeSeasons(currentSeason: string): string[] {
   const match = currentSeason.match(/^(\d{2})\/(\d{2})$/);
@@ -73,6 +76,18 @@ function MarketValue({ marketValue }: { marketValue: number | null }) {
   return `€${marketValue.toLocaleString()}`;
 }
 
+function TransferTableColumns() {
+  return (
+    <colgroup>
+      <col className="w-[22%]" />
+      <col className="w-[20%]" />
+      <col className="w-[18%]" />
+      <col className="w-[18%]" />
+      <col className="w-[22%]" />
+    </colgroup>
+  );
+}
+
 export default async function ClubPage({
   params,
   searchParams,
@@ -104,7 +119,7 @@ export default async function ClubPage({
 
       incomingTransfers: {
         where: {
-          season: CURRENT_SEASON,
+          season: TRANSFER_SEASON,
         },
         include: {
           player: true,
@@ -118,7 +133,7 @@ export default async function ClubPage({
 
       outgoingTransfers: {
         where: {
-          season: CURRENT_SEASON,
+          season: TRANSFER_SEASON,
         },
         include: {
           player: true,
@@ -136,13 +151,13 @@ export default async function ClubPage({
 
           incomingTransfers: {
             where: {
-              season: CURRENT_SEASON,
+              season: TRANSFER_SEASON,
             },
           },
 
           outgoingTransfers: {
             where: {
-              season: CURRENT_SEASON,
+              season: TRANSFER_SEASON,
             },
           },
         },
@@ -154,18 +169,19 @@ export default async function ClubPage({
     notFound();
   }
 
-  const lastThreeSeasons = getLastThreeSeasons(CURRENT_SEASON);
+  const lastThreeTransferSeasons = getLastThreeSeasons(TRANSFER_SEASON);
 
   const [
     currentSeasonIncoming,
     currentSeasonOutgoing,
     threeYearIncoming,
     threeYearOutgoing,
+    squadAvailabilityDiscipline,
   ] = await Promise.all([
     prisma.transfer.aggregate({
       where: {
         toClubId: club.id,
-        season: CURRENT_SEASON,
+        season: TRANSFER_SEASON,
         fee: {
           not: null,
         },
@@ -178,7 +194,7 @@ export default async function ClubPage({
     prisma.transfer.aggregate({
       where: {
         fromClubId: club.id,
-        season: CURRENT_SEASON,
+        season: TRANSFER_SEASON,
         fee: {
           not: null,
         },
@@ -192,7 +208,7 @@ export default async function ClubPage({
       where: {
         toClubId: club.id,
         season: {
-          in: lastThreeSeasons,
+          in: lastThreeTransferSeasons,
         },
         fee: {
           not: null,
@@ -207,7 +223,7 @@ export default async function ClubPage({
       where: {
         fromClubId: club.id,
         season: {
-          in: lastThreeSeasons,
+          in: lastThreeTransferSeasons,
         },
         fee: {
           not: null,
@@ -217,6 +233,14 @@ export default async function ClubPage({
         fee: true,
       },
     }),
+
+    club.leagueId
+      ? getSquadAvailabilityDiscipline({
+          clubId: club.id,
+          leagueId: club.leagueId,
+          season,
+        })
+      : Promise.resolve(null),
   ]);
 
   const currentSeasonNetSpend =
@@ -292,48 +316,60 @@ export default async function ClubPage({
         {club.incomingTransfers.length === 0 ? (
           <p className="text-gray-500">No incoming transfers.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border">
+          <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+            <table className="w-full min-w-[920px] table-fixed border">
+              <TransferTableColumns />
+
               <thead>
                 <tr className="border-b bg-gray-50">
-                  <th className="p-3 text-left">Player</th>
-                  <th className="p-3 text-left">From</th>
-                  <th className="p-3 text-left">Fee</th>
-                  <th className="p-3 text-left">Market Value</th>
-                  <th className="p-3 text-left">Value rating</th>
+                  <th className="px-4 py-3 text-left">Player</th>
+                  <th className="px-4 py-3 text-left">From</th>
+                  <th className="whitespace-nowrap px-5 py-3 text-left">Fee</th>
+                  <th className="whitespace-nowrap px-5 py-3 text-left">
+                    Market Value
+                  </th>
+                  <th className="whitespace-nowrap px-5 py-3 text-left">
+                    Value rating
+                  </th>
                 </tr>
               </thead>
 
               <tbody>
                 {club.incomingTransfers.map((transfer) => (
                   <tr key={transfer.id} className="border-b">
-                    <td className="p-3">
+                    <td className="min-w-0 px-4 py-3">
                       <Link
                         href={`/players/${transfer.player.slug}`}
-                        className="text-blue-600 hover:underline"
+                        className="block truncate text-blue-600 hover:underline"
+                        title={transfer.player.name}
                       >
                         {transfer.player.name}
                       </Link>
                     </td>
 
-                    <td className="p-3">
+                    <td
+                      className="truncate px-4 py-3"
+                      title={transfer.fromClub?.name ?? "Free Agent"}
+                    >
                       {transfer.fromClub?.name ?? "Free Agent"}
                     </td>
 
-                    <td className="p-3">
+                    <td className="whitespace-nowrap px-5 py-3 tabular-nums">
                       <TransferFee fee={transfer.fee} />
                     </td>
 
-                    <td className="p-3">
+                    <td className="whitespace-nowrap px-5 py-3 tabular-nums">
                       <MarketValue marketValue={transfer.marketValue} />
                     </td>
 
-                    <td className="p-3">
-                      <TransferValueRating
-                        fee={transfer.fee}
-                        marketValue={transfer.marketValue}
-                        perspective="buyer"
-                      />
+                    <td className="px-5 py-3">
+                      <div className="min-w-[150px]">
+                        <TransferValueRating
+                          fee={transfer.fee}
+                          marketValue={transfer.marketValue}
+                          perspective="buyer"
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -350,48 +386,60 @@ export default async function ClubPage({
         {club.outgoingTransfers.length === 0 ? (
           <p className="text-gray-500">No outgoing transfers.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border">
+          <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+            <table className="w-full min-w-[920px] table-fixed border">
+              <TransferTableColumns />
+
               <thead>
                 <tr className="border-b bg-gray-50">
-                  <th className="p-3 text-left">Player</th>
-                  <th className="p-3 text-left">To</th>
-                  <th className="p-3 text-left">Fee</th>
-                  <th className="p-3 text-left">Market Value</th>
-                  <th className="p-3 text-left">Sale rating</th>
+                  <th className="px-4 py-3 text-left">Player</th>
+                  <th className="px-4 py-3 text-left">To</th>
+                  <th className="whitespace-nowrap px-5 py-3 text-left">Fee</th>
+                  <th className="whitespace-nowrap px-5 py-3 text-left">
+                    Market Value
+                  </th>
+                  <th className="whitespace-nowrap px-5 py-3 text-left">
+                    Sale rating
+                  </th>
                 </tr>
               </thead>
 
               <tbody>
                 {club.outgoingTransfers.map((transfer) => (
                   <tr key={transfer.id} className="border-b">
-                    <td className="p-3">
+                    <td className="min-w-0 px-4 py-3">
                       <Link
                         href={`/players/${transfer.player.slug}`}
-                        className="text-blue-600 hover:underline"
+                        className="block truncate text-blue-600 hover:underline"
+                        title={transfer.player.name}
                       >
                         {transfer.player.name}
                       </Link>
                     </td>
 
-                    <td className="p-3">
+                    <td
+                      className="truncate px-4 py-3"
+                      title={transfer.toClub?.name ?? "Free Agent"}
+                    >
                       {transfer.toClub?.name ?? "Free Agent"}
                     </td>
 
-                    <td className="p-3">
+                    <td className="whitespace-nowrap px-5 py-3 tabular-nums">
                       <TransferFee fee={transfer.fee} />
                     </td>
 
-                    <td className="p-3">
+                    <td className="whitespace-nowrap px-5 py-3 tabular-nums">
                       <MarketValue marketValue={transfer.marketValue} />
                     </td>
 
-                    <td className="p-3">
-                      <TransferValueRating
-                        fee={transfer.fee}
-                        marketValue={transfer.marketValue}
-                        perspective="seller"
-                      />
+                    <td className="px-5 py-3">
+                      <div className="min-w-[150px]">
+                        <TransferValueRating
+                          fee={transfer.fee}
+                          marketValue={transfer.marketValue}
+                          perspective="seller"
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -402,6 +450,17 @@ export default async function ClubPage({
       </section>
 
       <SquadPositionCounts players={club.players} />
+
+      <SquadPyramids players={club.players} />
+
+      {squadAvailabilityDiscipline && (
+        <SquadAvailabilityDiscipline
+          season={season}
+          leagueName={club.league?.name ?? "League"}
+          injury={squadAvailabilityDiscipline.injury}
+          discipline={squadAvailabilityDiscipline.discipline}
+        />
+      )}
 
       {/* Squad */}
       <section>

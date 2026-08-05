@@ -279,6 +279,12 @@ export default function PlayerPositionsPitch({
             );
 
             const isActive = isPrimary || isSecondary;
+            const positionStatus = isPrimary
+              ? "Primary position"
+              : isSecondary
+                ? "Secondary position"
+                : "Not listed position";
+            const tooltip = `${node.displayLabel} — ${positionStatus}`;
 
             return (
               <g key={node.key}>
@@ -305,14 +311,7 @@ export default function PlayerPositionsPitch({
                   strokeWidth={isActive ? 0.8 : 0.5}
                   opacity={isActive ? 1 : 0.5}
                 >
-                  <title>
-                    {node.displayLabel}
-                    {isPrimary
-                      ? " — Primary position"
-                      : isSecondary
-                        ? " — Secondary position"
-                        : " — Not listed position"}
-                  </title>
+                  <title>{tooltip}</title>
                 </circle>
               </g>
             );
