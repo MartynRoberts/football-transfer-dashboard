@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import PlayerCardImage from "@/components/players/PlayerCardImage";
 import { normalizeRemoteImageUrl } from "@/lib/images/normalize-remote-image-url";
 import type { PlayerWithPageRelations } from "@/lib/players/types";
 import { getNationalityCode } from "@/lib/players/nationality-code";
@@ -24,13 +23,7 @@ export default function PlayerHeader({
       <section className="flex items-center gap-6 w-full justify-between">
         <div className="flex items-center gap-6">
           {player.imageUrl && (
-            <Image
-              src={normalizeRemoteImageUrl(player.imageUrl)}
-              alt={player.name}
-              width={180}
-              height={240}
-              className="rounded-lg object-cover"
-            />
+            <PlayerCardImage src={player.imageUrl} playerName={player.name} />
           )}
 
           <div>

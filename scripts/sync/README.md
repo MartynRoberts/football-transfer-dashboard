@@ -74,9 +74,26 @@ To discard the stats sync marker and fetch that season again:
 npm run sync:player-stats -- --season="25/26" --force
 ```
 
-Squads and player metrics use the shared `CURRENT_SEASON` constant in
-`lib/sync/scope.ts`. Update that constant when starting a new season. Metrics
-also accept an explicit season override:
+Player profiles normally refresh only when they have never been synced or
+their last profile sync is more than seven days old. To refresh every eligible
+top-five-league player profile regardless of that timestamp:
+
+```powershell
+npm run sync:player-profiles -- --force
+```
+
+Player birth dates come from the club squad response. To refresh squads that
+already have a season sync marker and repopulate their player birth dates:
+
+```powershell
+npm run sync:squads -- --force
+```
+
+Squads and player metrics use the shared `CURRENT_SEASON` value in
+`lib/sync/scope.ts`. It switches from 25/26 to 26/27 on 21 August 2026.
+Transfer views use the separate `TRANSFER_SEASON`, which can move to the new
+season as soon as its transfer window opens. Metrics also accept an explicit
+season override:
 
 ```powershell
 npm run sync:player-metrics -- --season="25/26"

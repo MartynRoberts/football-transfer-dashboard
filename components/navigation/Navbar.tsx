@@ -51,9 +51,11 @@ export default function Navbar() {
         {/* Desktop search */}
         <SearchBar />
 
+        {/*  
         <div className="flex items-center gap-3">
           <SeasonSwitcher />
         </div>
+        */}
 
         {/* Mobile menu */}
         <MobileMenu />
