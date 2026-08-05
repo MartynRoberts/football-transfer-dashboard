@@ -42,10 +42,6 @@ export default function Navbar() {
           <Link href="/players" className="white hover:text-white">
             Players
           </Link>
-
-          <Link href="/transfers" className="twhite hover:text-white">
-            Transfers
-          </Link>
         </nav>
 
         {/* Desktop search */}

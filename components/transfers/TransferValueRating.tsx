@@ -167,10 +167,10 @@ export default function TransferValueRating({
   const assessment = assessTransferValue(fee, marketValue, perspective);
 
   return (
-    <div>
+    <div className="min-w-0 sm:min-w-36">
       <span
         className={[
-          "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold",
+          "inline-flex whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold leading-none",
           ratingClasses[assessment.rating],
         ].join(" ")}
       >
@@ -178,7 +178,9 @@ export default function TransferValueRating({
       </span>
 
       {assessment.detail && (
-        <div className="mt-1 text-xs text-slate-500">{assessment.detail}</div>
+        <div className="mt-2 text-xs leading-relaxed text-slate-500">
+          {assessment.detail}
+        </div>
       )}
     </div>
   );
