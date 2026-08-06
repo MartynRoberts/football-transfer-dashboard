@@ -35,7 +35,7 @@ export default function ClubTransferTable({
 
   return (
     <section>
-      <h2 className="mb-4 text-2xl font-bold">{title}</h2>
+      <h2 className="section-title">{title}</h2>
 
       {transfers.length === 0 ? (
         <p className="text-gray-500">No {direction} transfers.</p>
@@ -50,7 +50,7 @@ export default function ClubTransferTable({
               <col className="w-[22%]" />
             </colgroup>
             <thead>
-              <tr className="border-b bg-gray-50">
+              <tr className="border-b bg-gray-100">
                 <th className="px-4 py-3 text-left">Player</th>
                 <th className="px-4 py-3 text-left">
                   {incoming ? "From" : "To"}
@@ -75,7 +75,7 @@ export default function ClubTransferTable({
                     <td className="min-w-0 px-4 py-3">
                       <Link
                         href={`/players/${transfer.player.slug}`}
-                        className="block truncate text-blue-600 hover:underline"
+                        className="text-brand block truncate hover:underline"
                         title={transfer.player.name}
                       >
                         {transfer.player.name}

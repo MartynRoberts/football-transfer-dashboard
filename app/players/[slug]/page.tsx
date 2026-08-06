@@ -23,7 +23,7 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
   const { player } = data;
 
   return (
-    <main className="container mx-auto space-y-10 px-4 py-8">
+    <main className="app-page page-stack">
       <PlayerHeader
         player={player}
         secondaryPositions={data.secondaryPositions}

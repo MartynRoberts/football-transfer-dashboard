@@ -10,8 +10,8 @@ export default async function SearchPage({
 
   if (!q) {
     return (
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold">Search</h1>
+      <main className="app-page">
+        <h1 className="page-title">Search</h1>
         <p className="text-slate-500 mt-2">
           Search for players, clubs or leagues.
         </p>
@@ -52,22 +52,22 @@ export default async function SearchPage({
   ]);
 
   return (
-    <main className="container mx-auto px-4 py-8 space-y-10">
+    <main className="app-page page-stack">
       <div>
-        <h1 className="text-3xl font-bold">Search Results</h1>
+        <h1 className="page-title">Search Results</h1>
 
-        <p className="text-slate-500 mt-2">Results for "{q}"</p>
+        <p className="mt-2 text-slate-500">Results for &ldquo;{q}&rdquo;</p>
       </div>
 
       <section>
-        <h2 className="text-2xl font-bold mb-4">Players ({players.length})</h2>
+        <h2 className="section-title">Players ({players.length})</h2>
 
         <div className="grid gap-3">
           {players.map((player) => (
             <Link
               key={player.id}
               href={`/players/${player.slug}`}
-              className="border rounded-lg p-4 hover:border-blue-500"
+              className="card-link"
             >
               {player.name}
             </Link>
@@ -76,14 +76,14 @@ export default async function SearchPage({
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-4">Clubs ({clubs.length})</h2>
+        <h2 className="section-title">Clubs ({clubs.length})</h2>
 
         <div className="grid gap-3">
           {clubs.map((club) => (
             <Link
               key={club.id}
               href={`/clubs/${club.slug}`}
-              className="border rounded-lg p-4 hover:border-blue-500"
+              className="card-link"
             >
               {club.name}
             </Link>
@@ -92,14 +92,14 @@ export default async function SearchPage({
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-4">Leagues ({leagues.length})</h2>
+        <h2 className="section-title">Leagues ({leagues.length})</h2>
 
         <div className="grid gap-3">
           {leagues.map((league) => (
             <Link
               key={league.id}
               href={`/leagues/${league.slug}`}
-              className="border rounded-lg p-4 hover:border-blue-500"
+              className="card-link"
             >
               {league.name}
             </Link>

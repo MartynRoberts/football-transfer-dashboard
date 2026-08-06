@@ -30,7 +30,7 @@ export default function SearchBar({ mobile = false }: SearchBarProps) {
             text-white
             placeholder:text-slate-300
             outline-none
-            focus:border-blue-500"
+            focus:border-brand"
       />
     </form>
   );

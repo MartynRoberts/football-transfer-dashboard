@@ -35,13 +35,13 @@ export default function ClubIdentity({
 
   const content = (
     <div
-      className={`flex items-center gap-3 ${playerProfile && "justify-between"}`}
+      className={`flex items-center gap-4 ${playerProfile && "justify-between"}`}
     >
       {!playerProfile && clubBadge}
 
       <div>
         {h1 ? (
-          <h1 className="text-3xl font-bold">{club.name}</h1>
+          <h1 className="page-title">{club.name}</h1>
         ) : showLeague ? (
           <p className="font-semibold text-slate-900">{club.name}</p>
         ) : playerProfile ? (
@@ -55,7 +55,7 @@ export default function ClubIdentity({
             {linkLeague ? (
               <Link
                 href={`/leagues/${club.league.slug}`}
-                className="hover:text-blue-600 hover:underline"
+                className="hover:text-brand hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 {club.league.name}
@@ -76,10 +76,7 @@ export default function ClubIdentity({
   }
 
   return (
-    <Link
-      href={`/clubs/${club.slug}`}
-      className="hover:text-blue-600 transition"
-    >
+    <Link href={`/clubs/${club.slug}`} className="transition hover:text-brand">
       {content}
     </Link>
   );

@@ -72,10 +72,10 @@ export default async function PlayersByLetterPage({
   });
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="app-page">
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Players: {letter}</h1>
+          <h1 className="page-title">Players: {letter}</h1>
 
           <p className="mt-1 text-sm text-slate-500">
             {players.length.toLocaleString()}{" "}
@@ -85,7 +85,7 @@ export default async function PlayersByLetterPage({
 
         <Link
           href="/players"
-          className="shrink-0 text-sm font-medium text-blue-600 hover:underline"
+          className="text-brand shrink-0 text-sm font-medium hover:underline"
         >
           All letters
         </Link>
@@ -101,7 +101,7 @@ export default async function PlayersByLetterPage({
             <Link
               key={player.id}
               href={`/players/${player.slug}`}
-              className="rounded-lg border p-4 transition hover:border-blue-500 hover:shadow-sm"
+              className="card-link"
             >
               <h2 className="font-bold">{player.sortName ?? player.name}</h2>
 
@@ -134,8 +134,8 @@ function AlphabetNav({ activeLetter }: { activeLetter: string }) {
               className={[
                 "flex h-8 w-8 items-center justify-center rounded text-sm font-semibold transition",
                 isActive
-                  ? "bg-blue-600 text-white"
-                  : "text-slate-700 hover:bg-blue-50 hover:text-blue-700",
+                  ? "bg-brand text-white"
+                  : "text-slate-700 hover:bg-brand-soft hover:text-brand",
               ].join(" ")}
             >
               {letter}

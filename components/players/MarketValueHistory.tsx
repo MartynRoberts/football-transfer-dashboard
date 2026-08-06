@@ -29,17 +29,17 @@ export default function MarketValueHistory({
 
   return (
     <section>
-      <h2 className="mb-4 text-2xl font-semibold">Market Value History</h2>
+      <h2 className="section-title">Market Value History</h2>
       {histories.length === 0 ? (
         <p className="text-gray-500">No market values recorded.</p>
       ) : (
         <div className="flex gap-4">
-          <div className="rounded-lg border p-4 md:p-6 flex-1">
+          <div className="analytics-panel flex-1">
             <MarketValueChart data={chartData} />
           </div>
 
           {hasPercentiles && (
-            <div className="rounded-lg border p-5">
+            <div className="analytics-panel">
               <h3 className="mb-5 text-lg font-semibold">
                 Market value percentile
               </h3>
@@ -75,10 +75,10 @@ export default function MarketValueHistory({
 
           {/* Full market value history table */}
           {/*
-          <div className="overflow-x-auto rounded-lg border">
+          <div className="analytics-frame overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b bg-gray-50">
+                <tr className="border-b bg-gray-100">
                   <th className="p-3 text-left">Date</th>
                   <th className="p-3 text-left">Value</th>
                   <th className="p-3 text-left">Club</th>

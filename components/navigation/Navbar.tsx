@@ -17,8 +17,7 @@ export default function Navbar() {
             text-xl
             font-black
             tracking-tight
-            hover:text-blue-400
-            transition-colors
+            h-full
           "
         >
           <Image
@@ -26,7 +25,7 @@ export default function Navbar() {
             alt=""
             width={80}
             height={80}
-            className="rounded-lg object-cover"
+            className="rounded-lg object-cover h-full"
           />
           <span className="font-[family-name:var(--font-ibm-plex-mono)] font-bold">
             TransferDashboard

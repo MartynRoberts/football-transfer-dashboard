@@ -8,11 +8,10 @@ export default function Card({ children, className = "" }: CardProps) {
     <div
       className={`
         bg-white 
-        rounded-xl 
         border 
         border-slate-200 
         shadow-sm 
-        p-5
+        p-4
         ${className}
       `}
     >

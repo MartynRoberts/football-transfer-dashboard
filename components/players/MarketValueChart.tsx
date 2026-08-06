@@ -105,7 +105,7 @@ export default function MarketValueChart({ data }: MarketValueChartProps) {
             activeDot={{
               r: 6,
             }}
-            className="text-blue-600"
+            className="text-brand"
           />
         </LineChart>
       </ResponsiveContainer>

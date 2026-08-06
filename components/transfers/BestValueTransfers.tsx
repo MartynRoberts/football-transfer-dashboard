@@ -55,7 +55,7 @@ export default function BestValueTransfers({
   return (
     <section>
       <div className="mb-4">
-        <h2 className="text-xl font-semibold sm:text-2xl">
+        <h2 className="section-title mb-0">
           Best value individual player transfers
         </h2>
 
@@ -72,7 +72,7 @@ export default function BestValueTransfers({
         <div className="mobile-card-table overflow-x-auto">
           <table className="w-full border">
             <thead>
-              <tr className="border-b bg-gray-50">
+              <tr className="border-b bg-gray-100">
                 <th className="p-3 text-left">#</th>
                 <th className="p-3 text-left">Player</th>
                 <th className="p-3 text-left">From</th>
@@ -97,7 +97,7 @@ export default function BestValueTransfers({
                   <td data-label="Player" className="p-3">
                     <Link
                       href={`/players/${transfer.player.slug}`}
-                      className="font-medium text-blue-600 hover:underline"
+                      className="text-brand font-medium hover:underline"
                     >
                       {transfer.player.name}
                     </Link>

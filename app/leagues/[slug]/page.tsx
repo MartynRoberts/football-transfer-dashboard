@@ -38,12 +38,12 @@ export default async function LeaguePage({
   }
 
   return (
-    <main className="container mx-auto px-4 py-8 space-y-10">
+    <main className="app-page page-stack">
       {/* Header */}
       <section>
         <LeagueIdentity league={league} h1 country imagePreload />
 
-        <div className="mt-6 border rounded-lg p-4 inline-block">
+        <div className="analytics-panel mt-6 inline-block">
           <p className="text-sm text-gray-500">Clubs</p>
           <p className="text-3xl font-bold">{league.clubs.length}</p>
         </div>
@@ -51,14 +51,14 @@ export default async function LeaguePage({
 
       {/* Clubs */}
       <section>
-        <h2 className="text-2xl font-bold mb-4">Clubs</h2>
+        <h2 className="section-title">Clubs</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {league.clubs.map((club) => (
             <Link
               key={club.id}
               href={`/clubs/${club.slug}`}
-              className="border rounded-lg p-4 hover:border-blue-500 hover:shadow-sm"
+              className="card-link"
             >
               <ClubIdentity club={club} link={false} />
             </Link>

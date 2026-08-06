@@ -1,15 +1,7 @@
-export default async function TransfersPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ season?: string }>;
-}) {
-  const { slug } = await params;
-
+export default function TransfersPage() {
   return (
-    <main className="p-8">
-      <h1 className="text-3xl font-bold">{slug}</h1>
+    <main className="app-page">
+      <h1 className="page-title">Transfers</h1>
     </main>
   );
 }

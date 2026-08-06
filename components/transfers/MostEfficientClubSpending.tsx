@@ -31,20 +31,6 @@ function formatMoney(value: number): string {
   return value < 0 ? `-${formatted}` : formatted;
 }
 
-function ValueComparison({ value }: { value: number }) {
-  if (value === 0) {
-    return <strong className="text-slate-600">Worth the same as paid</strong>;
-  }
-
-  const isGood = value > 0;
-
-  return (
-    <strong className={isGood ? "text-emerald-700" : "text-red-700"}>
-      Worth {formatMoney(Math.abs(value))} {isGood ? "more" : "less"} than paid
-    </strong>
-  );
-}
-
 function BuyingValueComparison({ value }: { value: number }) {
   if (value === 0) {
     return <strong className="text-slate-600">Worth the same as paid</strong>;
@@ -91,9 +77,7 @@ export default function MostEfficientClubSpending({
   return (
     <section>
       <div className="mb-4">
-        <h2 className="text-xl font-semibold sm:text-2xl">
-          Most efficient club spending
-        </h2>
+        <h2 className="section-title mb-0">Most efficient club spending</h2>
 
         <p className="mt-1 text-sm text-slate-500">
           {seasons.join(", ")} — transfer fees compared with valuations.
@@ -105,7 +89,7 @@ export default function MostEfficientClubSpending({
           No comparable transfer data available.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-lg border">
+        <div className="analytics-frame">
           {clubs.map((club, index) => {
             const barWidth =
               club.efficiencyScore > 0
@@ -125,7 +109,7 @@ export default function MostEfficientClubSpending({
                   <div className="min-w-0">
                     <Link
                       href={`/clubs/${club.slug}`}
-                      className="font-semibold text-blue-600 hover:underline"
+                      className="text-brand font-semibold hover:underline"
                     >
                       {club.name}
                     </Link>

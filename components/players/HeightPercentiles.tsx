@@ -29,12 +29,12 @@ function HeightPercentile({
           aria-valuenow={boundedValue}
         >
           <div
-            className="h-full rounded-full bg-blue-600"
+            className="bg-brand h-full rounded-full"
             style={{ width: `${boundedValue}%` }}
           />
 
           <span
-            className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-blue-600 shadow-sm"
+            className="bg-brand absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm"
             style={{ left: `${boundedValue}%` }}
           />
         </div>
@@ -63,7 +63,7 @@ export default function HeightPercentiles({
   if (player.height === null || !hasPercentile) return null;
 
   return (
-    <section className="rounded-lg border p-5">
+    <section className="analytics-panel">
       <h2 className="text-sm text-gray-500">Height</h2>
       <div className="mt-1 text-xl font-semibold">{player.height}cm</div>
 

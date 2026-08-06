@@ -2,13 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ClubIdentity from "@/components/clubs/ClubIdentity";
 
-export default async function ClubsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ season?: string }>;
-}) {
-  const { season = "2025-26" } = await searchParams;
-
+export default async function ClubsPage() {
   const clubs = await prisma.club.findMany({
     where: {
       league: {
@@ -31,15 +25,15 @@ export default async function ClubsPage({
   });
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Clubs</h1>
+    <main className="app-page">
+      <h1 className="page-title mb-6">Clubs</h1>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {clubs.map((club) => (
           <Link
             key={club.id}
             href={`/clubs/${club.slug}`}
-            className="border rounded p-4 hover:bg-gray-50"
+            className="card-link"
           >
             <ClubIdentity club={club} link={false} />
           </Link>

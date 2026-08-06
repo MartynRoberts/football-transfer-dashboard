@@ -33,10 +33,10 @@ export default async function ClubAvailabilitySection({
 export function ClubAvailabilitySkeleton() {
   return (
     <section aria-label="Loading squad availability" className="space-y-4">
-      <div className="h-8 w-64 animate-pulse rounded bg-slate-100" />
+      <div className="h-8 w-64 animate-pulse bg-slate-100" />
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="h-64 animate-pulse rounded-xl bg-slate-100" />
-        <div className="h-64 animate-pulse rounded-xl bg-slate-100" />
+        <div className="h-64 animate-pulse bg-slate-100" />
+        <div className="h-64 animate-pulse bg-slate-100" />
       </div>
     </section>
   );

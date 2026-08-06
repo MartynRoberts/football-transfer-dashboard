@@ -39,10 +39,10 @@ export default function AppearanceMetrics({
 
   return (
     <section>
-      <h2 className="mb-4 text-2xl font-semibold">Appearances</h2>
+      <h2 className="section-title">Appearances</h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {cards.map((card) => (
-          <div key={card.label} className="rounded-lg border p-4">
+          <div key={card.label} className="analytics-panel">
             <div className="text-sm text-slate-500">{card.label}</div>
             <div className="mt-1 text-2xl font-semibold">{card.value}</div>
           </div>

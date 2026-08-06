@@ -10,13 +10,13 @@ export default function GoalsAndAssists({
 }) {
   return (
     <section>
-      <h2 className="mb-4 text-2xl font-semibold">Goals and Assists</h2>
+      <h2 className="section-title">Goals and Assists</h2>
       {seasons.length === 0 ? (
         <p className="text-slate-500">No seasonal statistics available.</p>
       ) : (
         <div className="space-y-4">
           {seasons.map((season) => (
-            <div key={season.season} className="rounded-lg border p-5">
+            <div key={season.season} className="analytics-panel">
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-semibold">{season.season}</h3>
               </div>
@@ -78,7 +78,7 @@ export default function GoalsAndAssists({
                 />
                 {/* COMMENT OUT UNTIL FIX IMPLEMENTED FOR TOAL TEAM GOALS */}
                 {/*}
-                <div className="rounded-lg bg-slate-50 p-4">
+                <div className="bg-slate-50 p-4">
                   <div className="text-sm text-slate-500">
                     Team goal involvement
                   </div>
@@ -104,7 +104,7 @@ export default function GoalsAndAssists({
                       )}
                     >
                       <div
-                        className="h-full rounded-full bg-blue-600"
+                        className="bg-brand h-full rounded-full"
                         style={{
                           width: `${Math.min(season.involvement.percentage, 100)}%`,
                         }}
@@ -132,7 +132,7 @@ function PerformanceCard({
   detail?: string;
 }) {
   return (
-    <div className="rounded-lg bg-slate-50 p-4">
+    <div className="bg-slate-50 p-4">
       <div className="text-sm text-slate-500">{label}</div>
       <div className="mt-1 text-2xl font-semibold">{value}</div>
       {detail && <div className="text-sm text-slate-500">{detail}</div>}
