@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ClubName from "@/components/clubs/ClubName";
+import PlayerCardImage from "@/components/players/PlayerCardImage";
 
 import { prisma } from "@/lib/prisma";
 import { PLAYER_ALPHABET } from "@/lib/players/player-list";
@@ -63,6 +64,7 @@ export default async function PlayersByLetterPage({
       slug: true,
       name: true,
       sortName: true,
+      imageUrl: true,
 
       currentClub: {
         select: {
@@ -103,19 +105,27 @@ export default async function PlayersByLetterPage({
             <Link
               key={player.id}
               href={`/players/${player.slug}`}
-              className="card-link"
+              className="card-link relative flex items-stretch overflow-hidden !py-0 !pr-0"
             >
-              <h2 className="font-bold">{player.sortName ?? player.name}</h2>
+              <div className="min-w-0 flex-1 py-4 pr-16">
+                <h2 className="font-bold">{player.sortName ?? player.name}</h2>
 
-              {player.currentClub ? (
-                <ClubName
-                  club={player.currentClub}
-                  size={18}
-                  className="mt-1 text-sm text-slate-500"
-                />
-              ) : (
-                <p className="text-sm text-slate-500">No current club</p>
-              )}
+                {player.currentClub ? (
+                  <ClubName
+                    club={player.currentClub}
+                    size={18}
+                    className="mt-1 text-sm text-slate-500"
+                  />
+                ) : (
+                  <p className="text-sm text-slate-500">No current club</p>
+                )}
+              </div>
+              <PlayerCardImage
+                src={player.imageUrl}
+                playerName={player.name}
+                fillCard
+                overlayCard
+              />
             </Link>
           ))}
         </div>
