@@ -13,10 +13,14 @@ export default function MobileMenu() {
       <button
         onClick={() => setOpen(!open)}
         className="
+          flex
+          size-[46px]
+          shrink-0
+          items-center
+          justify-center
           rounded-lg
           border
           border-slate-700
-          p-2
           text-slate-300
           hover:text-white
           hover:bg-slate-800
@@ -78,14 +82,6 @@ export default function MobileMenu() {
               className="text-slate-300 hover:text-white"
             >
               Players
-            </Link>
-
-            <Link
-              href="/transfers"
-              onClick={() => setOpen(false)}
-              className="text-slate-300 hover:text-white"
-            >
-              Transfers
             </Link>
 
             {/* Mobile search */}

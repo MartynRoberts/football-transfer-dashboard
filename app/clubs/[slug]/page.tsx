@@ -116,7 +116,7 @@ export default async function ClubPage({
   ];
 
   return (
-    <main className="container mx-auto space-y-10 px-4 py-8">
+    <main className="app-page page-stack">
       <ClubSummary club={club} metrics={summaryMetrics} />
       <ClubTransferTable
         direction="incoming"

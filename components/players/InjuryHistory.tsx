@@ -12,7 +12,7 @@ export default function InjuryHistory({
 }) {
   return (
     <section>
-      <h2 className="mb-4 text-2xl font-semibold">Injury History</h2>
+      <h2 className="section-title">Injury History</h2>
 
       {metric && (
         <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -51,7 +51,7 @@ export default function InjuryHistory({
       )}
 
       {metric?.recurrentInjuryWarning && (
-        <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-4">
+        <div className="mb-6 border border-amber-300 bg-amber-50 p-4">
           <div className="font-semibold text-amber-900">
             Recurrent injury warning
           </div>
@@ -126,7 +126,7 @@ function InjuryInsightCard({
   detail?: string;
 }) {
   return (
-    <div className="rounded-lg border p-4">
+    <div className="analytics-panel">
       <div className="text-sm text-slate-500">{label}</div>
 
       <div className="mt-1 text-2xl font-semibold">{value}</div>

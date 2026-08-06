@@ -23,7 +23,7 @@ export default function PlayerProfileCards({
   return (
     <>
       {cards.map((card) => (
-        <div key={card.label} className="rounded-lg border p-4">
+        <div key={card.label} className="analytics-panel">
           <div className="text-sm text-gray-500">{card.label}</div>
           <div className="mt-1 text-xl font-semibold">{card.value}</div>
         </div>

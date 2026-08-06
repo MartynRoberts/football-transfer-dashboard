@@ -109,7 +109,7 @@ function StatCard({
   leagueName: string;
 }) {
   return (
-    <article className="rounded-lg border p-5">
+    <article className="analytics-panel">
       <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
         {data.title}
       </p>
@@ -157,7 +157,7 @@ export default function SquadAvailabilityDiscipline({
         <div>
           <h2
             id="availability-discipline-heading"
-            className="text-2xl font-bold"
+            className="section-title mb-0"
           >
             Squad availability &amp; discipline
           </h2>

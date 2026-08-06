@@ -140,7 +140,7 @@ export default function SquadPositionCounts({
   return (
     <section>
       <div className="mb-4">
-        <h2 className="text-2xl font-bold">Squad position counts</h2>
+        <h2 className="section-title mb-0">Squad position counts</h2>
 
         <p className="mt-1 text-sm text-slate-500">
           A count of the primary positions players prefer along with secondary
@@ -150,7 +150,7 @@ export default function SquadPositionCounts({
 
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {positionCounts.map((count) => (
-          <div key={count.position} className="rounded-lg border p-4">
+          <div key={count.position} className="analytics-panel">
             <div className="text-sm font-medium text-slate-600">
               {count.position}
             </div>

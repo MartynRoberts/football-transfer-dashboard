@@ -18,7 +18,7 @@ export default function PlayerHeader({
   const nationalityCode = getNationalityCode(player.nationality);
 
   return (
-    <div className="flex justify-between flex-col space-y-10">
+    <div className="flex flex-col justify-between gap-10">
       <section className="flex items-center gap-6 w-full justify-between">
         <div className="flex items-center gap-6">
           {player.imageUrl && (
@@ -42,7 +42,7 @@ export default function PlayerHeader({
               <span>{player.nationality ?? "-"}</span>
             </div>
 
-            <h1 className="text-4xl font-bold mt-2">
+            <h1 className="page-title mt-2">
               {player.shirtNumber != null ? `#${player.shirtNumber} ` : ""}{" "}
               {player.name}
             </h1>
@@ -74,14 +74,19 @@ export default function PlayerHeader({
       </section>
 
       <section className="flex gap-4">
+        <PlayerPositionsPitch
+          primaryPosition={player.position}
+          secondaryPositions={secondaryPositions}
+        />
+
         <div className="grid grid-cols-2 gap-4 flex-1">
-          <div className="rounded-lg border p-4">
+          <div className="analytics-panel">
             <div className="text-sm text-gray-500">Joined Club</div>
             <div className="text-xl font-semibold">
               {player.joinedOn ? player.joinedOn.toLocaleDateString() : "-"}
             </div>
           </div>
-          <div className="rounded-lg border p-4">
+          <div className="analytics-panel">
             <div className="text-sm text-gray-500">Contract Until</div>
             <div className="text-xl font-semibold">
               {player.contract ? player.contract.toLocaleDateString() : "-"}
@@ -89,11 +94,6 @@ export default function PlayerHeader({
           </div>
           <PlayerProfileCards player={player} />
         </div>
-
-        <PlayerPositionsPitch
-          primaryPosition={player.position}
-          secondaryPositions={secondaryPositions}
-        />
 
         <HeightPercentiles player={player} />
       </section>

@@ -29,7 +29,7 @@ export default function ClubSummary({
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {metrics.map((metric) => (
-          <div key={metric.label} className="rounded-lg border p-4">
+          <div key={metric.label} className="analytics-panel">
             <p className="text-sm text-gray-500">{metric.label}</p>
             <p className="text-2xl font-bold">{metric.value}</p>
             {metric.detail && (

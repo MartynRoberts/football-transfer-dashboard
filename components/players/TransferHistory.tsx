@@ -58,7 +58,7 @@ export default function TransferHistory({
 }: TransferHistoryProps) {
   return (
     <section>
-      <h2 className="mb-4 text-xl font-semibold sm:text-2xl">{title}</h2>
+      <h2 className="section-title">{title}</h2>
 
       {transfers.length === 0 ? (
         <p className="text-gray-500">{emptyMessage}</p>
@@ -66,7 +66,7 @@ export default function TransferHistory({
         <div className="mobile-card-table overflow-x-auto">
           <table className="w-full border">
             <thead>
-              <tr className="border-b bg-gray-50">
+              <tr className="border-b bg-gray-100">
                 <th className="p-3 text-left">Date</th>
 
                 {showPlayer && <th className="p-3 text-left">Player</th>}
@@ -95,7 +95,7 @@ export default function TransferHistory({
                       {transfer.player ? (
                         <Link
                           href={`/players/${transfer.player.slug}`}
-                          className="font-medium text-blue-600 hover:underline"
+                          className="text-brand font-medium hover:underline"
                         >
                           {transfer.player.name}
                         </Link>

@@ -14,6 +14,7 @@ interface Props {
   h1?: boolean;
   country?: boolean;
   imagePreload?: boolean;
+  imageSize?: number;
 }
 
 export default function LeagueIdentity({
@@ -22,6 +23,7 @@ export default function LeagueIdentity({
   h1 = false,
   country = false,
   imagePreload = false,
+  imageSize,
 }: Props) {
   const meta = league.transfermarktId
     ? LEAGUE_META[league.transfermarktId as keyof typeof LEAGUE_META]
@@ -31,8 +33,11 @@ export default function LeagueIdentity({
   if (!link && h1 && country) {
     width = 48;
   }
+  if (imageSize) {
+    width = imageSize;
+  }
   const content = (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-4">
       {meta?.logo && (
         <Image
           src={meta.logo}
@@ -49,8 +54,15 @@ export default function LeagueIdentity({
         <span className="font-medium">{league.name}</span>
       ) : !link && h1 && country ? (
         <div className="ml-2">
-          <h1 className="text-3xl font-bold">{league.name}</h1>
+          <h1 className="page-title">{league.name}</h1>
           <p className="text-gray-500">{league.country ?? "Unknown country"}</p>
+        </div>
+      ) : country ? (
+        <div>
+          <h3 className="font-semibold text-slate-900">{league.name}</h3>
+          <p className="text-xs text-slate-500">
+            {league.country ?? "Unknown country"}
+          </p>
         </div>
       ) : (
         <h3 className="font-medium">{league.name}</h3>
@@ -62,7 +74,7 @@ export default function LeagueIdentity({
     return (
       <Link
         href={`/leagues/${league.slug}`}
-        className="hover:text-blue-600 transition"
+        className="transition hover:text-brand"
       >
         {content}
       </Link>

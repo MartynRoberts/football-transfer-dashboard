@@ -121,9 +121,9 @@ function PyramidChart({
   const maximumCount = Math.max(...rows.map((row) => row.count), 1);
 
   return (
-    <section className="rounded-lg border p-5">
+    <section className="analytics-panel">
       <div className="mb-5">
-        <h2 className="text-xl font-bold">{title}</h2>
+        <h2 className="section-title mb-0">{title}</h2>
 
         <p className="mt-1 text-sm text-slate-500">{description}</p>
       </div>
@@ -149,7 +149,7 @@ function PyramidChart({
 
                 <div className="h-7 overflow-hidden rounded bg-slate-100">
                   <div
-                    className="flex h-full items-center justify-end rounded bg-blue-600 px-2 text-xs font-semibold text-white transition-[width]"
+                    className="bg-brand flex h-full items-center justify-end rounded px-2 text-xs font-semibold text-white transition-[width]"
                     style={{
                       width: `${width}%`,
                     }}

@@ -149,10 +149,10 @@ export default function PlayerPositionsPitch({
     .join(". ");
 
   return (
-    <section className="rounded-lg border p-5 flex">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center text-sm text-slate-500 flex-col items-start">
-          <h2 className="text-lg font-semibold">Positions</h2>
+    <section className="flex">
+      <div className="mb-4 flex flex-wrap justify-between gap-3">
+        <div className="flex flex-wrap items-center text-sm flex-col items-start analytics-panel">
+          <h2 className="text-sm text-gray-500">Positions</h2>
 
           <span className="flex items-center gap-2 mt-4 mb-2">
             <span className="size-3 rounded-full bg-lime-200 ring-2 ring-lime-100" />
@@ -180,7 +180,7 @@ export default function PlayerPositionsPitch({
         </div>
       </div>
 
-      <div className="mx-auto max-w-3xl ml-12">
+      <div className="mx-auto max-w-3xl ml-4">
         <svg
           viewBox="0 0 100 64"
           className="h-auto w-full rounded-lg"
@@ -188,16 +188,7 @@ export default function PlayerPositionsPitch({
           aria-label={ariaLabel || "Football pitch positions"}
         >
           {/* Pitch background */}
-          <rect
-            x="1"
-            y="1"
-            width="98"
-            height="62"
-            rx="2"
-            fill="#164e3f"
-            stroke="#94a3b8"
-            strokeWidth="0.8"
-          />
+          <rect x="1" y="1" width="98" height="62" fill="#164e3f" />
 
           {/* Halfway line */}
           <line

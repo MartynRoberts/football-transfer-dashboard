@@ -36,7 +36,7 @@ export default function MarketValuePercentile({
         aria-valuenow={percentage}
       >
         <div
-          className="h-full rounded-full bg-blue-600 transition-[width]"
+          className="bg-brand h-full rounded-full transition-[width]"
           style={{
             width: `${percentage}%`,
           }}

@@ -37,9 +37,7 @@ export default function TopClubSpenders({
   return (
     <section>
       <div className="mb-4">
-        <h2 className="text-xl font-semibold sm:text-2xl">
-          Top 10 biggest spenders
-        </h2>
+        <h2 className="section-title mb-0">Top 10 biggest spenders</h2>
 
         <p className="mt-1 text-sm text-slate-500">
           {season} season, based on known transfer fees.
@@ -51,7 +49,7 @@ export default function TopClubSpenders({
           No current-season spending data available.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-lg border">
+        <div className="analytics-frame">
           {clubs.map((club, index) => {
             const width = (club.totalSpend / maximumSpend) * 100;
 
@@ -68,7 +66,7 @@ export default function TopClubSpenders({
                   <div className="flex items-baseline justify-between gap-3">
                     <Link
                       href={`/clubs/${club.slug}`}
-                      className="truncate font-semibold text-blue-600 hover:underline"
+                      className="text-brand truncate font-semibold hover:underline"
                     >
                       {club.name}
                     </Link>
@@ -91,17 +89,13 @@ export default function TopClubSpenders({
 
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
                     <div
-                      className="h-full rounded-full bg-blue-600"
+                      className="bg-brand h-full rounded-full"
                       style={{
                         width: `${Math.max(width, 2)}%`,
                       }}
                     />
                   </div>
                 </div>
-
-                <span aria-hidden="true" className="hidden sm:inline">
-                  ›
-                </span>
               </div>
             );
           })}

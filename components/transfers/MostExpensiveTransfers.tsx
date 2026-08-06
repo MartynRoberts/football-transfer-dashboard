@@ -48,9 +48,7 @@ export default function MostExpensiveTransfers({
   return (
     <section>
       <div className="mb-4">
-        <h2 className="text-xl font-semibold sm:text-2xl">
-          Most expensive player transfers
-        </h2>
+        <h2 className="section-title mb-0">Most expensive player transfers</h2>
 
         <p className="mt-1 text-sm text-slate-500">
           {season} — highest known transfer fees involving top-five league
@@ -66,7 +64,7 @@ export default function MostExpensiveTransfers({
         <div className="mobile-card-table overflow-x-auto">
           <table className="w-full border">
             <thead>
-              <tr className="border-b bg-gray-50">
+              <tr className="border-b bg-gray-100">
                 <th className="p-3 text-left">#</th>
                 <th className="p-3 text-left">Player</th>
                 <th className="p-3 text-left">From</th>
@@ -90,7 +88,7 @@ export default function MostExpensiveTransfers({
                   <td data-label="Player" className="p-3">
                     <Link
                       href={`/players/${transfer.player.slug}`}
-                      className="font-medium text-blue-600 hover:underline"
+                      className="text-brand font-medium hover:underline"
                     >
                       {transfer.player.name}
                     </Link>

@@ -4,8 +4,8 @@ import { PLAYER_ALPHABET } from "@/lib/players/player-list";
 
 export default function PlayersPage() {
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="mb-2 text-3xl font-bold">Players</h1>
+    <main className="app-page">
+      <h1 className="page-title mb-2">Players</h1>
 
       <p className="mb-6 text-slate-600">Browse players by surname.</p>
 
@@ -17,7 +17,7 @@ export default function PlayersPage() {
           <Link
             key={letter}
             href={`/players/letter/${letter.toLowerCase()}`}
-            className="flex aspect-square items-center justify-center rounded-lg border text-lg font-semibold transition hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700"
+            className="card-link flex aspect-square items-center justify-center text-lg font-semibold"
           >
             {letter}
           </Link>

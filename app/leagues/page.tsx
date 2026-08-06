@@ -4,13 +4,7 @@ import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
 export const revalidate = 60;
 
-export default async function LeaguesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ season?: string }>;
-}) {
-  const { season = "2025-26" } = await searchParams;
-
+export default async function LeaguesPage() {
   const leagues = await prisma.league.findMany({
     orderBy: {
       name: "asc",
@@ -25,18 +19,18 @@ export default async function LeaguesPage({
   });
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Leagues</h1>
+    <main className="app-page">
+      <h1 className="page-title mb-6">Leagues</h1>
 
       <div className="grid md:grid-cols-2 gap-4">
         {leagues.map((league) => (
           <Link
             key={league.id}
             href={`/leagues/${league.slug}`}
-            className="p-5 border rounded-xl bg-white hover:border-blue-500 hover:shadow-md transition-all block group"
+            className="card-link block"
           >
             <div className="flex justify-between items-center">
-              <LeagueIdentity league={league} />
+              <LeagueIdentity league={league} country imageSize={64} />
               <span className="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded-full">
                 {league._count.clubs} Clubs
               </span>

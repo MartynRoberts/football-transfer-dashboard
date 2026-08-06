@@ -2,8 +2,138 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-button:hover {
+@theme {
+  --color-brand: #0b7bb3;
+  --color-brand-soft: color-mix(in srgb, var(--color-brand) 10%, white);
+}
+
+body {
+  /*background: #c8e1ce;*/
+}
+
+table {
+  /*background: #fff;*/
+}
+
+button:hover,
+a:hover {
   cursor: pointer;
+}
+
+a,
+a:visited {
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 0.2em;
+}
+
+header a,
+header a:visited {
+  text-decoration-line: none;
+}
+
+.card-link,
+.card-link:visited {
+  border: 1px solid #000;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-decoration-line: none;
+}
+
+.card-link {
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.card-link:hover {
+  border-color: #000;
+  box-shadow: 0 4px 12px rgb(15 23 42 / 10%);
+  text-decoration-line: none;
+}
+
+.card-link:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.card-static {
+  border-color: #d1d5db;
+}
+
+.app-page {
+  width: 100%;
+  margin-inline: auto;
+  padding: 2rem 1rem;
+}
+
+.page-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .page-stack {
+    gap: 4rem;
+  }
+}
+
+.page-title {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+}
+
+.section-title {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+}
+
+.analytics-panel {
+  border: 1px solid var(--border);
+  border-radius: 0;
+  padding: 1rem;
+}
+
+.analytics-frame {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0;
+}
+
+@media (min-width: 640px) {
+  .app-page {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .app-page {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-page {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .app-page {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .app-page {
+    max-width: 1536px;
+  }
 }
 
 @media (max-width: 639px) {

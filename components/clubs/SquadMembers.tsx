@@ -13,15 +13,15 @@ interface SquadPlayer {
 export default function SquadMembers({ players }: { players: SquadPlayer[] }) {
   return (
     <section>
-      <h2 className="mb-4 text-2xl font-bold">Squad members</h2>
+      <h2 className="section-title">Squad members</h2>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {players.map((player) => (
           <Link
             key={player.id}
             href={`/players/${player.slug}`}
-            className="flex min-h-28 items-stretch overflow-hidden rounded-lg border p-0 transition hover:border-blue-500"
+            className="card-link flex min-h-28 items-stretch overflow-hidden"
           >
-            <div className="min-w-0 flex-1 px-4 py-4">
+            <div className="min-w-0 flex-1">
               <p className="font-semibold">
                 <span>#{player.shirtNumber ?? "—"}</span> {player.name}
               </p>
