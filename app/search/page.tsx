@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ClubName from "@/components/clubs/ClubName";
 import { prisma } from "@/lib/prisma";
 
 export default async function SearchPage({
@@ -85,7 +86,7 @@ export default async function SearchPage({
               href={`/clubs/${club.slug}`}
               className="card-link"
             >
-              {club.name}
+              <ClubName club={club} size={24} />
             </Link>
           ))}
         </div>

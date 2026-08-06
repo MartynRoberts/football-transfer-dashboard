@@ -1,9 +1,11 @@
 import Link from "next/link";
+import ClubName from "@/components/clubs/ClubName";
 
 interface EfficientClub {
   id: string;
   name: string;
   slug: string;
+  logoUrl: string | null;
   leagueName: string | null;
 
   netSpend: number;
@@ -111,7 +113,7 @@ export default function MostEfficientClubSpending({
                       href={`/clubs/${club.slug}`}
                       className="text-brand font-semibold hover:underline"
                     >
-                      {club.name}
+                      <ClubName club={club} size={24} />
                     </Link>
 
                     <p className="text-xs text-slate-500">

@@ -77,6 +77,7 @@ export async function getHomePageData() {
           select: {
             name: true,
             slug: true,
+            logoUrl: true,
           },
         },
 
@@ -84,6 +85,7 @@ export async function getHomePageData() {
           select: {
             name: true,
             slug: true,
+            logoUrl: true,
           },
         },
       },
@@ -193,6 +195,7 @@ export async function getHomePageData() {
             id: true,
             name: true,
             slug: true,
+            logoUrl: true,
 
             league: {
               select: {
@@ -208,6 +211,7 @@ export async function getHomePageData() {
             id: true,
             name: true,
             slug: true,
+            logoUrl: true,
 
             league: {
               select: {
@@ -262,6 +266,7 @@ export async function getHomePageData() {
           select: {
             name: true,
             slug: true,
+            logoUrl: true,
           },
         },
 
@@ -269,6 +274,7 @@ export async function getHomePageData() {
           select: {
             name: true,
             slug: true,
+            logoUrl: true,
           },
         },
       },
@@ -344,6 +350,7 @@ export async function getHomePageData() {
           select: {
             name: true,
             slug: true,
+            logoUrl: true,
           },
         },
 
@@ -351,6 +358,7 @@ export async function getHomePageData() {
           select: {
             name: true,
             slug: true,
+            logoUrl: true,
           },
         },
       },
@@ -438,6 +446,7 @@ export async function getHomePageData() {
     id: string;
     name: string;
     slug: string;
+    logoUrl: string | null;
     leagueName: string | null;
 
     incomingFees: number;
@@ -458,6 +467,7 @@ export async function getHomePageData() {
     id: string;
     name: string;
     slug: string;
+    logoUrl: string | null;
     league: {
       name: string;
       transfermarktId: string | null;
@@ -473,6 +483,7 @@ export async function getHomePageData() {
       id: club.id,
       name: club.name,
       slug: club.slug,
+      logoUrl: club.logoUrl,
       leagueName: club.league?.name ?? null,
 
       incomingFees: 0,
@@ -540,6 +551,7 @@ export async function getHomePageData() {
         id: club.id,
         name: club.name,
         slug: club.slug,
+        logoUrl: club.logoUrl,
         leagueName: club.leagueName,
 
         netSpend,
@@ -569,6 +581,7 @@ export async function getHomePageData() {
       id: true,
       name: true,
       slug: true,
+      logoUrl: true,
 
       league: {
         select: {
@@ -596,6 +609,7 @@ export async function getHomePageData() {
         id: club.id,
         name: club.name,
         slug: club.slug,
+        logoUrl: club.logoUrl,
         leagueName: club.league?.name ?? null,
         totalSpend: group._sum.fee ?? 0,
         signingCount: group._count.id,
