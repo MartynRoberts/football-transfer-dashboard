@@ -1,5 +1,4 @@
 import PlayerCardImage from "@/components/players/PlayerCardImage";
-import { normalizeRemoteImageUrl } from "@/lib/images/normalize-remote-image-url";
 import type { PlayerWithPageRelations } from "@/lib/players/types";
 import { getNationalityCode } from "@/lib/players/nationality-code";
 import PlayerPositionsPitch from "@/components/players/PlayerPositionsPitch";
@@ -23,7 +22,11 @@ export default function PlayerHeader({
       <section className="flex items-center gap-6 w-full justify-between">
         <div className="flex items-center gap-6">
           {player.imageUrl && (
-            <PlayerCardImage src={player.imageUrl} playerName={player.name} />
+            <PlayerCardImage
+              src={player.imageUrl}
+              playerName={player.name}
+              preload
+            />
           )}
 
           <div>

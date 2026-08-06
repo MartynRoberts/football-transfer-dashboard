@@ -13,6 +13,7 @@ interface Props {
   link?: boolean;
   h1?: boolean;
   country?: boolean;
+  imagePreload?: boolean;
 }
 
 export default function LeagueIdentity({
@@ -20,6 +21,7 @@ export default function LeagueIdentity({
   link = false,
   h1 = false,
   country = false,
+  imagePreload = false,
 }: Props) {
   const meta = league.transfermarktId
     ? LEAGUE_META[league.transfermarktId as keyof typeof LEAGUE_META]
@@ -37,6 +39,8 @@ export default function LeagueIdentity({
           alt={league.name}
           width={width}
           height={width}
+          preload={imagePreload}
+          fetchPriority={imagePreload ? "high" : "auto"}
           className="object-contain"
         />
       )}

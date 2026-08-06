@@ -6,10 +6,8 @@ import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
 export default async function LeaguePage({
   params,
-  searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ season?: string }>;
 }) {
   const { slug } = await params;
 
@@ -43,7 +41,7 @@ export default async function LeaguePage({
     <main className="container mx-auto px-4 py-8 space-y-10">
       {/* Header */}
       <section>
-        <LeagueIdentity league={league} h1={true} country={true} />
+        <LeagueIdentity league={league} h1 country imagePreload />
 
         <div className="mt-6 border rounded-lg p-4 inline-block">
           <p className="text-sm text-gray-500">Clubs</p>
