@@ -1,9 +1,11 @@
 import Link from "next/link";
+import ClubName from "@/components/clubs/ClubName";
 
 interface TopClubSpender {
   id: string;
   name: string;
   slug: string;
+  logoUrl: string | null;
   leagueName: string | null;
   totalSpend: number;
   signingCount: number;
@@ -68,7 +70,7 @@ export default function TopClubSpenders({
                       href={`/clubs/${club.slug}`}
                       className="text-brand truncate font-semibold hover:underline"
                     >
-                      {club.name}
+                      <ClubName club={club} size={24} />
                     </Link>
 
                     <span className="shrink-0 font-bold">

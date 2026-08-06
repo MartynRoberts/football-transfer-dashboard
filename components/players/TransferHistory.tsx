@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ClubName, { type ClubNameData } from "@/components/clubs/ClubName";
 import TransferValueRating from "@/components/transfers/TransferValueRating";
 
 interface TransferHistoryItem {
@@ -12,15 +13,17 @@ interface TransferHistoryItem {
     slug: string;
   };
 
-  fromClub: {
-    name: string;
-    slug: string;
-  } | null;
+  fromClub:
+    | (ClubNameData & {
+        slug: string;
+      })
+    | null;
 
-  toClub: {
-    name: string;
-    slug: string;
-  } | null;
+  toClub:
+    | (ClubNameData & {
+        slug: string;
+      })
+    | null;
 }
 
 interface TransferHistoryProps {
@@ -111,7 +114,7 @@ export default function TransferHistory({
                         href={`/clubs/${transfer.fromClub.slug}`}
                         className="hover:underline"
                       >
-                        {transfer.fromClub.name}
+                        <ClubName club={transfer.fromClub} />
                       </Link>
                     ) : (
                       "Free Agent"
@@ -124,7 +127,7 @@ export default function TransferHistory({
                         href={`/clubs/${transfer.toClub.slug}`}
                         className="hover:underline"
                       >
-                        {transfer.toClub.name}
+                        <ClubName club={transfer.toClub} />
                       </Link>
                     ) : (
                       "Free Agent"

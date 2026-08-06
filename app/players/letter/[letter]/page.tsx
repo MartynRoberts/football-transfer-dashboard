@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ClubName from "@/components/clubs/ClubName";
 
 import { prisma } from "@/lib/prisma";
 import { PLAYER_ALPHABET } from "@/lib/players/player-list";
@@ -66,6 +67,7 @@ export default async function PlayersByLetterPage({
       currentClub: {
         select: {
           name: true,
+          logoUrl: true,
         },
       },
     },
@@ -105,9 +107,15 @@ export default async function PlayersByLetterPage({
             >
               <h2 className="font-bold">{player.sortName ?? player.name}</h2>
 
-              <p className="text-sm text-slate-500">
-                {player.currentClub?.name ?? "No current club"}
-              </p>
+              {player.currentClub ? (
+                <ClubName
+                  club={player.currentClub}
+                  size={18}
+                  className="mt-1 text-sm text-slate-500"
+                />
+              ) : (
+                <p className="text-sm text-slate-500">No current club</p>
+              )}
             </Link>
           ))}
         </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ClubName, { type ClubNameData } from "@/components/clubs/ClubName";
 import TransferValueRating from "@/components/transfers/TransferValueRating";
 
 interface ClubTransfer {
@@ -9,8 +10,8 @@ interface ClubTransfer {
     name: string;
     slug: string;
   };
-  fromClub?: { name: string } | null;
-  toClub?: { name: string } | null;
+  fromClub?: ClubNameData | null;
+  toClub?: ClubNameData | null;
 }
 
 function TransferFee({ fee }: { fee: number | null }) {
@@ -82,10 +83,10 @@ export default function ClubTransferTable({
                       </Link>
                     </td>
                     <td
-                      className="truncate px-4 py-3"
+                      className="px-4 py-3"
                       title={otherClub?.name ?? "Free Agent"}
                     >
-                      {otherClub?.name ?? "Free Agent"}
+                      {otherClub ? <ClubName club={otherClub} /> : "Free Agent"}
                     </td>
                     <td className="whitespace-nowrap px-5 py-3 tabular-nums">
                       <TransferFee fee={transfer.fee} />

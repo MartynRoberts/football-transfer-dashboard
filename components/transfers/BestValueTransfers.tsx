@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ClubName, { type ClubNameData } from "@/components/clubs/ClubName";
 import TransferValueRating from "@/components/transfers/TransferValueRating";
 
 interface BestValueTransfer {
@@ -12,15 +13,17 @@ interface BestValueTransfer {
     slug: string;
   };
 
-  fromClub: {
-    name: string;
-    slug: string;
-  } | null;
+  fromClub:
+    | (ClubNameData & {
+        slug: string;
+      })
+    | null;
 
-  toClub: {
-    name: string;
-    slug: string;
-  } | null;
+  toClub:
+    | (ClubNameData & {
+        slug: string;
+      })
+    | null;
 }
 
 function formatMoney(value: number): string {
@@ -109,7 +112,7 @@ export default function BestValueTransfers({
                         href={`/clubs/${transfer.fromClub.slug}`}
                         className="hover:underline"
                       >
-                        {transfer.fromClub.name}
+                        <ClubName club={transfer.fromClub} />
                       </Link>
                     ) : (
                       "Free Agent"
@@ -122,7 +125,7 @@ export default function BestValueTransfers({
                         href={`/clubs/${transfer.toClub.slug}`}
                         className="hover:underline"
                       >
-                        {transfer.toClub.name}
+                        <ClubName club={transfer.toClub} />
                       </Link>
                     ) : (
                       "-"
