@@ -19,9 +19,9 @@ export default function SquadMembers({ players }: { players: SquadPlayer[] }) {
           <Link
             key={player.id}
             href={`/players/${player.slug}`}
-            className="card-link flex min-h-28 items-stretch overflow-hidden"
+            className="card-link flex min-h-28 items-stretch overflow-hidden !py-0 !pr-0"
           >
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 py-4">
               <p className="font-semibold">
                 <span>#{player.shirtNumber ?? "—"}</span> {player.name}
               </p>
@@ -29,7 +29,11 @@ export default function SquadMembers({ players }: { players: SquadPlayer[] }) {
                 {player.position ?? "Unknown"}
               </p>
             </div>
-            <PlayerCardImage src={player.imageUrl} playerName={player.name} />
+            <PlayerCardImage
+              src={player.imageUrl}
+              playerName={player.name}
+              fillCard
+            />
           </Link>
         ))}
       </div>

@@ -20,14 +20,13 @@ export default function PlayerHeader({
   return (
     <div className="flex flex-col justify-between gap-10">
       <section className="flex items-center gap-6 w-full justify-between">
-        <div className="flex items-center gap-6">
-          {player.imageUrl && (
-            <PlayerCardImage
-              src={player.imageUrl}
-              playerName={player.name}
-              preload
-            />
-          )}
+        <div className="flex min-h-28 items-stretch gap-6">
+          <PlayerCardImage
+            src={player.imageUrl}
+            playerName={player.name}
+            preload
+            fillCard
+          />
 
           <div>
             <div className="flex items-center gap-2 text-lg">
