@@ -1,7 +1,11 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ClubIdentity from "@/components/clubs/ClubIdentity";
+import LeagueClubInjuryAnalytics, {
+  LeagueClubInjuryAnalyticsSkeleton,
+} from "@/components/leagues/LeagueClubInjuryAnalytics";
 import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
 export default async function LeaguePage({
@@ -65,6 +69,13 @@ export default async function LeaguePage({
           ))}
         </div>
       </section>
+
+      <Suspense fallback={<LeagueClubInjuryAnalyticsSkeleton />}>
+        <LeagueClubInjuryAnalytics
+          leagueId={league.id}
+          leagueName={league.name}
+        />
+      </Suspense>
     </main>
   );
 }
