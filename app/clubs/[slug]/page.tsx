@@ -1,11 +1,13 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import ClubAvailabilitySection, {
+  ClubAvailabilitySkeleton,
+} from "@/components/clubs/ClubAvailabilitySection";
 import ClubSummary from "@/components/clubs/ClubSummary";
 import ClubTransferTable from "@/components/clubs/ClubTransferTable";
-import SquadAvailabilityDiscipline from "@/components/clubs/SquadAvailabilityDiscipline";
 import SquadMembers from "@/components/clubs/SquadMembers";
 import SquadPositionCounts from "@/components/clubs/SquadPositionCounts";
 import SquadPyramids from "@/components/clubs/SquadPyramids";
-import { getSquadAvailabilityDiscipline } from "@/lib/clubs/getSquadAvailabilityDiscipline";
 import {
   formatNetSpend,
   getLastThreeSeasons,
@@ -59,7 +61,6 @@ export default async function ClubPage({
     currentSeasonOutgoing,
     threeYearIncoming,
     threeYearOutgoing,
-    squadAvailabilityDiscipline,
   ] = await Promise.all([
     prisma.transfer.aggregate({
       where: { toClubId: club.id, season: TRANSFER_SEASON, fee: { not: null } },
@@ -89,13 +90,6 @@ export default async function ClubPage({
       },
       _sum: { fee: true },
     }),
-    club.leagueId
-      ? getSquadAvailabilityDiscipline({
-          clubId: club.id,
-          leagueId: club.leagueId,
-          season: CURRENT_SEASON,
-        })
-      : Promise.resolve(null),
   ]);
 
   const currentNetSpend = formatNetSpend(
@@ -134,13 +128,15 @@ export default async function ClubPage({
       />
       <SquadPositionCounts players={club.players} />
       <SquadPyramids players={club.players} />
-      {squadAvailabilityDiscipline && (
-        <SquadAvailabilityDiscipline
-          season={CURRENT_SEASON}
-          leagueName={club.league?.name ?? "League"}
-          injury={squadAvailabilityDiscipline.injury}
-          discipline={squadAvailabilityDiscipline.discipline}
-        />
+      {club.leagueId && (
+        <Suspense fallback={<ClubAvailabilitySkeleton />}>
+          <ClubAvailabilitySection
+            clubId={club.id}
+            leagueId={club.leagueId}
+            leagueName={club.league?.name ?? "League"}
+            season={CURRENT_SEASON}
+          />
+        </Suspense>
       )}
       <SquadMembers players={club.players} />
     </main>

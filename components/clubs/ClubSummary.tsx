@@ -17,7 +17,13 @@ export default function ClubSummary({
   return (
     <section>
       <div className="flex items-center justify-between">
-        <ClubIdentity club={club} showLeague={false} link={false} h1 />
+        <ClubIdentity
+          club={club}
+          showLeague={false}
+          link={false}
+          h1
+          imagePreload
+        />
         {club.league && <LeagueIdentity league={club.league} link />}
       </div>
 

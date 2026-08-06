@@ -10,6 +10,7 @@ export default function ClubIdentity({
   linkLeague = false,
   h1 = false,
   playerProfile = false,
+  imagePreload = false,
 }: ClubIdentityProps) {
   let width = 40;
   if (!link) {
@@ -22,6 +23,8 @@ export default function ClubIdentity({
       alt={`${club.name} badge`}
       width={width}
       height={width}
+      preload={imagePreload}
+      fetchPriority={imagePreload ? "high" : "auto"}
       className="object-contain"
     />
   ) : (
