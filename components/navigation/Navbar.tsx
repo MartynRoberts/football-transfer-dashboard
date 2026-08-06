@@ -1,7 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import MobileMenu from "./MobileMenu";
 import SearchBar from "./SearchBar";
-import SeasonSwitcher from "@/components/navigation/SeasonSwitcher";
 
 export default function Navbar() {
   return (
@@ -21,8 +21,16 @@ export default function Navbar() {
             transition-colors
           "
         >
-          <span className="text-2xl">⚽</span>
-          TransferDashboard
+          <Image
+            src="/images/logo.png"
+            alt=""
+            width={80}
+            height={80}
+            className="rounded-lg object-cover"
+          />
+          <span className="font-[family-name:var(--font-ibm-plex-mono)] font-bold">
+            TransferDashboard
+          </span>
         </Link>
 
         {/* Desktop nav */}
