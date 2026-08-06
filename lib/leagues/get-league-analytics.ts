@@ -260,3 +260,200 @@ export async function getLeagueClubInjuryRanking({
     })
     .sort(compareInjuries);
 }
+
+export async function getLeagueDetailAnalytics(leagueId: string) {
+  const efficiencySeasons = getLastThreeTransferSeasons(TRANSFER_SEASON);
+  const transferWhere = {
+    season: TRANSFER_SEASON,
+    OR: [{ fromClub: { is: { leagueId } } }, { toClub: { is: { leagueId } } }],
+  };
+
+  const [clubs, transfers, latestTransfers, efficiencyTransfers] =
+    await Promise.all([
+      prisma.club.findMany({
+        where: { leagueId },
+        orderBy: { name: "asc" },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          logoUrl: true,
+          league: { select: { name: true } },
+          players: { select: { marketValue: true, dateOfBirth: true } },
+        },
+      }),
+      prisma.transfer.findMany({
+        where: transferWhere,
+        select: {
+          id: true,
+          fee: true,
+          marketValue: true,
+          fromClubId: true,
+          toClubId: true,
+          player: { select: { name: true, slug: true } },
+          fromClub: { select: { name: true, slug: true, logoUrl: true } },
+          toClub: { select: { name: true, slug: true, logoUrl: true } },
+        },
+      }),
+      prisma.transfer.findMany({
+        where: transferWhere,
+        orderBy: [{ transferDate: "desc" }, { createdAt: "desc" }],
+        take: 10,
+        select: {
+          id: true,
+          transferDate: true,
+          fee: true,
+          marketValue: true,
+          player: { select: { name: true, slug: true } },
+          fromClub: { select: { name: true, slug: true, logoUrl: true } },
+          toClub: { select: { name: true, slug: true, logoUrl: true } },
+        },
+      }),
+      prisma.transfer.findMany({
+        where: {
+          season: { in: efficiencySeasons },
+          fee: { not: null },
+          marketValue: { not: null, gt: 0 },
+          OR: [
+            { fromClub: { is: { leagueId } } },
+            { toClub: { is: { leagueId } } },
+          ],
+        },
+        select: {
+          fee: true,
+          marketValue: true,
+          fromClubId: true,
+          toClubId: true,
+        },
+      }),
+    ]);
+
+  const now = Date.now();
+  const millisecondsPerYear = 365.2425 * 24 * 60 * 60 * 1000;
+  const clubRows = clubs.map((club) => {
+    const playersWithAge = club.players.filter((player) => player.dateOfBirth);
+    const totalAge = playersWithAge.reduce(
+      (sum, player) =>
+        sum + (now - player.dateOfBirth!.getTime()) / millisecondsPerYear,
+      0,
+    );
+
+    return {
+      id: club.id,
+      name: club.name,
+      slug: club.slug,
+      logoUrl: club.logoUrl,
+      totalSpend: 0,
+      totalIncome: 0,
+      incomingCount: 0,
+      outgoingCount: 0,
+      netSpend: 0,
+      squadValue: club.players.reduce(
+        (sum, player) => sum + (player.marketValue ?? 0),
+        0,
+      ),
+      averageAge:
+        playersWithAge.length > 0 ? totalAge / playersWithAge.length : null,
+      playerCount: club.players.length,
+      leagueName: club.league?.name ?? null,
+    };
+  });
+  const clubById = new Map(clubRows.map((club) => [club.id, club]));
+
+  for (const transfer of transfers) {
+    const buyer = transfer.toClubId ? clubById.get(transfer.toClubId) : null;
+    const seller = transfer.fromClubId
+      ? clubById.get(transfer.fromClubId)
+      : null;
+    if (buyer) {
+      buyer.incomingCount += 1;
+      buyer.totalSpend += transfer.fee ?? 0;
+    }
+    if (seller) {
+      seller.outgoingCount += 1;
+      seller.totalIncome += transfer.fee ?? 0;
+    }
+  }
+
+  for (const club of clubRows) {
+    club.netSpend = club.totalSpend - club.totalIncome;
+  }
+
+  const efficiencyByClub = new Map(
+    clubRows.map((club) => [
+      club.id,
+      {
+        id: club.id,
+        name: club.name,
+        slug: club.slug,
+        logoUrl: club.logoUrl,
+        leagueName: club.leagueName,
+        incomingFees: 0,
+        outgoingFees: 0,
+        incomingValuation: 0,
+        outgoingValuation: 0,
+        incomingDeals: 0,
+        outgoingDeals: 0,
+      },
+    ]),
+  );
+
+  for (const transfer of efficiencyTransfers) {
+    const fee = transfer.fee;
+    const marketValue = transfer.marketValue;
+    if (fee === null || marketValue === null) continue;
+
+    const buyer = transfer.toClubId
+      ? efficiencyByClub.get(transfer.toClubId)
+      : null;
+    const seller = transfer.fromClubId
+      ? efficiencyByClub.get(transfer.fromClubId)
+      : null;
+
+    if (buyer) {
+      buyer.incomingFees += fee;
+      buyer.incomingValuation += marketValue;
+      buyer.incomingDeals += 1;
+    }
+    if (seller) {
+      seller.outgoingFees += fee;
+      seller.outgoingValuation += marketValue;
+      seller.outgoingDeals += 1;
+    }
+  }
+
+  const efficientClubs = [...efficiencyByClub.values()]
+    .map((club) => {
+      const purchaseValue = club.incomingValuation - club.incomingFees;
+      const saleValue = club.outgoingFees - club.outgoingValuation;
+      return {
+        id: club.id,
+        name: club.name,
+        slug: club.slug,
+        logoUrl: club.logoUrl,
+        leagueName: club.leagueName,
+        netSpend: club.incomingFees - club.outgoingFees,
+        efficiencyScore: purchaseValue + saleValue,
+        purchaseValue,
+        saleValue,
+        ratedDeals: club.incomingDeals + club.outgoingDeals,
+      };
+    })
+    .filter((club) => club.ratedDeals > 0)
+    .sort((first, second) => second.efficiencyScore - first.efficiencyScore)
+    .slice(0, 10);
+
+  return {
+    season: TRANSFER_SEASON,
+    efficiencySeasons,
+    efficientClubs,
+    latestTransfers,
+    expensiveTransfers: transfers
+      .filter((transfer): transfer is typeof transfer & { fee: number } =>
+        Number.isFinite(transfer.fee),
+      )
+      .sort((first, second) => second.fee - first.fee)
+      .slice(0, 10),
+    clubs: clubRows,
+  };
+}
