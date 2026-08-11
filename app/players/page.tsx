@@ -1,6 +1,14 @@
 import Link from "next/link";
 
 import { PLAYER_ALPHABET } from "@/lib/players/player-list";
+import { createPageMetadata } from "@/lib/seo/metadata";
+
+export const metadata = createPageMetadata({
+  title: "Football Players",
+  description:
+    "Browse football players by surname and explore transfer histories, market values, injuries and performance statistics.",
+  path: "/players",
+});
 
 export default function PlayersPage() {
   return (

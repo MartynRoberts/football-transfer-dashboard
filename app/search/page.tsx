@@ -1,12 +1,32 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import ClubName from "@/components/clubs/ClubName";
 import { prisma } from "@/lib/prisma";
+import { createPageMetadata } from "@/lib/seo/metadata";
+
+interface SearchPageProps {
+  searchParams: Promise<{ q?: string }>;
+}
+
+export async function generateMetadata({
+  searchParams,
+}: SearchPageProps): Promise<Metadata> {
+  const { q = "" } = await searchParams;
+  const title = q ? `Search results for “${q}”` : "Search";
+
+  return createPageMetadata({
+    title,
+    description: q
+      ? `Search results for ${q} across football players, clubs and leagues.`
+      : "Search football players, clubs and leagues.",
+    path: "/search",
+    noIndex: true,
+  });
+}
 
 export default async function SearchPage({
   searchParams,
-}: {
-  searchParams: Promise<{ q?: string }>;
-}) {
+}: SearchPageProps) {
   const { q = "" } = await searchParams;
 
   if (!q) {

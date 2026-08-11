@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ClubAvailabilitySection, {
   ClubAvailabilitySkeleton,
@@ -14,12 +15,42 @@ import {
 } from "@/lib/clubs/transfer-summary";
 import { prisma } from "@/lib/prisma";
 import { CURRENT_SEASON, TRANSFER_SEASON } from "@/lib/sync/scope";
+import { createPageMetadata } from "@/lib/seo/metadata";
+
+interface ClubPageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: ClubPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const club = await prisma.club.findUnique({
+    where: { slug },
+    select: {
+      name: true,
+      logoUrl: true,
+      league: { select: { name: true } },
+    },
+  });
+
+  if (!club) {
+    return { title: "Club not found", robots: { index: false } };
+  }
+
+  const leagueName = club.league?.name ?? "European football";
+
+  return createPageMetadata({
+    title: `${club.name} Transfers, Squad & Statistics`,
+    description: `Explore ${club.name} transfers, squad details, net spend and availability analytics in ${leagueName}.`,
+    path: `/clubs/${slug}`,
+    image: club.logoUrl,
+  });
+}
 
 export default async function ClubPage({
   params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+}: ClubPageProps) {
   const { slug } = await params;
   const club = await prisma.club.findUnique({
     where: { slug },

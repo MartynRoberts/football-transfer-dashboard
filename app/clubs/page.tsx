@@ -1,6 +1,14 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ClubIdentity from "@/components/clubs/ClubIdentity";
+import { createPageMetadata } from "@/lib/seo/metadata";
+
+export const metadata = createPageMetadata({
+  title: "Football Clubs",
+  description:
+    "Browse clubs from Europe's top five leagues and explore their squads, transfers, spending and availability analytics.",
+  path: "/clubs",
+});
 
 export default async function ClubsPage() {
   const clubs = await prisma.club.findMany({
