@@ -11,8 +11,8 @@ interface ClubTransfer {
     name: string;
     slug: string;
   };
-  fromClub?: ClubNameData | null;
-  toClub?: ClubNameData | null;
+  fromClub: ClubNameData | null;
+  toClub: ClubNameData | null;
 }
 
 function TransferFee({
@@ -52,21 +52,21 @@ export default function ClubTransferTable({
       {transfers.length === 0 ? (
         <p className="text-gray-500">No {direction} transfers.</p>
       ) : (
-        <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-          <table className="w-full min-w-[920px] table-fixed border">
+        <div className="mobile-card-table overflow-x-auto">
+          <table className="w-full table-fixed border sm:min-w-[920px]">
             <colgroup>
               <col className="w-[22%]" />
-              <col className="w-[20%]" />
+              <col className="w-[16%]" />
+              <col className="w-[16%]" />
               <col className="w-[18%]" />
               <col className="w-[18%]" />
-              <col className="w-[22%]" />
+              <col className="w-[18%]" />
             </colgroup>
             <thead>
               <tr className="border-b bg-gray-100">
                 <th className="px-4 py-3 text-left">Player</th>
-                <th className="px-4 py-3 text-left">
-                  {incoming ? "From" : "To"}
-                </th>
+                <th className="px-4 py-3 text-left">From</th>
+                <th className="px-4 py-3 text-left">To</th>
                 <th className="whitespace-nowrap px-5 py-3 text-left">Fee</th>
                 <th className="whitespace-nowrap px-5 py-3 text-left">
                   Market Value
@@ -77,14 +77,9 @@ export default function ClubTransferTable({
               </tr>
             </thead>
             <tbody>
-              {transfers.map((transfer) => {
-                const otherClub = incoming
-                  ? transfer.fromClub
-                  : transfer.toClub;
-
-                return (
+              {transfers.map((transfer) => (
                   <tr key={transfer.id} className="border-b">
-                    <td className="min-w-0 px-4 py-3">
+                    <td data-label="Player" className="min-w-0 px-4 py-3">
                       <Link
                         href={`/players/${transfer.player.slug}`}
                         className="text-brand block truncate hover:underline"
@@ -94,21 +89,43 @@ export default function ClubTransferTable({
                       </Link>
                     </td>
                     <td
+                      data-label="From"
                       className="px-4 py-3"
-                      title={otherClub?.name ?? "Free Agent"}
+                      title={transfer.fromClub?.name ?? "Free Agent"}
                     >
-                      {otherClub ? <ClubName club={otherClub} /> : "Free Agent"}
+                      {transfer.fromClub ? (
+                        <ClubName club={transfer.fromClub} />
+                      ) : (
+                        "Free Agent"
+                      )}
                     </td>
-                    <td className="whitespace-nowrap px-5 py-3 tabular-nums">
+                    <td
+                      data-label="To"
+                      className="px-4 py-3"
+                      title={transfer.toClub?.name ?? "Free Agent"}
+                    >
+                      {transfer.toClub ? (
+                        <ClubName club={transfer.toClub} />
+                      ) : (
+                        "Free Agent"
+                      )}
+                    </td>
+                    <td
+                      data-label="Fee"
+                      className="whitespace-nowrap px-5 py-3 tabular-nums"
+                    >
                       <TransferFee
                         fee={transfer.fee}
                         transferType={transfer.transferType}
                       />
                     </td>
-                    <td className="whitespace-nowrap px-5 py-3 tabular-nums">
+                    <td
+                      data-label="Market value"
+                      className="whitespace-nowrap px-5 py-3 tabular-nums"
+                    >
                       <MarketValue marketValue={transfer.marketValue} />
                     </td>
-                    <td className="px-5 py-3">
+                    <td data-label="Rating" className="px-5 py-3">
                       <div className="min-w-[150px]">
                         <TransferValueRating
                           fee={transfer.fee}
@@ -118,8 +135,7 @@ export default function ClubTransferTable({
                       </div>
                     </td>
                   </tr>
-                );
-              })}
+                ))}
             </tbody>
           </table>
         </div>

@@ -35,8 +35,8 @@ export default function PlayerCardImage({
         fetchPriority={preload ? "high" : "auto"}
         className={
           overlayCard
-            ? "absolute inset-y-0 right-0 h-full w-auto object-cover object-top"
-            : "ml-auto h-full w-auto shrink-0 self-stretch object-cover object-top"
+            ? "absolute inset-y-0 right-0 h-full w-24 object-cover object-top"
+            : "ml-auto h-full w-24 shrink-0 self-stretch object-cover object-top"
         }
         onError={() => setFailed(true)}
       />
