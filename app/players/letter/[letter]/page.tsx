@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ClubName from "@/components/clubs/ClubName";
 import PlayerCardImage from "@/components/players/PlayerCardImage";
@@ -6,6 +7,7 @@ import PlayerCardImage from "@/components/players/PlayerCardImage";
 import { prisma } from "@/lib/prisma";
 import { PLAYER_ALPHABET } from "@/lib/players/player-list";
 import { TOP_FIVE_LEAGUE_IDS } from "@/lib/sync/scope";
+import { createPageMetadata } from "@/lib/seo/metadata";
 
 export const revalidate = 60;
 
@@ -19,6 +21,23 @@ export function generateStaticParams() {
   return PLAYER_ALPHABET.map((letter) => ({
     letter: letter.toLowerCase(),
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: PlayersByLetterPageProps): Promise<Metadata> {
+  const { letter: rawLetter } = await params;
+  const letter = rawLetter.toUpperCase();
+
+  if (!PLAYER_ALPHABET.includes(letter)) {
+    return { title: "Players not found", robots: { index: false } };
+  }
+
+  return createPageMetadata({
+    title: `Football Players Beginning with ${letter}`,
+    description: `Browse football players whose surnames begin with ${letter}, including their clubs, transfers and performance data.`,
+    path: `/players/letter/${letter.toLowerCase()}`,
+  });
 }
 
 export default async function PlayersByLetterPage({

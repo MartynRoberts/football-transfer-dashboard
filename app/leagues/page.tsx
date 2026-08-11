@@ -5,6 +5,14 @@ import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 import LeagueAnalytics, {
   LeagueAnalyticsSkeleton,
 } from "@/components/leagues/LeagueAnalytics";
+import { createPageMetadata } from "@/lib/seo/metadata";
+
+export const metadata = createPageMetadata({
+  title: "Football Leagues",
+  description:
+    "Compare transfer spending, squad values and performance analytics across Europe's leading football leagues.",
+  path: "/leagues",
+});
 
 export const revalidate = 60;
 
