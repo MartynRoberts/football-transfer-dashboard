@@ -263,6 +263,7 @@ export async function getLeagueClubInjuryRanking({
 
 export async function getLeagueDetailAnalytics(leagueId: string) {
   const efficiencySeasons = getLastThreeTransferSeasons(TRANSFER_SEASON);
+  const latestTransferCutoff = new Date();
   const transferWhere = {
     season: TRANSFER_SEASON,
     OR: [{ fromClub: { is: { leagueId } } }, { toClub: { is: { leagueId } } }],
@@ -296,7 +297,12 @@ export async function getLeagueDetailAnalytics(leagueId: string) {
         },
       }),
       prisma.transfer.findMany({
-        where: transferWhere,
+        where: {
+          ...transferWhere,
+          transferDate: {
+            lte: latestTransferCutoff,
+          },
+        },
         orderBy: [{ transferDate: "desc" }, { createdAt: "desc" }],
         take: 10,
         select: {
