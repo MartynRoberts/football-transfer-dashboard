@@ -20,8 +20,12 @@ export default function LeagueTransferRankings({
         <p className="mb-4 text-sm text-slate-500">
           {seasons.join(", ")} · Known transfer fees
         </p>
-        <div className="analytics-frame overflow-x-auto">
-          <table className="w-full min-w-[620px]">
+        <div className="mobile-scroll-table">
+          <p className="mobile-scroll-hint" aria-hidden="true">
+            Swipe to see more <span>→</span>
+          </p>
+          <div className="analytics-frame overflow-x-auto">
+            <table className="w-full min-w-[620px]">
             <thead className="bg-slate-100 text-left text-sm">
               <tr>
                 <th className="p-3">#</th>
@@ -50,7 +54,8 @@ export default function LeagueTransferRankings({
                 </tr>
               ))}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -59,8 +64,12 @@ export default function LeagueTransferRankings({
         <p className="mb-4 text-sm text-slate-500">
           Fees compared with player valuations across {seasons.length} seasons
         </p>
-        <div className="analytics-frame overflow-x-auto">
-          <table className="w-full min-w-[540px]">
+        <div className="mobile-scroll-table">
+          <p className="mobile-scroll-hint" aria-hidden="true">
+            Swipe to see more <span>→</span>
+          </p>
+          <div className="analytics-frame overflow-x-auto">
+            <table className="w-full min-w-[540px]">
             <thead className="bg-slate-100 text-left text-sm">
               <tr>
                 <th className="p-3">#</th>
@@ -91,7 +100,8 @@ export default function LeagueTransferRankings({
                 </tr>
               ))}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       </section>
     </div>

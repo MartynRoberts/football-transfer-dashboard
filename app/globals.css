@@ -107,6 +107,10 @@ header a:visited {
   border-radius: 0;
 }
 
+.mobile-scroll-hint {
+  display: none;
+}
+
 @media (min-width: 640px) {
   .app-page {
     max-width: 640px;
@@ -159,7 +163,9 @@ header a:visited {
 
   .analytics-panel {
     min-width: 0;
-    padding: 0.75rem;
+    border-right: 0;
+    border-left: 0;
+    padding: 0.75rem 0;
   }
 
   .mobile-card-table {
@@ -191,7 +197,37 @@ header a:visited {
     border: 1px solid var(--border);
     border-radius: 0.75rem;
     background: var(--background);
-    padding: 0.25rem 1rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .mobile-scroll-table {
+    position: relative;
+  }
+
+  .mobile-scroll-table::after {
+    position: absolute;
+    top: 1.75rem;
+    right: 0;
+    bottom: 0;
+    width: 1.5rem;
+    background: linear-gradient(to right, transparent, rgb(255 255 255 / 90%));
+    content: "";
+    pointer-events: none;
+  }
+
+  .mobile-scroll-hint {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    margin-bottom: 0.4rem;
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .mobile-card-table tr + tr {
+    border-top: 2px solid #cbd5e1;
+    padding-top: 0.75rem;
   }
 
   .mobile-card-table td {
@@ -222,5 +258,13 @@ header a:visited {
     letter-spacing: 0.025em;
     text-align: left;
     text-transform: uppercase;
+  }
+
+  .mobile-card-table td > a,
+  .mobile-card-table td > .inline-flex {
+    min-width: 0;
+    max-width: 100%;
+    justify-self: end;
+    text-align: right;
   }
 }

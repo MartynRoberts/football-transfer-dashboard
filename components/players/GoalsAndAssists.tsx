@@ -132,7 +132,7 @@ function PerformanceCard({
   detail?: string;
 }) {
   return (
-    <div className="bg-slate-50 p-4">
+    <div className="bg-slate-50 p-3 sm:p-4">
       <div className="text-sm text-slate-500">{label}</div>
       <div className="mt-1 text-2xl font-semibold">{value}</div>
       {detail && <div className="text-sm text-slate-500">{detail}</div>}

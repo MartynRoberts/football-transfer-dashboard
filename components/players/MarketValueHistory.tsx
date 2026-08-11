@@ -34,7 +34,7 @@ export default function MarketValueHistory({
         <p className="text-gray-500">No market values recorded.</p>
       ) : (
         <div className="flex min-w-0 flex-col gap-4 xl:flex-row">
-          <div className="analytics-panel min-w-0 flex-1 px-2 sm:px-4">
+          <div className="analytics-panel min-w-0 flex-1 sm:px-4">
             <MarketValueChart data={chartData} />
           </div>
 

@@ -64,13 +64,13 @@ export default async function ClubPage({
       },
       incomingTransfers: {
         where: { season: TRANSFER_SEASON },
-        include: { player: true, fromClub: true },
+        include: { player: true, fromClub: true, toClub: true },
         orderBy: { transferDate: "desc" },
         take: 10,
       },
       outgoingTransfers: {
         where: { season: TRANSFER_SEASON },
-        include: { player: true, toClub: true },
+        include: { player: true, fromClub: true, toClub: true },
         orderBy: { transferDate: "desc" },
         take: 10,
       },
