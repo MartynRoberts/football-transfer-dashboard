@@ -82,13 +82,17 @@ export default function PlayerHeader({
           <div className="analytics-panel">
             <div className="text-sm text-gray-500">Joined Club</div>
             <div className="text-xl font-semibold">
-              {player.joinedOn ? player.joinedOn.toLocaleDateString() : "-"}
+              {player.joinedOn
+                ? player.joinedOn.toLocaleDateString("en-GB")
+                : "-"}
             </div>
           </div>
           <div className="analytics-panel">
             <div className="text-sm text-gray-500">Contract Until</div>
             <div className="text-xl font-semibold">
-              {player.contract ? player.contract.toLocaleDateString() : "-"}
+              {player.contract
+                ? player.contract.toLocaleDateString("en-GB")
+                : "-"}
             </div>
           </div>
           <PlayerProfileCards player={player} />

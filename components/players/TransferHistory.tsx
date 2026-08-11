@@ -7,6 +7,7 @@ interface TransferHistoryItem {
   transferDate: Date | null;
   fee: number | null;
   marketValue: number | null;
+  transferType: string | null;
 
   player?: {
     name: string;
@@ -33,9 +34,11 @@ interface TransferHistoryProps {
   emptyMessage?: string;
 }
 
-function formatFee(fee: number | null): string {
+function formatFee(fee: number | null, transferType: string | null): string {
   if (fee === null) {
-    return "Undisclosed";
+    return transferType
+      ? `${transferType.charAt(0).toUpperCase()}${transferType.slice(1)}`
+      : "Undisclosed";
   }
 
   if (fee === 0) {
@@ -135,7 +138,7 @@ export default function TransferHistory({
                   </td>
 
                   <td data-label="Fee" className="whitespace-nowrap p-3">
-                    {formatFee(transfer.fee)}
+                    {formatFee(transfer.fee, transfer.transferType)}
                   </td>
 
                   <td

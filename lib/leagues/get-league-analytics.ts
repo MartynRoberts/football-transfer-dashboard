@@ -303,6 +303,7 @@ export async function getLeagueDetailAnalytics(leagueId: string) {
           id: true,
           transferDate: true,
           fee: true,
+          transferType: true,
           marketValue: true,
           player: { select: { name: true, slug: true } },
           fromClub: { select: { name: true, slug: true, logoUrl: true } },

@@ -61,10 +61,11 @@ export async function getHomePageData() {
       ],
 
       select: {
-        id: true,
-        transferDate: true,
-        fee: true,
-        marketValue: true,
+          id: true,
+          transferDate: true,
+          fee: true,
+          transferType: true,
+          marketValue: true,
 
         player: {
           select: {

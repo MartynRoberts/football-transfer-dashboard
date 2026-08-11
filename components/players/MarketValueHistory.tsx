@@ -87,7 +87,9 @@ export default function MarketValueHistory({
               <tbody>
                 {histories.map((history) => (
                   <tr key={history.id} className="border-b last:border-b-0">
-                    <td className="p-3">{history.date.toLocaleDateString()}</td>
+                    <td className="p-3">
+                      {history.date.toLocaleDateString("en-GB")}
+                    </td>
                     <td className="p-3 font-medium">
                       €{history.marketValue.toLocaleString()}
                     </td>

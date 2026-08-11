@@ -92,11 +92,11 @@ export default function InjuryHistory({
                   <td className="p-3">{injury.season ?? "-"}</td>
 
                   <td className="p-3">
-                    {injury.startDate.toLocaleDateString()}
+                    {injury.startDate.toLocaleDateString("en-GB")}
                   </td>
 
                   <td className="p-3">
-                    {injury.expectedReturn?.toLocaleDateString() ?? "-"}
+                    {injury.expectedReturn?.toLocaleDateString("en-GB") ?? "-"}
                   </td>
 
                   <td className="p-3">

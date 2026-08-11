@@ -5,6 +5,7 @@ import TransferValueRating from "@/components/transfers/TransferValueRating";
 interface ClubTransfer {
   id: string;
   fee: number | null;
+  transferType: string | null;
   marketValue: number | null;
   player: {
     name: string;
@@ -14,8 +15,18 @@ interface ClubTransfer {
   toClub?: ClubNameData | null;
 }
 
-function TransferFee({ fee }: { fee: number | null }) {
-  if (fee === null) return "Undisclosed";
+function TransferFee({
+  fee,
+  transferType,
+}: {
+  fee: number | null;
+  transferType: string | null;
+}) {
+  if (fee === null) {
+    return transferType
+      ? `${transferType.charAt(0).toUpperCase()}${transferType.slice(1)}`
+      : "Undisclosed";
+  }
   if (fee === 0) return "Free";
   return `€${fee.toLocaleString()}`;
 }
@@ -89,7 +100,10 @@ export default function ClubTransferTable({
                       {otherClub ? <ClubName club={otherClub} /> : "Free Agent"}
                     </td>
                     <td className="whitespace-nowrap px-5 py-3 tabular-nums">
-                      <TransferFee fee={transfer.fee} />
+                      <TransferFee
+                        fee={transfer.fee}
+                        transferType={transfer.transferType}
+                      />
                     </td>
                     <td className="whitespace-nowrap px-5 py-3 tabular-nums">
                       <MarketValue marketValue={transfer.marketValue} />
