@@ -4,6 +4,7 @@ import { getLastThreeTransferSeasons } from "@/lib/transfers/get-last-three-tran
 
 export async function getHomePageData() {
   const efficiencySeasons = getLastThreeTransferSeasons(TRANSFER_SEASON);
+  const now = new Date();
 
   const [
     latestTransfers,
@@ -15,6 +16,9 @@ export async function getHomePageData() {
     prisma.transfer.findMany({
       where: {
         season: TRANSFER_SEASON,
+        transferDate: {
+          lte: now,
+        },
 
         OR: [
           {
