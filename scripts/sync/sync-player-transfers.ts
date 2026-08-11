@@ -14,15 +14,29 @@ function getLimit(): number | undefined {
   return Number.isFinite(limit) && limit > 0 ? limit : undefined;
 }
 
+function getPlayerTransfermarktId(): string | undefined {
+  const argument = process.argv.find((value) => value.startsWith("--player="));
+  const playerId = argument?.split("=")[1]?.trim();
+
+  return playerId || undefined;
+}
+
 async function main() {
   const limit = getLimit();
+  const playerTransfermarktId = getPlayerTransfermarktId();
 
-  console.log("🔄 Syncing player transfers...");
+  console.log(
+    playerTransfermarktId
+      ? `🔄 Syncing transfers for Transfermarkt player ${playerTransfermarktId}...`
+      : "🔄 Syncing player transfers...",
+  );
 
   const players = await prisma.player.findMany({
     where: {
       transfermarktId: {
-        not: null,
+        ...(playerTransfermarktId
+          ? { equals: playerTransfermarktId }
+          : { not: null }),
       },
       currentClub: {
         is: {
