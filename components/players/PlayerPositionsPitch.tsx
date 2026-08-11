@@ -149,9 +149,9 @@ export default function PlayerPositionsPitch({
     .join(". ");
 
   return (
-    <section className="flex">
-      <div className="mb-4 flex flex-wrap justify-between gap-3">
-        <div className="flex flex-wrap items-center text-sm flex-col items-start analytics-panel">
+    <section className="flex min-w-0 flex-col gap-4 sm:flex-row">
+      <div className="shrink-0 sm:w-40">
+        <div className="analytics-panel flex h-full flex-col items-start text-sm">
           <h2 className="text-sm text-gray-500">Positions</h2>
 
           <span className="flex items-center gap-2 mt-4 mb-2">
@@ -180,7 +180,7 @@ export default function PlayerPositionsPitch({
         </div>
       </div>
 
-      <div className="mx-auto max-w-3xl ml-4">
+      <div className="min-w-0 flex-1 sm:self-center">
         <svg
           viewBox="0 0 100 64"
           className="h-auto w-full rounded-lg"

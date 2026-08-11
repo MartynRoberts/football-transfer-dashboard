@@ -33,13 +33,13 @@ export default function MarketValueHistory({
       {histories.length === 0 ? (
         <p className="text-gray-500">No market values recorded.</p>
       ) : (
-        <div className="flex gap-4">
-          <div className="analytics-panel flex-1">
+        <div className="flex min-w-0 flex-col gap-4 xl:flex-row">
+          <div className="analytics-panel min-w-0 flex-1 px-2 sm:px-4">
             <MarketValueChart data={chartData} />
           </div>
 
           {hasPercentiles && (
-            <div className="analytics-panel">
+            <div className="analytics-panel xl:w-80 xl:shrink-0">
               <h3 className="mb-5 text-lg font-semibold">
                 Market value percentile
               </h3>

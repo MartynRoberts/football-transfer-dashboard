@@ -66,7 +66,7 @@ export default function InjuryHistory({
       {injuries.length === 0 ? (
         <p className="text-slate-500">No injury records available.</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="mobile-card-table overflow-x-auto">
           <table className="w-full border">
             <thead>
               <tr className="border-b bg-slate-50">
@@ -87,23 +87,27 @@ export default function InjuryHistory({
             <tbody>
               {injuries.map((injury) => (
                 <tr key={injury.id} className="border-b">
-                  <td className="p-3 font-medium">{injury.description}</td>
+                  <td data-label="Injury" className="p-3 font-medium">
+                    {injury.description}
+                  </td>
 
-                  <td className="p-3">{injury.season ?? "-"}</td>
+                  <td data-label="Season" className="p-3">
+                    {injury.season ?? "-"}
+                  </td>
 
-                  <td className="p-3">
+                  <td data-label="Start date" className="p-3">
                     {injury.startDate.toLocaleDateString("en-GB")}
                   </td>
 
-                  <td className="p-3">
+                  <td data-label="Return date" className="p-3">
                     {injury.expectedReturn?.toLocaleDateString("en-GB") ?? "-"}
                   </td>
 
-                  <td className="p-3">
+                  <td data-label="Days injured" className="p-3">
                     {injury.days?.toLocaleString() ?? "-"}
                   </td>
 
-                  <td className="p-3">
+                  <td data-label="Games missed" className="p-3">
                     {injury.gamesMissed?.toLocaleString() ?? "-"}
                   </td>
                 </tr>

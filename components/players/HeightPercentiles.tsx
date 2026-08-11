@@ -19,7 +19,7 @@ function HeightPercentile({
 
   return (
     <div>
-      <div className="mb-2 flex items-center gap-3">
+      <div className="mb-2 flex min-w-0 items-center gap-2 sm:gap-3">
         <div
           className="relative h-2 flex-1 rounded-full bg-slate-200"
           role="progressbar"
@@ -39,7 +39,7 @@ function HeightPercentile({
           />
         </div>
 
-        <span className="min-w-28 text-sm font-semibold">
+        <span className="min-w-20 text-right text-xs font-semibold sm:min-w-28 sm:text-sm">
           {ordinal(boundedValue)} percentile
         </span>
       </div>

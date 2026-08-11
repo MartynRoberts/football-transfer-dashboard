@@ -68,7 +68,7 @@ export default function MarketValueChart({ data }: MarketValueChartProps) {
 
   return (
     <div
-      className="h-80 w-full"
+      className="h-72 min-w-0 w-full sm:h-80"
       role="img"
       aria-label="Player market value history line chart"
     >

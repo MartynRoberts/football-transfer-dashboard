@@ -64,6 +64,7 @@ header a:visited {
 }
 
 .app-page {
+  box-sizing: border-box;
   width: 100%;
   margin-inline: auto;
   padding: 2rem 1rem;
@@ -137,6 +138,30 @@ header a:visited {
 }
 
 @media (max-width: 639px) {
+  .app-page {
+    width: auto;
+    padding-block: 1.5rem;
+  }
+
+  .page-stack {
+    gap: 2rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .analytics-panel {
+    min-width: 0;
+    padding: 0.75rem;
+  }
+
   .mobile-card-table {
     overflow: visible;
   }
