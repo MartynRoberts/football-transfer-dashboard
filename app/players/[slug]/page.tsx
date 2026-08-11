@@ -60,14 +60,11 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
   const { player } = data;
 
   return (
-    <main className="app-page page-stack">
+    <main className="app-page page-stack min-w-0 overflow-x-clip">
       <PlayerHeader
         player={player}
         secondaryPositions={data.secondaryPositions}
       />
-      <AppearanceMetrics metric={player.metric} />
-      <GoalsAndAssists seasons={data.seasonPerformances} />
-      <TransferHistory transfers={player.transfers} />
       <MarketValueHistory
         histories={player.marketValueHistories}
         chartData={data.marketValueChartData}
@@ -75,7 +72,10 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
         leagueName={player.currentClub?.league?.name ?? null}
         position={player.position}
       />
+      <AppearanceMetrics metric={player.metric} />
+      <GoalsAndAssists seasons={data.seasonPerformances} />
       <InjuryHistory injuries={player.injuries} metric={player.metric} />
+      <TransferHistory transfers={player.transfers} />
     </main>
   );
 }

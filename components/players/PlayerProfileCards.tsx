@@ -8,13 +8,6 @@ export default function PlayerProfileCards({
 }) {
   const cards = [
     {
-      label: "Market Value",
-      value:
-        player.marketValue !== null
-          ? `€${player.marketValue.toLocaleString()}`
-          : "-",
-    },
-    {
       label: "Preferred Foot",
       value: player.foot ? capitalise(player.foot) : "-",
     },
