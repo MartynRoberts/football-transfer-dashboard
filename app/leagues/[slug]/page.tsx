@@ -35,9 +35,7 @@ export async function generateMetadata({
   });
 }
 
-export default async function LeaguePage({
-  params,
-}: LeaguePageProps) {
+export default async function LeaguePage({ params }: LeaguePageProps) {
   const { slug } = await params;
 
   const league = await prisma.league.findUnique({
@@ -81,6 +79,7 @@ export default async function LeaguePage({
           { id: "finances", label: "Finances" },
           { id: "squads", label: "Squads" },
           { id: "availability", label: "Availability" },
+          { id: "discipline", label: "Discipline" },
         ]}
       />
 

@@ -1,10 +1,18 @@
-import { getLeagueAnalytics } from "@/lib/leagues/get-league-analytics";
+import { CURRENT_SEASON } from "@/lib/sync/scope";
+import {
+  getClubDisciplineRanking,
+  getLeagueAnalytics,
+} from "@/lib/leagues/get-league-analytics";
 import LeagueTransferRankings from "@/components/leagues/LeagueTransferRankings";
 import LeagueSquadRankings from "@/components/leagues/LeagueSquadRankings";
 import { InjuryProneSquadExtremes } from "@/components/leagues/LeagueInjuryRankings";
+import LeagueDisciplineRankings from "@/components/leagues/LeagueDisciplineRankings";
 
 export default async function LeagueAnalytics() {
-  const data = await getLeagueAnalytics();
+  const [data, discipline] = await Promise.all([
+    getLeagueAnalytics(),
+    getClubDisciplineRanking(),
+  ]);
 
   return (
     <div className="page-stack min-w-0">
@@ -23,6 +31,9 @@ export default async function LeagueAnalytics() {
           least={data.leastInjuryProne}
           season={data.injurySeason}
         />
+      </div>
+      <div id="league-discipline" className="section-anchor">
+        <LeagueDisciplineRankings clubs={discipline} season={CURRENT_SEASON} />
       </div>
     </div>
   );

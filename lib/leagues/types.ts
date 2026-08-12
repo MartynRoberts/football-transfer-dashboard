@@ -32,6 +32,18 @@ export interface ClubInjuryRow {
   daysInjured: number;
 }
 
+export interface ClubDisciplineRow {
+  id: string;
+  name: string;
+  slug: string;
+  logoUrl: string | null;
+  leagueName: string;
+  yellowCards: number;
+  redCards: number;
+  matchesCovered: number;
+  cardsPerMatch: number;
+}
+
 export interface LeagueAnalyticsData {
   seasons: string[];
   injurySeason: string;

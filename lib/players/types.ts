@@ -89,6 +89,10 @@ export interface SeasonPerformance {
   minutesPlayed: number;
   goals: number;
   assists: number;
+  yellowCards: number;
+  redCards: number;
+  cardsPerAppearance: number | null;
+  cardsPer90: string;
 
   goalsPer90: string;
   assistsPer90: string;

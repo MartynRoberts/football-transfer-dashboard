@@ -43,6 +43,7 @@ export default async function LeaguesPage() {
           { id: "league-finances", label: "Finances" },
           { id: "league-squads", label: "Squads" },
           { id: "league-injuries", label: "Injuries" },
+          { id: "league-discipline", label: "Discipline" },
         ]}
       />
 
