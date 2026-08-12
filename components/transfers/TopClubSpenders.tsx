@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ClubName from "@/components/clubs/ClubName";
+import { formatPounds } from "@/lib/currency";
 
 interface TopClubSpender {
   id: string;
@@ -9,22 +10,6 @@ interface TopClubSpender {
   leagueName: string | null;
   totalSpend: number;
   signingCount: number;
-}
-
-function formatMoney(value: number): string {
-  if (value >= 1_000_000_000) {
-    return `€${(value / 1_000_000_000).toFixed(2)}bn`;
-  }
-
-  if (value >= 1_000_000) {
-    return `€${(value / 1_000_000).toFixed(1)}m`;
-  }
-
-  if (value >= 1_000) {
-    return `€${(value / 1_000).toFixed(1)}k`;
-  }
-
-  return `€${value.toLocaleString()}`;
 }
 
 export default function TopClubSpenders({
@@ -74,7 +59,7 @@ export default function TopClubSpenders({
                     </Link>
 
                     <span className="shrink-0 font-bold">
-                      {formatMoney(club.totalSpend)}
+                      {formatPounds(club.totalSpend)}
                     </span>
                   </div>
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ClubName, { type ClubNameData } from "@/components/clubs/ClubName";
 import TransferValueRating from "@/components/transfers/TransferValueRating";
+import { formatPounds } from "@/lib/currency";
 
 interface ExpensiveTransfer {
   id: string;
@@ -23,22 +24,6 @@ interface ExpensiveTransfer {
         slug: string;
       })
     | null;
-}
-
-function formatMoney(value: number): string {
-  if (value >= 1_000_000_000) {
-    return `€${(value / 1_000_000_000).toFixed(2)}bn`;
-  }
-
-  if (value >= 1_000_000) {
-    return `€${(value / 1_000_000).toFixed(1)}m`;
-  }
-
-  if (value >= 1_000) {
-    return `€${(value / 1_000).toFixed(1)}k`;
-  }
-
-  return `€${value.toLocaleString()}`;
 }
 
 export default function MostExpensiveTransfers({
@@ -127,13 +112,13 @@ export default function MostExpensiveTransfers({
                     data-label="Fee"
                     className="whitespace-nowrap p-3 font-semibold"
                   >
-                    {formatMoney(transfer.fee)}
+                    {formatPounds(transfer.fee)}
                   </td>
 
                   <td data-label="Valuation" className="whitespace-nowrap p-3">
                     {transfer.marketValue === null
                       ? "-"
-                      : formatMoney(transfer.marketValue)}
+                      : formatPounds(transfer.marketValue)}
                   </td>
 
                   <td data-label="Rating" className="min-w-44 p-4">

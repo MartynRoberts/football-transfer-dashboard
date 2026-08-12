@@ -9,11 +9,11 @@ export function formatTransferFee(
   }
 
   if (fee === 0) return "Free";
-  return `€${fee.toLocaleString()}`;
+  return formatPounds(fee);
 }
 
 export function formatMarketValue(marketValue: number | null): string {
-  return marketValue === null ? "-" : `€${marketValue.toLocaleString()}`;
+  return marketValue === null ? "-" : formatPounds(marketValue);
 }
 
 export function getEffectiveTransferFee(
@@ -24,3 +24,4 @@ export function getEffectiveTransferFee(
 
   return transferType?.trim().toLowerCase() === "free transfer" ? 0 : null;
 }
+import { formatPounds } from "@/lib/currency";

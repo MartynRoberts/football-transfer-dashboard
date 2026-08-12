@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ClubName from "@/components/clubs/ClubName";
+import { formatPounds } from "@/lib/currency";
 
 interface EfficientClub {
   id: string;
@@ -15,24 +16,6 @@ interface EfficientClub {
   ratedDeals: number;
 }
 
-function formatMoney(value: number): string {
-  const absoluteValue = Math.abs(value);
-
-  let formatted: string;
-
-  if (absoluteValue >= 1_000_000_000) {
-    formatted = `€${(absoluteValue / 1_000_000_000).toFixed(2)}bn`;
-  } else if (absoluteValue >= 1_000_000) {
-    formatted = `€${(absoluteValue / 1_000_000).toFixed(1)}m`;
-  } else if (absoluteValue >= 1_000) {
-    formatted = `€${(absoluteValue / 1_000).toFixed(1)}k`;
-  } else {
-    formatted = `€${absoluteValue.toLocaleString()}`;
-  }
-
-  return value < 0 ? `-${formatted}` : formatted;
-}
-
 function BuyingValueComparison({ value }: { value: number }) {
   if (value === 0) {
     return <strong className="text-slate-600">Worth the same as paid</strong>;
@@ -42,7 +25,7 @@ function BuyingValueComparison({ value }: { value: number }) {
 
   return (
     <strong className={isGood ? "text-emerald-700" : "text-red-700"}>
-      Worth {formatMoney(Math.abs(value))} {isGood ? "more" : "less"} than paid
+      Worth {formatPounds(Math.abs(value))} {isGood ? "more" : "less"} than paid
     </strong>
   );
 }
@@ -58,7 +41,7 @@ function SellingValueComparison({ value }: { value: number }) {
 
   return (
     <strong className={isGood ? "text-emerald-700" : "text-red-700"}>
-      Worth {formatMoney(Math.abs(value))} {isGood ? "less" : "more"} than
+      Worth {formatPounds(Math.abs(value))} {isGood ? "less" : "more"} than
       received
     </strong>
   );
@@ -123,7 +106,7 @@ export default function MostEfficientClubSpending({
 
                   <div className="text-right">
                     <div className="font-bold">
-                      +{formatMoney(club.efficiencyScore)}
+                      +{formatPounds(club.efficiencyScore)}
                     </div>
 
                     <div className="text-xs text-slate-500">efficiency</div>
