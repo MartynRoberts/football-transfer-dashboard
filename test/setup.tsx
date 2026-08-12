@@ -14,19 +14,24 @@ class IntersectionObserverMock implements IntersectionObserver {
   unobserve = jest.fn();
 }
 
-Object.defineProperty(window, "IntersectionObserver", {
-  writable: true,
-  value: IntersectionObserverMock,
-});
-Object.defineProperty(window, "scrollTo", { writable: true, value: jest.fn() });
-Object.defineProperty(Element.prototype, "scrollIntoView", {
-  writable: true,
-  value: jest.fn(),
-});
-Object.defineProperty(Element.prototype, "scrollTo", {
-  writable: true,
-  value: jest.fn(),
-});
+if (typeof window !== "undefined") {
+  Object.defineProperty(window, "IntersectionObserver", {
+    writable: true,
+    value: IntersectionObserverMock,
+  });
+  Object.defineProperty(window, "scrollTo", {
+    writable: true,
+    value: jest.fn(),
+  });
+  Object.defineProperty(Element.prototype, "scrollIntoView", {
+    writable: true,
+    value: jest.fn(),
+  });
+  Object.defineProperty(Element.prototype, "scrollTo", {
+    writable: true,
+    value: jest.fn(),
+  });
+}
 
 jest.mock("next/image", () => ({
   __esModule: true,
