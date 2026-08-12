@@ -6,6 +6,7 @@ import PlayerPositionsPitch from "@/components/players/PlayerPositionsPitch";
 import ClubIdentity from "@/components/clubs/ClubIdentity";
 import PlayerProfileCards from "@/components/players/PlayerProfileCards";
 import HeightPercentiles from "./HeightPercentiles";
+import { formatContractTimeRemaining } from "@/lib/players/contract-duration";
 
 interface PlayerHeaderProps {
   player: PlayerWithPageRelations;
@@ -116,6 +117,11 @@ export default function PlayerHeader({
                 ? player.contract.toLocaleDateString("en-GB")
                 : "-"}
             </div>
+            {player.contract && (
+              <div className="mt-1 text-sm text-gray-500">
+                {formatContractTimeRemaining(player.contract)}
+              </div>
+            )}
           </div>
         </div>
 
