@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import ClubName from "@/components/clubs/ClubName";
+import SearchResultCard from "@/components/search/SearchResultCard";
 import { prisma } from "@/lib/prisma";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
@@ -48,6 +48,14 @@ export default async function SearchPage({
           mode: "insensitive",
         },
       },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        position: true,
+        imageUrl: true,
+      },
+      orderBy: { name: "asc" },
       take: 20,
     }),
 
@@ -58,6 +66,8 @@ export default async function SearchPage({
           mode: "insensitive",
         },
       },
+      select: { id: true, name: true, slug: true, logoUrl: true },
+      orderBy: { name: "asc" },
       take: 20,
     }),
 
@@ -68,6 +78,14 @@ export default async function SearchPage({
           mode: "insensitive",
         },
       },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        country: true,
+        transfermarktId: true,
+      },
+      orderBy: { name: "asc" },
       take: 20,
     }),
   ]);
@@ -83,14 +101,20 @@ export default async function SearchPage({
       <section>
         <h2 className="section-title">Players ({players.length})</h2>
 
-        <div className="grid gap-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           {players.map((player) => (
             <Link
               key={player.id}
               href={`/players/${player.slug}`}
               className="card-link"
             >
-              {player.name}
+              <SearchResultCard
+                result={{
+                  ...player,
+                  type: "player",
+                  detail: player.position,
+                }}
+              />
             </Link>
           ))}
         </div>
@@ -99,14 +123,14 @@ export default async function SearchPage({
       <section>
         <h2 className="section-title">Clubs ({clubs.length})</h2>
 
-        <div className="grid gap-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           {clubs.map((club) => (
             <Link
               key={club.id}
               href={`/clubs/${club.slug}`}
               className="card-link"
             >
-              <ClubName club={club} size={24} />
+              <SearchResultCard result={{ ...club, type: "club" }} />
             </Link>
           ))}
         </div>
@@ -115,14 +139,20 @@ export default async function SearchPage({
       <section>
         <h2 className="section-title">Leagues ({leagues.length})</h2>
 
-        <div className="grid gap-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           {leagues.map((league) => (
             <Link
               key={league.id}
               href={`/leagues/${league.slug}`}
               className="card-link"
             >
-              {league.name}
+              <SearchResultCard
+                result={{
+                  ...league,
+                  type: "league",
+                  detail: league.country,
+                }}
+              />
             </Link>
           ))}
         </div>

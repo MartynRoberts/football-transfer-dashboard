@@ -10,7 +10,7 @@ describe("MobileMenu", () => {
     expect(screen.queryByRole("link", { name: "Leagues" })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Toggle menu" }));
     expect(screen.getByRole("link", { name: "Leagues" })).toHaveAttribute("href", "/leagues");
-    expect(screen.getByRole("searchbox")).toHaveAttribute("name", "q");
+    expect(screen.getByRole("combobox")).toHaveAttribute("name", "q");
     await user.click(screen.getByRole("link", { name: "Leagues" }));
     expect(screen.queryByRole("link", { name: "Leagues" })).not.toBeInTheDocument();
   });
