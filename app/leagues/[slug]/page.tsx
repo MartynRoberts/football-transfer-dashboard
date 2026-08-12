@@ -9,6 +9,7 @@ import LeagueDetailAnalytics, {
 } from "@/components/leagues/LeagueDetailAnalytics";
 import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 import { createPageMetadata } from "@/lib/seo/metadata";
+import SectionNav from "@/components/navigation/SectionNav";
 
 interface LeaguePageProps {
   params: Promise<{ slug: string }>;
@@ -68,12 +69,23 @@ export default async function LeaguePage({
   return (
     <main className="app-page page-stack">
       {/* Header */}
-      <section>
+      <section id="overview" className="section-anchor">
         <LeagueIdentity league={league} h1 country imagePreload />
       </section>
 
+      <SectionNav
+        items={[
+          { id: "overview", label: "Overview" },
+          { id: "clubs", label: "Clubs" },
+          { id: "latest-transfers", label: "Latest transfers" },
+          { id: "finances", label: "Finances" },
+          { id: "squads", label: "Squads" },
+          { id: "availability", label: "Availability" },
+        ]}
+      />
+
       {/* Clubs */}
-      <section>
+      <section id="clubs" className="section-anchor">
         <h2 className="section-title">Clubs</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

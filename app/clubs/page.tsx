@@ -31,7 +31,6 @@ export default async function ClubsPage() {
       },
     },
   });
-
   return (
     <main className="app-page">
       <h1 className="page-title mb-6">Clubs</h1>

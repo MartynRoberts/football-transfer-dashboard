@@ -20,12 +20,8 @@ export default function LeagueTransferRankings({
         <p className="mb-4 text-sm text-slate-500">
           {seasons.join(", ")} · Known transfer fees
         </p>
-        <div className="mobile-scroll-table">
-          <p className="mobile-scroll-hint" aria-hidden="true">
-            Swipe to see more <span>→</span>
-          </p>
-          <div className="analytics-frame overflow-x-auto">
-            <table className="w-full min-w-[620px]">
+          <div className="analytics-frame mobile-card-table overflow-x-auto">
+            <table className="w-full sm:min-w-[620px]">
             <thead className="bg-slate-100 text-left text-sm">
               <tr>
                 <th className="p-3">#</th>
@@ -38,17 +34,19 @@ export default function LeagueTransferRankings({
             <tbody>
               {finances.map((league, index) => (
                 <tr key={league.id} className="border-t">
-                  <td className="p-3 text-slate-400">{index + 1}</td>
-                  <td className="p-3">
+                  <td data-label="Rank" className="p-3 text-slate-400">
+                    {index + 1}
+                  </td>
+                  <td data-label="League" className="p-3">
                     <LeagueIdentity league={league} link />
                   </td>
-                  <td className="p-3 text-right font-semibold">
+                  <td data-label="Spend" className="p-3 text-right font-semibold">
                     {formatMoney(league.totalSpend)}
                   </td>
-                  <td className="p-3 text-right">
+                  <td data-label="Income" className="p-3 text-right">
                     {formatMoney(league.totalIncome)}
                   </td>
-                  <td className="p-3 text-right">
+                  <td data-label="Net spend" className="p-3 text-right">
                     {formatMoney(league.netSpend)}
                   </td>
                 </tr>
@@ -56,7 +54,6 @@ export default function LeagueTransferRankings({
             </tbody>
             </table>
           </div>
-        </div>
       </section>
 
       <section>
@@ -64,12 +61,8 @@ export default function LeagueTransferRankings({
         <p className="mb-4 text-sm text-slate-500">
           Fees compared with player valuations across {seasons.length} seasons
         </p>
-        <div className="mobile-scroll-table">
-          <p className="mobile-scroll-hint" aria-hidden="true">
-            Swipe to see more <span>→</span>
-          </p>
-          <div className="analytics-frame overflow-x-auto">
-            <table className="w-full min-w-[540px]">
+          <div className="analytics-frame mobile-card-table overflow-x-auto">
+            <table className="w-full sm:min-w-[540px]">
             <thead className="bg-slate-100 text-left text-sm">
               <tr>
                 <th className="p-3">#</th>
@@ -81,11 +74,14 @@ export default function LeagueTransferRankings({
             <tbody>
               {efficient.map((league, index) => (
                 <tr key={league.id} className="border-t">
-                  <td className="p-3 text-slate-400">{index + 1}</td>
-                  <td className="p-3">
+                  <td data-label="Rank" className="p-3 text-slate-400">
+                    {index + 1}
+                  </td>
+                  <td data-label="League" className="p-3">
                     <LeagueIdentity league={league} link />
                   </td>
                   <td
+                    data-label="Efficiency"
                     className={`p-3 text-right font-semibold ${
                       league.efficiencyScore >= 0
                         ? "text-emerald-700"
@@ -94,7 +90,7 @@ export default function LeagueTransferRankings({
                   >
                     {formatMoney(league.efficiencyScore)}
                   </td>
-                  <td className="p-3 text-right">
+                  <td data-label="Net spend" className="p-3 text-right">
                     {formatMoney(league.netSpend)}
                   </td>
                 </tr>
@@ -102,7 +98,6 @@ export default function LeagueTransferRankings({
             </tbody>
             </table>
           </div>
-        </div>
       </section>
     </div>
   );

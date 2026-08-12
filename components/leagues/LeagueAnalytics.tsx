@@ -7,14 +7,23 @@ export default async function LeagueAnalytics() {
   const data = await getLeagueAnalytics();
 
   return (
-    <div className="page-stack">
-      <LeagueTransferRankings finances={data.finances} seasons={data.seasons} />
-      <LeagueSquadRankings squads={data.squads} />
-      <InjuryProneSquadExtremes
-        most={data.mostInjuryProne}
-        least={data.leastInjuryProne}
-        season={data.injurySeason}
-      />
+    <div className="page-stack min-w-0">
+      <div id="league-finances" className="section-anchor">
+        <LeagueTransferRankings
+          finances={data.finances}
+          seasons={data.seasons}
+        />
+      </div>
+      <div id="league-squads" className="section-anchor">
+        <LeagueSquadRankings squads={data.squads} />
+      </div>
+      <div id="league-injuries" className="section-anchor">
+        <InjuryProneSquadExtremes
+          most={data.mostInjuryProne}
+          least={data.leastInjuryProne}
+          season={data.injurySeason}
+        />
+      </div>
     </div>
   );
 }

@@ -1,7 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ClubIdentityProps } from "@/lib/sync/types";
-import { normalizeRemoteImageUrl } from "@/lib/images/normalize-remote-image-url";
+import ClubLogo from "./ClubLogo";
 
 export default function ClubIdentity({
   club,
@@ -17,20 +16,13 @@ export default function ClubIdentity({
     width = 64;
   }
 
-  const clubBadge = club.logoUrl ? (
-    <Image
-      src={normalizeRemoteImageUrl(club.logoUrl)}
-      alt={`${club.name} badge`}
-      width={width}
-      height={width}
+  const clubBadge = (
+    <ClubLogo
+      url={club.logoUrl}
+      name={club.name}
+      size={width}
       preload={imagePreload}
-      fetchPriority={imagePreload ? "high" : "auto"}
-      className="object-contain"
     />
-  ) : (
-    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
-      ⚽
-    </div>
   );
 
   const content = (

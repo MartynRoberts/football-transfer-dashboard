@@ -7,13 +7,17 @@ import TopClubSpenders from "@/components/transfers/TopClubSpenders";
 import WorstValueTransfers from "@/components/transfers/WorstValueTransfers";
 import type { getHomePageData } from "@/lib/dashboard/get-home-page-data";
 import { TRANSFER_SEASON } from "@/lib/sync/scope";
+import SectionNav from "@/components/navigation/SectionNav";
 
 type HomeDashboardData = Awaited<ReturnType<typeof getHomePageData>>;
 
 export default function HomeDashboard({ data }: { data: HomeDashboardData }) {
   return (
     <main className="app-page page-stack">
-      <section className="px-4 py-8 text-center sm:px-6 sm:py-10">
+      <section
+        id="overview"
+        className="section-anchor px-4 py-8 text-center sm:px-6 sm:py-10"
+      >
         <Image
           src="/images/logo.png"
           alt=""
@@ -30,30 +34,48 @@ export default function HomeDashboard({ data }: { data: HomeDashboardData }) {
         </p>
       </section>
 
-      <TransferHistory
-        transfers={data.latestTransfers}
-        title="Latest transfers"
-        showPlayer
+      <SectionNav
+        items={[
+          { id: "overview", label: "Overview" },
+          { id: "latest-transfers", label: "Latest transfers" },
+          { id: "club-spending", label: "Club spending" },
+          { id: "transfer-value", label: "Transfer value" },
+          { id: "record-fees", label: "Record fees" },
+        ]}
       />
-      <div className="mb-8 grid gap-8 sm:mb-12 lg:grid-cols-2">
+      <div id="latest-transfers" className="section-anchor">
+        <TransferHistory
+          transfers={data.latestTransfers}
+          title="Latest transfers"
+          showPlayer
+        />
+      </div>
+      <div
+        id="club-spending"
+        className="section-anchor mb-8 grid gap-8 sm:mb-12 lg:grid-cols-2"
+      >
         <TopClubSpenders clubs={data.topSpenders} season={TRANSFER_SEASON} />
         <MostEfficientClubSpending
           clubs={data.mostEfficientClubs}
           seasons={data.efficiencySeasons}
         />
       </div>
-      <BestValueTransfers
-        transfers={data.bestValueTransfers}
-        season={TRANSFER_SEASON}
-      />
-      <WorstValueTransfers
-        transfers={data.worstValueTransfers}
-        season={TRANSFER_SEASON}
-      />
-      <MostExpensiveTransfers
-        transfers={data.expensiveTransfers}
-        season={TRANSFER_SEASON}
-      />
+      <div id="transfer-value" className="section-anchor page-stack">
+        <BestValueTransfers
+          transfers={data.bestValueTransfers}
+          season={TRANSFER_SEASON}
+        />
+        <WorstValueTransfers
+          transfers={data.worstValueTransfers}
+          season={TRANSFER_SEASON}
+        />
+      </div>
+      <div id="record-fees" className="section-anchor">
+        <MostExpensiveTransfers
+          transfers={data.expensiveTransfers}
+          season={TRANSFER_SEASON}
+        />
+      </div>
     </main>
   );
 }

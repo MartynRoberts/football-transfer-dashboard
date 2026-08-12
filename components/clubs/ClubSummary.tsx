@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import ClubIdentity from "@/components/clubs/ClubIdentity";
 import LeagueIdentity from "@/components/leagues/LeagueIdentity";
 
@@ -10,13 +11,18 @@ interface SummaryMetric {
 export default function ClubSummary({
   club,
   metrics,
+  navigation,
 }: {
   club: Parameters<typeof ClubIdentity>[0]["club"];
   metrics: SummaryMetric[];
+  navigation?: ReactNode;
 }) {
   return (
-    <section>
-      <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+    <div className="contents">
+      <section
+        id="overview"
+        className="section-anchor flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+      >
         <div className="min-w-0 [&_h1]:text-2xl [&_h1]:leading-tight [&_h1]:break-words sm:[&_h1]:text-3xl">
           <ClubIdentity
             club={club}
@@ -32,7 +38,9 @@ export default function ClubSummary({
             <LeagueIdentity league={club.league} link />
           </div>
         )}
-      </div>
+      </section>
+
+      {navigation}
 
       <div className="mt-6 grid grid-cols-6 gap-3 sm:gap-4 lg:grid-cols-5">
         {metrics.map((metric, index) => (
@@ -60,6 +68,6 @@ export default function ClubSummary({
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }

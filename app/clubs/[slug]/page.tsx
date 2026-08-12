@@ -16,6 +16,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { CURRENT_SEASON, TRANSFER_SEASON } from "@/lib/sync/scope";
 import { createPageMetadata } from "@/lib/seo/metadata";
+import SectionNav from "@/components/navigation/SectionNav";
 
 interface ClubPageProps {
   params: Promise<{ slug: string }>;
@@ -145,31 +146,59 @@ export default async function ClubPage({
       detail: threeYearNetSpend.detail,
     },
   ];
+  const sectionNav = (
+    <SectionNav
+      items={[
+        { id: "overview", label: "Overview" },
+        { id: "incoming", label: "Incoming" },
+        { id: "outgoing", label: "Outgoing" },
+        { id: "squad-profile", label: "Squad profile" },
+        ...(club.leagueId
+          ? [{ id: "availability", label: "Availability" }]
+          : []),
+        { id: "players", label: "Players" },
+      ]}
+    />
+  );
 
   return (
     <main className="app-page page-stack">
-      <ClubSummary club={club} metrics={summaryMetrics} />
-      <ClubTransferTable
-        direction="incoming"
-        transfers={club.incomingTransfers}
+      <ClubSummary
+        club={club}
+        metrics={summaryMetrics}
+        navigation={sectionNav}
       />
-      <ClubTransferTable
-        direction="outgoing"
-        transfers={club.outgoingTransfers}
-      />
-      <SquadPositionCounts players={club.players} />
-      <SquadPyramids players={club.players} />
+      <div id="incoming" className="section-anchor">
+        <ClubTransferTable
+          direction="incoming"
+          transfers={club.incomingTransfers}
+        />
+      </div>
+      <div id="outgoing" className="section-anchor">
+        <ClubTransferTable
+          direction="outgoing"
+          transfers={club.outgoingTransfers}
+        />
+      </div>
+      <div id="squad-profile" className="section-anchor page-stack">
+        <SquadPositionCounts players={club.players} />
+        <SquadPyramids players={club.players} />
+      </div>
       {club.leagueId && (
-        <Suspense fallback={<ClubAvailabilitySkeleton />}>
-          <ClubAvailabilitySection
-            clubId={club.id}
-            leagueId={club.leagueId}
-            leagueName={club.league?.name ?? "League"}
-            season={CURRENT_SEASON}
-          />
-        </Suspense>
+        <div id="availability" className="section-anchor">
+          <Suspense fallback={<ClubAvailabilitySkeleton />}>
+            <ClubAvailabilitySection
+              clubId={club.id}
+              leagueId={club.leagueId}
+              leagueName={club.league?.name ?? "League"}
+              season={CURRENT_SEASON}
+            />
+          </Suspense>
+        </div>
       )}
-      <SquadMembers players={club.players} />
+      <div id="players" className="section-anchor">
+        <SquadMembers players={club.players} />
+      </div>
     </main>
   );
 }

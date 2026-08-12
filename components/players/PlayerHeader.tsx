@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import PlayerCardImage from "@/components/players/PlayerCardImage";
 import type { PlayerWithPageRelations } from "@/lib/players/types";
 import { getNationalityCode } from "@/lib/players/nationality-code";
@@ -9,18 +10,23 @@ import HeightPercentiles from "./HeightPercentiles";
 interface PlayerHeaderProps {
   player: PlayerWithPageRelations;
   secondaryPositions: string[];
+  navigation?: ReactNode;
 }
 
 export default function PlayerHeader({
   player,
   secondaryPositions,
+  navigation,
 }: PlayerHeaderProps) {
   const nationalityCode = getNationalityCode(player.nationality);
   const age = player.dateOfBirth ? calculateAge(player.dateOfBirth) : null;
 
   return (
-    <div className="flex flex-col justify-between gap-10">
-      <section className="flex w-full flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+    <div className="contents">
+      <section
+        id="overview"
+        className="section-anchor flex w-full flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+      >
         <div className="flex min-w-0 min-h-28 items-stretch gap-4 [&>img]:ml-0 sm:gap-6">
           <PlayerCardImage
             src={player.imageUrl}
@@ -74,6 +80,8 @@ export default function PlayerHeader({
           )}
         </div>
       </section>
+
+      {navigation}
 
       <section className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.25fr)_minmax(20rem,1fr)_minmax(20rem,1fr)]">
         <PlayerPositionsPitch

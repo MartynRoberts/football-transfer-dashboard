@@ -5,7 +5,7 @@ import SearchBar from "./SearchBar";
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950 text-white shadow-lg">
+    <header className="sticky top-0 z-50 w-full shrink-0 self-stretch border-b border-slate-800 bg-slate-950 text-white shadow-lg">
       <div className="container mx-auto flex h-14 items-center justify-between px-4 sm:h-16">
         {/* Logo */}
         <Link

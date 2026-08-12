@@ -7,6 +7,7 @@ import InjuryHistory from "@/components/players/InjuryHistory";
 import MarketValueHistory from "@/components/players/MarketValueHistory";
 import PlayerHeader from "@/components/players/PlayerHeader";
 import TransferHistory from "@/components/players/TransferHistory";
+import SectionNav from "@/components/navigation/SectionNav";
 import { getPlayerPageData } from "@/lib/players/get-player-page-data";
 import { prisma } from "@/lib/prisma";
 import { createPageMetadata } from "@/lib/seo/metadata";
@@ -58,24 +59,47 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
   }
 
   const { player } = data;
+  const sectionNav = (
+    <SectionNav
+      items={[
+        { id: "overview", label: "Overview" },
+        { id: "market-value", label: "Market value" },
+        { id: "appearances", label: "Appearances" },
+        { id: "performance", label: "Goals & assists" },
+        { id: "injuries", label: "Injuries" },
+        { id: "transfers", label: "Transfers" },
+      ]}
+    />
+  );
 
   return (
     <main className="app-page page-stack min-w-0 overflow-x-clip">
       <PlayerHeader
         player={player}
         secondaryPositions={data.secondaryPositions}
+        navigation={sectionNav}
       />
-      <MarketValueHistory
-        histories={player.marketValueHistories}
-        chartData={data.marketValueChartData}
-        metric={player.metric}
-        leagueName={player.currentClub?.league?.name ?? null}
-        position={player.position}
-      />
-      <AppearanceMetrics metric={player.metric} />
-      <GoalsAndAssists seasons={data.seasonPerformances} />
-      <InjuryHistory injuries={player.injuries} metric={player.metric} />
-      <TransferHistory transfers={player.transfers} />
+      <div id="market-value" className="section-anchor">
+        <MarketValueHistory
+          histories={player.marketValueHistories}
+          chartData={data.marketValueChartData}
+          metric={player.metric}
+          leagueName={player.currentClub?.league?.name ?? null}
+          position={player.position}
+        />
+      </div>
+      <div id="appearances" className="section-anchor">
+        <AppearanceMetrics metric={player.metric} />
+      </div>
+      <div id="performance" className="section-anchor">
+        <GoalsAndAssists seasons={data.seasonPerformances} />
+      </div>
+      <div id="injuries" className="section-anchor">
+        <InjuryHistory injuries={player.injuries} metric={player.metric} />
+      </div>
+      <div id="transfers" className="section-anchor">
+        <TransferHistory transfers={player.transfers} />
+      </div>
     </main>
   );
 }

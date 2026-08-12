@@ -6,6 +6,7 @@ import LeagueAnalytics, {
   LeagueAnalyticsSkeleton,
 } from "@/components/leagues/LeagueAnalytics";
 import { createPageMetadata } from "@/lib/seo/metadata";
+import SectionNav from "@/components/navigation/SectionNav";
 
 export const metadata = createPageMetadata({
   title: "Football Leagues",
@@ -31,10 +32,21 @@ export default async function LeaguesPage() {
   });
 
   return (
-    <main className="app-page page-stack">
-      <section>
-        <h1 className="page-title mb-6">Leagues</h1>
+    <main className="app-page page-stack min-w-0 overflow-x-clip">
+      <div id="leagues" className="section-anchor">
+        <h1 className="page-title">Leagues</h1>
+      </div>
 
+      <SectionNav
+        items={[
+          { id: "leagues", label: "Leagues" },
+          { id: "league-finances", label: "Finances" },
+          { id: "league-squads", label: "Squads" },
+          { id: "league-injuries", label: "Injuries" },
+        ]}
+      />
+
+      <section>
         <div className="grid gap-4 md:grid-cols-2">
           {leagues.map((league) => (
             <Link
