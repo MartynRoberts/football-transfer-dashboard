@@ -9,6 +9,9 @@ import TransferHistory from "@/components/players/TransferHistory";
 import MostEfficientClubSpending from "@/components/transfers/MostEfficientClubSpending";
 import MostExpensiveTransfers from "@/components/transfers/MostExpensiveTransfers";
 import { getLeagueDetailAnalytics } from "@/lib/leagues/get-league-analytics";
+import { getClubDisciplineRanking } from "@/lib/leagues/get-league-analytics";
+import LeagueDisciplineRankings from "@/components/leagues/LeagueDisciplineRankings";
+import { CURRENT_SEASON } from "@/lib/sync/scope";
 
 type AnalyticsData = Awaited<ReturnType<typeof getLeagueDetailAnalytics>>;
 type ClubRow = AnalyticsData["clubs"][number];
@@ -20,7 +23,10 @@ export default async function LeagueDetailAnalytics({
   leagueId: string;
   leagueName: string;
 }) {
-  const data = await getLeagueDetailAnalytics(leagueId);
+  const [data, discipline] = await Promise.all([
+    getLeagueDetailAnalytics(leagueId),
+    getClubDisciplineRanking(leagueId),
+  ]);
   const bySpend = descending(data.clubs, (club) => club.totalSpend);
   const byNetSpend = descending(data.clubs, (club) => club.netSpend);
   const byValue = descending(data.clubs, (club) => club.squadValue);
@@ -109,6 +115,10 @@ export default async function LeagueDetailAnalytics({
             leagueName={leagueName}
           />
         </Suspense>
+      </div>
+
+      <div id="discipline" className="section-anchor">
+        <LeagueDisciplineRankings clubs={discipline} season={CURRENT_SEASON} />
       </div>
     </div>
   );

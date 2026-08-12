@@ -10,6 +10,8 @@ interface SeasonTotals {
   minutesPlayed: number;
   goals: number;
   assists: number;
+  yellowCards: number;
+  redCards: number;
 }
 
 interface StatScope {
@@ -106,12 +108,16 @@ export function buildSeasonPerformances(
         minutesPlayed: 0,
         goals: 0,
         assists: 0,
+        yellowCards: 0,
+        redCards: 0,
       };
 
       totals.appearances += stat.appearances;
       totals.minutesPlayed += stat.minutesPlayed;
       totals.goals += stat.goals;
       totals.assists += stat.assists;
+      totals.yellowCards += stat.yellowCards;
+      totals.redCards += stat.redCards;
 
       seasons[stat.season] = totals;
 
@@ -144,6 +150,7 @@ export function buildSeasonPerformances(
         );
 
       const goalContributions = season.goals + season.assists;
+      const cards = season.yellowCards + season.redCards;
 
       const samePositionTopFive = normalizedPlayerPosition
         ? comparisonPerformances.filter(
@@ -169,6 +176,11 @@ export function buildSeasonPerformances(
         assistsPer90: per90(season.assists, season.minutesPlayed),
 
         contributionsPer90: per90(goalContributions, season.minutesPlayed),
+        cardsPerAppearance:
+          season.appearances > 0
+            ? Number((cards / season.appearances).toFixed(2))
+            : null,
+        cardsPer90: per90(cards, season.minutesPlayed),
 
         minutesPerContribution:
           goalContributions > 0

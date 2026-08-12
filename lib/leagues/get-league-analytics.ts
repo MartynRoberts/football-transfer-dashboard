@@ -12,6 +12,7 @@ import type {
   LeagueAnalyticsData,
   LeagueFinanceRow,
 } from "@/lib/leagues/types";
+import { calculateClubDisciplineRows } from "@/lib/leagues/discipline";
 
 const compareInjuries = (first: ClubInjuryRow, second: ClubInjuryRow) =>
   second.gamesMissed - first.gamesMissed ||
@@ -259,6 +260,62 @@ export async function getLeagueClubInjuryRanking({
       };
     })
     .sort(compareInjuries);
+}
+
+export async function getClubDisciplineRanking(leagueId?: string) {
+  const clubs = await prisma.club.findMany({
+    where: leagueId
+      ? { leagueId }
+      : {
+          league: { is: { transfermarktId: { in: [...TOP_FIVE_LEAGUE_IDS] } } },
+        },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      logoUrl: true,
+      transfermarktId: true,
+      league: { select: { name: true, transfermarktId: true } },
+    },
+  });
+  const statClubIds = clubs.flatMap((club) =>
+    club.transfermarktId ? [club.transfermarktId] : [],
+  );
+  const competitionIds = Array.from(
+    new Set(
+      clubs.flatMap((club) =>
+        club.league?.transfermarktId ? [club.league.transfermarktId] : [],
+      ),
+    ),
+  );
+  if (statClubIds.length === 0 || competitionIds.length === 0) return [];
+
+  const stats = await prisma.playerStat.findMany({
+    where: {
+      season: CURRENT_SEASON,
+      clubId: { in: statClubIds },
+      competitionId: { in: competitionIds },
+    },
+    select: {
+      clubId: true,
+      appearances: true,
+      minutesPlayed: true,
+      yellowCards: true,
+      redCards: true,
+    },
+  });
+
+  return calculateClubDisciplineRows(
+    clubs.map((club) => ({
+      id: club.id,
+      name: club.name,
+      slug: club.slug,
+      logoUrl: club.logoUrl,
+      transfermarktId: club.transfermarktId,
+      leagueName: club.league?.name ?? "Unknown league",
+    })),
+    stats,
+  );
 }
 
 export async function getLeagueDetailAnalytics(leagueId: string) {

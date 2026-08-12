@@ -8,6 +8,7 @@ import MarketValueHistory from "@/components/players/MarketValueHistory";
 import PlayerHeader from "@/components/players/PlayerHeader";
 import TransferHistory from "@/components/players/TransferHistory";
 import SectionNav from "@/components/navigation/SectionNav";
+import PlayerDiscipline from "@/components/players/PlayerDiscipline";
 import { getPlayerPageData } from "@/lib/players/get-player-page-data";
 import { prisma } from "@/lib/prisma";
 import { createPageMetadata } from "@/lib/seo/metadata";
@@ -66,6 +67,7 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
         { id: "market-value", label: "Market value" },
         { id: "appearances", label: "Appearances" },
         { id: "performance", label: "Goals & assists" },
+        { id: "discipline", label: "Discipline" },
         { id: "injuries", label: "Injuries" },
         { id: "transfers", label: "Transfers" },
       ]}
@@ -93,6 +95,9 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
       </div>
       <div id="performance" className="section-anchor">
         <GoalsAndAssists seasons={data.seasonPerformances} />
+      </div>
+      <div id="discipline" className="section-anchor">
+        <PlayerDiscipline seasons={data.seasonPerformances} />
       </div>
       <div id="injuries" className="section-anchor">
         <InjuryHistory injuries={player.injuries} metric={player.metric} />
