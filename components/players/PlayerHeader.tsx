@@ -125,7 +125,7 @@ export default function PlayerHeader({
   );
 }
 
-function calculateAge(dateOfBirth: Date, today = new Date()): number {
+export function calculateAge(dateOfBirth: Date, today = new Date()): number {
   let age = today.getUTCFullYear() - dateOfBirth.getUTCFullYear();
   const birthdayHasPassed =
     today.getUTCMonth() > dateOfBirth.getUTCMonth() ||

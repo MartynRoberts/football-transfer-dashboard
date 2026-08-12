@@ -15,6 +15,7 @@ interface Props {
   country?: boolean;
   imagePreload?: boolean;
   imageSize?: number;
+  headingLevel?: 2 | 3;
 }
 
 export default function LeagueIdentity({
@@ -24,6 +25,7 @@ export default function LeagueIdentity({
   country = false,
   imagePreload = false,
   imageSize,
+  headingLevel = 3,
 }: Props) {
   const meta = league.transfermarktId
     ? LEAGUE_META[league.transfermarktId as keyof typeof LEAGUE_META]
@@ -59,7 +61,11 @@ export default function LeagueIdentity({
         </div>
       ) : country ? (
         <div>
-          <h3 className="font-semibold text-slate-900">{league.name}</h3>
+          {headingLevel === 2 ? (
+            <h2 className="font-semibold text-slate-900">{league.name}</h2>
+          ) : (
+            <h3 className="font-semibold text-slate-900">{league.name}</h3>
+          )}
           <p className="text-xs text-slate-500">
             {league.country ?? "Unknown country"}
           </p>

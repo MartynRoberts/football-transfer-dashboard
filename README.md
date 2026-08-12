@@ -50,6 +50,7 @@ Playing statistics and transfer activity use separate season values in
 - PostgreSQL and Prisma ORM
 - Tailwind CSS 4 and shadcn/ui
 - Recharts
+- Jest, React Testing Library, and jest-axe
 - Vercel
 
 ## Local development
@@ -89,7 +90,23 @@ npm run dev      # Start the development server
 npm run build    # Generate Prisma Client and create a production build
 npm run start    # Run the production server
 npm run lint     # Run ESLint
+npm test         # Run the Jest test suite
+npm run test:watch     # Run tests interactively while developing
+npm run test:coverage  # Run tests and enforce coverage thresholds
 ```
+
+## Testing
+
+The automated test suite covers business rules, responsive component markup,
+user interactions, accessibility, page composition, and mocked Prisma queries.
+It uses Jest with JSDOM, React Testing Library, `user-event`, and `jest-axe`.
+
+Tests are colocated with the production files they cover. Shared browser and
+Next.js mocks live in `test/setup.tsx`, while coverage rules are configured in
+`jest.config.ts`.
+
+For the complete testing strategy, mocking conventions, coverage policy, and
+instructions for adding tests, see [docs/TESTING.md](docs/TESTING.md).
 
 ## Importing data
 

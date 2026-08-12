@@ -1,6 +1,10 @@
 import Link from "next/link";
 import ClubName, { type ClubNameData } from "@/components/clubs/ClubName";
 import TransferValueRating from "@/components/transfers/TransferValueRating";
+import {
+  formatMarketValue,
+  formatTransferFee,
+} from "@/lib/transfers/formatters";
 
 interface TransferHistoryItem {
   id: string;
@@ -32,28 +36,6 @@ interface TransferHistoryProps {
   title?: string;
   showPlayer?: boolean;
   emptyMessage?: string;
-}
-
-function formatFee(fee: number | null, transferType: string | null): string {
-  if (fee === null) {
-    return transferType
-      ? `${transferType.charAt(0).toUpperCase()}${transferType.slice(1)}`
-      : "Undisclosed";
-  }
-
-  if (fee === 0) {
-    return "Free";
-  }
-
-  return `€${fee.toLocaleString()}`;
-}
-
-function formatMarketValue(marketValue: number | null): string {
-  if (marketValue === null) {
-    return "-";
-  }
-
-  return `€${marketValue.toLocaleString()}`;
 }
 
 export default function TransferHistory({
@@ -138,7 +120,7 @@ export default function TransferHistory({
                   </td>
 
                   <td data-label="Fee" className="whitespace-nowrap p-3">
-                    {formatFee(transfer.fee, transfer.transferType)}
+                    {formatTransferFee(transfer.fee, transfer.transferType)}
                   </td>
 
                   <td
