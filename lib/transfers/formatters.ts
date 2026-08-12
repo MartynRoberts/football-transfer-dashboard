@@ -15,3 +15,12 @@ export function formatTransferFee(
 export function formatMarketValue(marketValue: number | null): string {
   return marketValue === null ? "-" : `€${marketValue.toLocaleString()}`;
 }
+
+export function getEffectiveTransferFee(
+  fee: number | null,
+  transferType?: string | null,
+): number | null {
+  if (fee !== null) return fee;
+
+  return transferType?.trim().toLowerCase() === "free transfer" ? 0 : null;
+}

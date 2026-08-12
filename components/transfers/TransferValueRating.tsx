@@ -1,8 +1,11 @@
 interface TransferValueRatingProps {
   fee: number | null;
   marketValue: number | null;
+  transferType?: string | null;
   perspective?: "buyer" | "seller";
 }
+
+import { getEffectiveTransferFee } from "@/lib/transfers/formatters";
 
 type Rating =
   | "Exceptional value"
@@ -162,9 +165,14 @@ function assessTransferValue(
 export default function TransferValueRating({
   fee,
   marketValue,
+  transferType,
   perspective = "buyer",
 }: TransferValueRatingProps) {
-  const assessment = assessTransferValue(fee, marketValue, perspective);
+  const assessment = assessTransferValue(
+    getEffectiveTransferFee(fee, transferType),
+    marketValue,
+    perspective,
+  );
 
   return (
     <div className="min-w-0 sm:min-w-36">
