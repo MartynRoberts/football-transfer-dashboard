@@ -33,37 +33,45 @@ export default async function LeagueDetailAnalytics({
 
   return (
     <div className="contents">
-      <TransferHistory
-        transfers={data.latestTransfers}
-        title="10 latest transfers for this league"
-        showPlayer
-        emptyMessage="No current-season transfers available."
-      />
-
-      <div className="grid gap-10 xl:grid-cols-2">
-        <ClubRanking
-          title="Biggest spenders"
-          description={`${data.season} · Total incoming player spend from known fees`}
-          clubs={bySpend}
-          value={(club) => formatMoney(club.totalSpend)}
-          detail={(club) => `${club.incomingCount} arrivals`}
-        />
-        <ClubRanking
-          title="Net spend ranked"
-          description={`${data.season} · Incoming spend less transfer income`}
-          clubs={byNetSpend}
-          value={(club) => formatMoney(club.netSpend)}
-          detail={(club) =>
-            `${formatMoney(club.totalSpend)} spent · ${formatMoney(club.totalIncome)} received`
-          }
+      <div id="latest-transfers" className="section-anchor">
+        <TransferHistory
+          transfers={data.latestTransfers}
+          title="10 latest transfers for this league"
+          showPlayer
+          emptyMessage="No current-season transfers available."
         />
       </div>
 
-      <div className="grid gap-10 xl:grid-cols-2">
+      <div id="finances" className="section-anchor page-stack">
+        <div className="grid gap-10 xl:grid-cols-2">
+          <ClubRanking
+            title="Biggest spenders"
+            description={`${data.season} · Total incoming player spend from known fees`}
+            clubs={bySpend}
+            value={(club) => formatMoney(club.totalSpend)}
+            detail={(club) => `${club.incomingCount} arrivals`}
+          />
+          <ClubRanking
+            title="Net spend ranked"
+            description={`${data.season} · Incoming spend less transfer income`}
+            clubs={byNetSpend}
+            value={(club) => formatMoney(club.netSpend)}
+            detail={(club) =>
+              `${formatMoney(club.totalSpend)} spent · ${formatMoney(club.totalIncome)} received`
+            }
+          />
+        </div>
         <MostEfficientClubSpending
           clubs={data.efficientClubs}
           seasons={data.efficiencySeasons}
         />
+        <MostExpensiveTransfers
+          transfers={data.expensiveTransfers}
+          season={data.season}
+        />
+      </div>
+
+      <div id="squads" className="section-anchor grid gap-10 xl:grid-cols-2">
         <ClubRanking
           title="Ranked squad valuations"
           description="Combined current market value of players in each squad"
@@ -71,14 +79,6 @@ export default async function LeagueDetailAnalytics({
           value={(club) => formatMoney(club.squadValue)}
           detail={(club) => `${club.playerCount} players`}
         />
-      </div>
-
-      <MostExpensiveTransfers
-        transfers={data.expensiveTransfers}
-        season={data.season}
-      />
-
-      <div className="grid gap-10 xl:grid-cols-2">
         <ClubRanking
           title="Most incoming transfers"
           description={`${data.season} · All recorded arrivals`}
@@ -93,9 +93,6 @@ export default async function LeagueDetailAnalytics({
           value={(club) => club.outgoingCount.toLocaleString()}
           detail={() => "departures"}
         />
-      </div>
-
-      <div className="grid gap-10 xl:grid-cols-2">
         <ClubRanking
           title="Squad ages ranked"
           description="Average age of players with a recorded date of birth"
@@ -103,7 +100,9 @@ export default async function LeagueDetailAnalytics({
           value={(club) => `${club.averageAge.toFixed(1)} years`}
           detail={(club) => `${club.playerCount} players`}
         />
+      </div>
 
+      <div id="availability" className="section-anchor">
         <Suspense fallback={<LeagueClubInjuryAnalyticsSkeleton />}>
           <LeagueClubInjuryAnalytics
             leagueId={leagueId}

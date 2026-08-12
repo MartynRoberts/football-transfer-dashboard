@@ -63,7 +63,7 @@ export default function RootLayout({
       lang="en"
       className={`${inter.className} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full">
         <Navbar />
 
         <div className="min-h-screen">{children}</div>
