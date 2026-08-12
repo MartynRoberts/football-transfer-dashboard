@@ -22,7 +22,7 @@ describe("TransferHistory", () => {
     expect(within(row).getByText("Leeds")).toBeInTheDocument();
     expect(within(row).getByText("Tottenham")).toBeInTheDocument();
     expect(within(row).getByText("End of loan")).toBeInTheDocument();
-    expect(within(row).getByText("€8,000,000")).toBeInTheDocument();
+    expect(within(row).getByText("£6.9m")).toBeInTheDocument();
     expect(within(row).getByRole("link", { name: "Djed Spence" })).toHaveAttribute("href", "/players/djed-spence-483348");
     expect(within(row).getByText("Leeds").closest("td")).toHaveAttribute("data-label", "From");
     expect(within(row).getByText("Tottenham").closest("td")).toHaveAttribute("data-label", "To");

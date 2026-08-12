@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ClubName, { type ClubNameData } from "@/components/clubs/ClubName";
 import TransferValueRating from "@/components/transfers/TransferValueRating";
+import { formatPounds } from "@/lib/currency";
 
 interface ClubTransfer {
   id: string;
@@ -28,11 +29,11 @@ function TransferFee({
       : "Undisclosed";
   }
   if (fee === 0) return "Free";
-  return `€${fee.toLocaleString()}`;
+  return formatPounds(fee);
 }
 
 function MarketValue({ marketValue }: { marketValue: number | null }) {
-  return marketValue === null ? "-" : `€${marketValue.toLocaleString()}`;
+  return marketValue === null ? "-" : formatPounds(marketValue);
 }
 
 export default function ClubTransferTable({

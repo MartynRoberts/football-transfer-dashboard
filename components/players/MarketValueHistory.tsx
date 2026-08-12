@@ -72,34 +72,6 @@ export default function MarketValueHistory({
               </div>
             </div>
           )}
-
-          {/* Full market value history table */}
-          {/*
-          <div className="analytics-frame overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b bg-gray-100">
-                  <th className="p-3 text-left">Date</th>
-                  <th className="p-3 text-left">Value</th>
-                  <th className="p-3 text-left">Club</th>
-                </tr>
-              </thead>
-              <tbody>
-                {histories.map((history) => (
-                  <tr key={history.id} className="border-b last:border-b-0">
-                    <td className="p-3">
-                      {history.date.toLocaleDateString("en-GB")}
-                    </td>
-                    <td className="p-3 font-medium">
-                      €{history.marketValue.toLocaleString()}
-                    </td>
-                    <td className="p-3">{history.clubName ?? "-"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          */}
         </div>
       )}
     </section>

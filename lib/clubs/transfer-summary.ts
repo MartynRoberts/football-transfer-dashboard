@@ -18,11 +18,12 @@ export function formatNetSpend(value: number): {
   value: string;
   detail: string;
 } {
-  const formattedValue = `€${Math.abs(value).toLocaleString()}`;
+  const formattedValue = formatPounds(Math.abs(value));
 
   if (value > 0)
     return { value: formattedValue, detail: "(Based on known fees)" };
   if (value < 0)
     return { value: formattedValue, detail: "Net transfer profit" };
-  return { value: "€0", detail: "Balanced transfer activity" };
+  return { value: "£0", detail: "Balanced transfer activity" };
 }
+import { formatPounds } from "@/lib/currency";

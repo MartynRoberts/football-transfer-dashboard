@@ -18,7 +18,7 @@ describe("LeagueTransferRankings", () => {
     const leagueCells = screen.getAllByRole("cell", { name: /Premier League/ });
     expect(leagueCells).toHaveLength(2);
     expect(leagueCells[0]).toHaveAttribute("data-label", "League");
-    expect(screen.getAllByText("€50")[0].closest("td")).toHaveAttribute("data-label", "Income");
-    expect(screen.getByText("€25").closest("td")).toHaveAttribute("data-label", "Efficiency");
+    expect(screen.getAllByText("£43")[0].closest("td")).toHaveAttribute("data-label", "Income");
+    expect(screen.getByText("£21").closest("td")).toHaveAttribute("data-label", "Efficiency");
   });
 });

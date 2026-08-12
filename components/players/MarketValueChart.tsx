@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 import { buildMarketValueTimeline } from "@/lib/players/market-value-timeline";
+import { formatPounds } from "@/lib/currency";
 
 interface MarketValuePoint {
   date: string;
@@ -19,18 +20,6 @@ interface MarketValuePoint {
 
 interface MarketValueChartProps {
   data: MarketValuePoint[];
-}
-
-function formatCurrency(value: number): string {
-  if (value >= 1_000_000) {
-    return `€${(value / 1_000_000).toFixed(value % 1_000_000 === 0 ? 0 : 1)}m`;
-  }
-
-  if (value >= 1_000) {
-    return `€${Math.round(value / 1_000)}k`;
-  }
-
-  return `€${value.toLocaleString()}`;
 }
 
 function formatDate(value: number | string): string {
@@ -89,7 +78,7 @@ export default function MarketValueChart({ data }: MarketValueChartProps) {
           />
 
           <YAxis
-            tickFormatter={(value) => formatCurrency(Number(value))}
+            tickFormatter={(value) => formatPounds(Number(value))}
             width={56}
             tickLine={false}
             axisLine={false}
@@ -97,7 +86,7 @@ export default function MarketValueChart({ data }: MarketValueChartProps) {
 
           <Tooltip
             formatter={(value) => [
-              formatCurrency(Number(value)),
+              formatPounds(Number(value)),
               "Market value",
             ]}
             labelFormatter={(label) => formatDate(Number(label))}

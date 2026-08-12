@@ -37,9 +37,9 @@ describe("business rules", () => {
   });
 
   it("formats spend, profit, and balanced activity", () => {
-    expect(formatNetSpend(1_000)).toEqual({ value: "€1,000", detail: "(Based on known fees)" });
-    expect(formatNetSpend(-1_000)).toEqual({ value: "€1,000", detail: "Net transfer profit" });
-    expect(formatNetSpend(0)).toEqual({ value: "€0", detail: "Balanced transfer activity" });
+    expect(formatNetSpend(1_000)).toEqual({ value: "£856", detail: "(Based on known fees)" });
+    expect(formatNetSpend(-1_000)).toEqual({ value: "£856", detail: "Net transfer profit" });
+    expect(formatNetSpend(0)).toEqual({ value: "£0", detail: "Balanced transfer activity" });
   });
 
   it("calculates absence rate and recurrent injury groups", () => {

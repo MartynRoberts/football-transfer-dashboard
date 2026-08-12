@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ClubName, { type ClubNameData } from "@/components/clubs/ClubName";
 import TransferValueRating from "@/components/transfers/TransferValueRating";
+import { formatPounds } from "@/lib/currency";
 
 interface BestValueTransfer {
   id: string;
@@ -26,26 +27,8 @@ interface BestValueTransfer {
     | null;
 }
 
-function formatMoney(value: number): string {
-  const absoluteValue = Math.abs(value);
-
-  if (absoluteValue >= 1_000_000_000) {
-    return `€${(absoluteValue / 1_000_000_000).toFixed(2)}bn`;
-  }
-
-  if (absoluteValue >= 1_000_000) {
-    return `€${(absoluteValue / 1_000_000).toFixed(1)}m`;
-  }
-
-  if (absoluteValue >= 1_000) {
-    return `€${(absoluteValue / 1_000).toFixed(1)}k`;
-  }
-
-  return `€${absoluteValue.toLocaleString()}`;
-}
-
 function formatFee(fee: number): string {
-  return fee === 0 ? "Free" : formatMoney(fee);
+  return fee === 0 ? "Free" : formatPounds(fee);
 }
 
 export default function BestValueTransfers({
@@ -137,14 +120,14 @@ export default function BestValueTransfers({
                   </td>
 
                   <td data-label="Valuation" className="whitespace-nowrap p-3">
-                    {formatMoney(transfer.marketValue)}
+                    {formatPounds(transfer.marketValue)}
                   </td>
 
                   <td
                     data-label="Value gained"
                     className="whitespace-nowrap p-3 font-semibold text-emerald-700"
                   >
-                    Worth {formatMoney(transfer.valueDifference)} more than paid
+                    Worth {formatPounds(transfer.valueDifference)} more than paid
                   </td>
 
                   <td data-label="Rating" className="min-w-44 p-4">
