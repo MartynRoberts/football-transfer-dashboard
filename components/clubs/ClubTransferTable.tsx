@@ -130,6 +130,7 @@ export default function ClubTransferTable({
                         <TransferValueRating
                           fee={transfer.fee}
                           marketValue={transfer.marketValue}
+                          transferType={transfer.transferType}
                           perspective={incoming ? "buyer" : "seller"}
                         />
                       </div>

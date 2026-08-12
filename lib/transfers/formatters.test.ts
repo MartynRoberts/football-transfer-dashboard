@@ -1,4 +1,8 @@
-import { formatMarketValue, formatTransferFee } from "./formatters";
+import {
+  formatMarketValue,
+  formatTransferFee,
+  getEffectiveTransferFee,
+} from "./formatters";
 
 describe("transfer formatters", () => {
   test.each([
@@ -15,5 +19,13 @@ describe("transfer formatters", () => {
   it("formats and safely falls back for market values", () => {
     expect(formatMarketValue(8_000_000)).toBe("€8,000,000");
     expect(formatMarketValue(null)).toBe("-");
+  });
+
+  it("treats an imported free transfer as a zero fee for valuation", () => {
+    expect(getEffectiveTransferFee(null, "free transfer")).toBe(0);
+    expect(getEffectiveTransferFee(null, " Free Transfer ")).toBe(0);
+    expect(getEffectiveTransferFee(null, "end of loan")).toBeNull();
+    expect(getEffectiveTransferFee(null, null)).toBeNull();
+    expect(getEffectiveTransferFee(500_000, "free transfer")).toBe(500_000);
   });
 });
