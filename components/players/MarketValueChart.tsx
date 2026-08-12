@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { buildMarketValueTimeline } from "@/lib/players/market-value-timeline";
 
 interface MarketValuePoint {
   date: string;
@@ -49,22 +50,11 @@ export default function MarketValueChart({ data }: MarketValueChartProps) {
     return null;
   }
 
-  const chartData = data.map((point) => ({
-    ...point,
-    timestamp: new Date(point.date).getTime(),
-  }));
-  const firstYear = new Date(chartData[0].timestamp).getUTCFullYear();
-  const lastYear = new Date(
-    chartData[chartData.length - 1].timestamp,
-  ).getUTCFullYear();
-  const yearTicks = Array.from(
-    { length: lastYear - firstYear + 1 },
-    (_, index) => Date.UTC(firstYear + index, 0, 1),
-  );
-  const timeDomain: [number, number] = [
-    Date.UTC(firstYear, 0, 1),
-    Date.UTC(lastYear + 1, 0, 1),
-  ];
+  const timeline = buildMarketValueTimeline(data);
+
+  if (!timeline) return null;
+
+  const { chartData, yearTicks, timeDomain } = timeline;
 
   return (
     <div

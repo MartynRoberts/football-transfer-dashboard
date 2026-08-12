@@ -55,7 +55,12 @@ export default async function LeaguesPage() {
               className="card-link block"
             >
               <div className="flex items-center justify-between">
-                <LeagueIdentity league={league} country imageSize={64} />
+                <LeagueIdentity
+                  league={league}
+                  country
+                  imageSize={64}
+                  headingLevel={2}
+                />
                 <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
                   {league._count.clubs} Clubs
                 </span>

@@ -6,7 +6,7 @@ export function getLastThreeSeasons(currentSeason: string): string[] {
   const startYear = Number(match[1]);
 
   return Array.from({ length: 3 }, (_, index) => {
-    const seasonStart = startYear - index;
+    const seasonStart = (startYear - index + 100) % 100;
     const seasonEnd = (seasonStart + 1) % 100;
     return `${seasonStart.toString().padStart(2, "0")}/${seasonEnd
       .toString()
