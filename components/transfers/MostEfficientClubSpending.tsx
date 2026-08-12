@@ -106,7 +106,8 @@ export default function MostEfficientClubSpending({
 
                   <div className="text-right">
                     <div className="font-bold">
-                      +{formatPounds(club.efficiencyScore)}
+                      {club.efficiencyScore > 0 ? "+" : ""}
+                      {formatPounds(club.efficiencyScore)}
                     </div>
 
                     <div className="text-xs text-slate-500">efficiency</div>
