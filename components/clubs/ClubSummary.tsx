@@ -16,15 +16,22 @@ export default function ClubSummary({
 }) {
   return (
     <section>
-      <div className="flex items-center justify-between">
-        <ClubIdentity
-          club={club}
-          showLeague={false}
-          link={false}
-          h1
-          imagePreload
-        />
-        {club.league && <LeagueIdentity league={club.league} link />}
+      <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div className="min-w-0 [&_h1]:text-2xl [&_h1]:leading-tight [&_h1]:break-words sm:[&_h1]:text-3xl">
+          <ClubIdentity
+            club={club}
+            showLeague={false}
+            link={false}
+            h1
+            imagePreload
+          />
+        </div>
+
+        {club.league && (
+          <div className="min-w-0 border-t pt-4 sm:border-t-0 sm:pt-0">
+            <LeagueIdentity league={club.league} link />
+          </div>
+        )}
       </div>
 
       <div className="mt-6 grid grid-cols-6 gap-3 sm:gap-4 lg:grid-cols-5">

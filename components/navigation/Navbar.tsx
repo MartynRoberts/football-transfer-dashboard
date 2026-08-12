@@ -36,19 +36,28 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
-          <Link href="/" className="white hover:text-white">
+          <Link href="/" className="white hover:text-white hover:underline">
             Home
           </Link>
 
-          <Link href="/leagues" className="white hover:text-white">
+          <Link
+            href="/leagues"
+            className="white hover:text-white hover:underline"
+          >
             Leagues
           </Link>
 
-          <Link href="/clubs" className="white hover:text-white">
+          <Link
+            href="/clubs"
+            className="white hover:text-white hover:underline"
+          >
             Clubs
           </Link>
 
-          <Link href="/players" className="white hover:text-white">
+          <Link
+            href="/players"
+            className="white hover:text-white hover:underline"
+          >
             Players
           </Link>
         </nav>
