@@ -1,8 +1,9 @@
 import { prisma } from "../../lib/prisma";
 import { normalizeRemoteImageUrl } from "../../lib/images/normalize-remote-image-url";
-import { fetchFromApi } from "../../lib/sync/api";
+import { ApiHttpError, fetchFromApi } from "../../lib/sync/api";
 import { getPositionGroup } from "../../lib/sync/helpers/position-group";
 import { TOP_FIVE_LEAGUE_IDS } from "../../lib/sync/scope";
+import type { Prisma } from "@prisma/client";
 
 interface PlayerProfileResponse {
   id: string;
@@ -81,10 +82,49 @@ export async function syncPlayerProfiles() {
   console.log("👤 Syncing player profiles");
 
   const force = process.argv.includes("--force");
+  const delayArgument = process.argv.find((value) =>
+    value.startsWith("--delay-ms="),
+  );
+  const delayMs = Number(delayArgument?.split("=")[1] ?? 7000);
+
+  if (!Number.isFinite(delayMs) || delayMs < 1000) {
+    throw new Error("--delay-ms must be a number of at least 1000");
+  }
 
   if (force) {
     console.log(
       "⚠️ Force mode enabled: refreshing all eligible player profiles",
+    );
+  }
+
+  const freshnessCutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const clubScope: Prisma.ClubNullableScalarRelationFilter = {
+    is: {
+      league: {
+        is: {
+          transfermarktId: {
+            in: [...TOP_FIVE_LEAGUE_IDS],
+          },
+        },
+      },
+    },
+  };
+
+  if (!force) {
+    const skippedCount = await prisma.player.count({
+      where: {
+        transfermarktId: {
+          not: null,
+        },
+        currentClub: clubScope,
+        profileSyncedAt: {
+          gte: freshnessCutoff,
+        },
+      },
+    });
+
+    console.log(
+      `Skipping ${skippedCount} profiles synced in the last seven days`,
     );
   }
 
@@ -93,17 +133,7 @@ export async function syncPlayerProfiles() {
       transfermarktId: {
         not: null,
       },
-      currentClub: {
-        is: {
-          league: {
-            is: {
-              transfermarktId: {
-                in: [...TOP_FIVE_LEAGUE_IDS],
-              },
-            },
-          },
-        },
-      },
+      currentClub: clubScope,
       ...(force
         ? {}
         : {
@@ -113,12 +143,13 @@ export async function syncPlayerProfiles() {
               },
               {
                 profileSyncedAt: {
-                  lt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+                  lt: freshnessCutoff,
                 },
               },
             ],
-          }),
+      }),
     },
+    orderBy: [{ name: "asc" }, { id: "asc" }],
   });
 
   console.log(`Found ${players.length} players`);
@@ -133,6 +164,7 @@ export async function syncPlayerProfiles() {
     try {
       const profile = await fetchFromApi<PlayerProfileResponse>(
         `/players/${player.transfermarktId}/profile`,
+        { throwOnHttpError: true },
       );
 
       if (!profile) {
@@ -190,11 +222,24 @@ export async function syncPlayerProfiles() {
           profileSyncedAt: new Date(),
         },
       });
+
+      console.log(`✓ Saved ${player.name}`);
     } catch (error) {
       console.error(`Failed ${player.name}`, error);
+
+      if (
+        error instanceof ApiHttpError &&
+        (error.status === 403 || error.status === 429)
+      ) {
+        console.error(
+          `\n🛑 Upstream returned ${error.status}. Stopping to avoid extending ` +
+            "the block. Successfully synced players will be skipped on the next run.",
+        );
+        break;
+      }
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 250));
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
 
   console.log("✅ Player profiles synced");

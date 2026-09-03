@@ -17,6 +17,18 @@ interface SquadResponse {
     position?: string;
 
     dateOfBirth?: string;
+
+    nationality?: string[];
+
+    height?: number;
+
+    foot?: string;
+
+    joinedOn?: string;
+
+    contract?: string;
+
+    marketValue?: number;
   }>;
 }
 
@@ -99,6 +111,18 @@ export async function syncSquads() {
 
             dateOfBirth: p.dateOfBirth ? parseDate(p.dateOfBirth) : undefined,
 
+            nationality: p.nationality?.[0] ?? undefined,
+
+            height: p.height ?? undefined,
+
+            foot: p.foot ?? undefined,
+
+            joinedOn: p.joinedOn ? parseDate(p.joinedOn) : undefined,
+
+            contract: p.contract ? parseDate(p.contract) : undefined,
+
+            marketValue: p.marketValue ?? undefined,
+
             positionGroup: getPositionGroup(p.position),
 
             currentClubId: club.id,
@@ -116,6 +140,18 @@ export async function syncSquads() {
             position: p.position,
 
             dateOfBirth: parseDate(p.dateOfBirth),
+
+            nationality: p.nationality?.[0] ?? null,
+
+            height: p.height ?? null,
+
+            foot: p.foot ?? null,
+
+            joinedOn: parseDate(p.joinedOn),
+
+            contract: parseDate(p.contract),
+
+            marketValue: p.marketValue ?? null,
 
             positionGroup: getPositionGroup(p.position),
 
