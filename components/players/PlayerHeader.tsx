@@ -7,6 +7,7 @@ import ClubIdentity from "@/components/clubs/ClubIdentity";
 import PlayerProfileCards from "@/components/players/PlayerProfileCards";
 import HeightPercentiles from "./HeightPercentiles";
 import { formatContractTimeRemaining } from "@/lib/players/contract-duration";
+import "flag-icons/css/flag-icons.min.css";
 
 interface PlayerHeaderProps {
   player: PlayerWithPageRelations;

@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { useState } from "react";
 import { getClubLogoUrl } from "@/lib/images/club-logo-url";
 
 export default function ClubLogo({
@@ -15,10 +12,7 @@ export default function ClubLogo({
   size: number;
   preload?: boolean;
 }) {
-  const [failed, setFailed] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  if (!url || failed) return null;
+  if (!url) return null;
 
   return (
     <span
@@ -33,12 +27,7 @@ export default function ClubLogo({
         sizes={`${size}px`}
         preload={preload}
         fetchPriority={preload ? "high" : "auto"}
-        unoptimized
-        onLoad={() => setLoaded(true)}
-        onError={() => setFailed(true)}
-        className={`size-full object-contain transition-opacity duration-150 ${
-          loaded ? "opacity-100" : "opacity-0"
-        }`}
+        className="size-full object-contain"
       />
     </span>
   );

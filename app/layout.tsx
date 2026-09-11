@@ -1,19 +1,7 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
-import "flag-icons/css/flag-icons.min.css";
 import Navbar from "@/components/navigation/Navbar";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/metadata";
-
-const inter = Inter({
-  subsets: ["latin"],
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: "100",
-  variable: "--font-ibm-plex-mono",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -59,10 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.className} ${ibmPlexMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className="h-full antialiased">
       <body className="min-h-full">
         <Navbar />
 
