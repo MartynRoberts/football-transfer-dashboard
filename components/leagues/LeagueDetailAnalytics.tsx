@@ -149,7 +149,7 @@ function ClubRanking<T extends ClubRow>({
         {clubs.map((club, index) => (
           <div
             key={club.id}
-            className="grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 border-b p-4 last:border-b-0"
+            className="grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 border-b border-slate-200 p-4 last:border-b-0"
           >
             <span className="font-semibold text-slate-400">{index + 1}</span>
             <Link href={`/clubs/${club.slug}`} className="min-w-0">
