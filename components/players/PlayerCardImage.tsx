@@ -30,7 +30,6 @@ export default function PlayerCardImage({
         width={96}
         height={112}
         sizes="96px"
-        unoptimized={showPlayerImage}
         aria-hidden={showPlayerImage ? undefined : "true"}
         preload={preload}
         fetchPriority={preload ? "high" : "auto"}
@@ -61,7 +60,6 @@ export default function PlayerCardImage({
           alt={`${playerName} profile`}
           fill
           sizes="48px"
-          unoptimized
           preload={preload}
           fetchPriority={preload ? "high" : "auto"}
           className="object-contain"
