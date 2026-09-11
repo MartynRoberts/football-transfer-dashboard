@@ -56,9 +56,9 @@ export default function MarketValueChart({ data }: MarketValueChartProps) {
           data={chartData}
           margin={{
             top: 12,
-            right: 8,
+            right: 24,
             bottom: 8,
-            left: 0,
+            left: 8,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -79,7 +79,7 @@ export default function MarketValueChart({ data }: MarketValueChartProps) {
 
           <YAxis
             tickFormatter={(value) => formatPounds(Number(value))}
-            width={56}
+            width={60}
             tickLine={false}
             axisLine={false}
           />
