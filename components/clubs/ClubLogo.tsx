@@ -33,7 +33,6 @@ export default function ClubLogo({
         sizes={`${size}px`}
         preload={preload}
         fetchPriority={preload ? "high" : "auto"}
-        unoptimized
         onLoad={() => setLoaded(true)}
         onError={() => setFailed(true)}
         className={`size-full object-contain transition-opacity duration-150 ${
