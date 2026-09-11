@@ -5,6 +5,10 @@
 @theme {
   --color-brand: #0b7bb3;
   --color-brand-soft: color-mix(in srgb, var(--color-brand) 10%, white);
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-ibm-plex-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, "Liberation Mono", monospace;
 }
 
 body {
@@ -117,6 +121,14 @@ header nav a:hover {
 
 .section-anchor {
   scroll-margin-top: 7.5rem;
+}
+
+/* Skip layout and paint work for dashboard sections until they approach the
+   viewport. The intrinsic size keeps the scrollbar stable while they are
+   skipped, avoiding a layout shift when their real contents are revealed. */
+.defer-offscreen {
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 800px;
 }
 
 .section-nav {

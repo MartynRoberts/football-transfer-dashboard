@@ -23,7 +23,9 @@ export default function HomeDashboard({ data }: { data: HomeDashboardData }) {
           alt=""
           width={120}
           height={120}
-          className="rounded-lg object-cover h-full block mx-auto"
+          sizes="120px"
+          preload
+          className="mx-auto block size-[120px] rounded-lg object-cover"
         />
         <h1 className="mb-3 font-[family-name:var(--font-ibm-plex-mono)] text-3xl font-thin tracking-tight sm:mb-4 sm:text-4xl md:text-5xl">
           TransferDashboard
@@ -43,7 +45,7 @@ export default function HomeDashboard({ data }: { data: HomeDashboardData }) {
           { id: "record-fees", label: "Record fees" },
         ]}
       />
-      <div id="latest-transfers" className="section-anchor">
+      <div id="latest-transfers" className="section-anchor defer-offscreen">
         <TransferHistory
           transfers={data.latestTransfers}
           title="Latest transfers"
@@ -52,7 +54,7 @@ export default function HomeDashboard({ data }: { data: HomeDashboardData }) {
       </div>
       <div
         id="club-spending"
-        className="section-anchor mb-8 grid gap-8 sm:mb-12 lg:grid-cols-2"
+        className="section-anchor defer-offscreen mb-8 grid gap-8 sm:mb-12 lg:grid-cols-2"
       >
         <TopClubSpenders clubs={data.topSpenders} season={TRANSFER_SEASON} />
         <MostEfficientClubSpending
@@ -60,7 +62,7 @@ export default function HomeDashboard({ data }: { data: HomeDashboardData }) {
           seasons={data.efficiencySeasons}
         />
       </div>
-      <div id="transfer-value" className="section-anchor page-stack">
+      <div id="transfer-value" className="section-anchor defer-offscreen page-stack">
         <BestValueTransfers
           transfers={data.bestValueTransfers}
           season={TRANSFER_SEASON}
@@ -70,7 +72,7 @@ export default function HomeDashboard({ data }: { data: HomeDashboardData }) {
           season={TRANSFER_SEASON}
         />
       </div>
-      <div id="record-fees" className="section-anchor">
+      <div id="record-fees" className="section-anchor defer-offscreen">
         <MostExpensiveTransfers
           transfers={data.expensiveTransfers}
           season={TRANSFER_SEASON}
