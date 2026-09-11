@@ -53,7 +53,7 @@ export default function LeagueIdentity({
       )}
 
       {link ? (
-        <span className="font-medium">{league.name}</span>
+        <span className="entity-title font-medium">{league.name}</span>
       ) : !link && h1 && country ? (
         <div className="ml-2">
           <h1 className="page-title">{league.name}</h1>
@@ -78,10 +78,7 @@ export default function LeagueIdentity({
 
   if (link) {
     return (
-      <Link
-        href={`/leagues/${league.slug}`}
-        className="transition hover:text-brand"
-      >
+      <Link href={`/leagues/${league.slug}`} className="entity-link">
         {content}
       </Link>
     );

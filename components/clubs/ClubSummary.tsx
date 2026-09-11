@@ -34,7 +34,7 @@ export default function ClubSummary({
         </div>
 
         {club.league && (
-          <div className="min-w-0 border-t pt-4 sm:border-t-0 sm:pt-0">
+          <div className="min-w-0 border-t border-slate-200 pt-4 sm:border-t-0 sm:pt-0">
             <LeagueIdentity league={club.league} link />
           </div>
         )}
@@ -47,9 +47,7 @@ export default function ClubSummary({
           <div
             key={metric.label}
             className={`analytics-panel min-w-0 lg:col-span-1 ${
-              index < 3
-                ? "col-span-2"
-                : "col-span-6 min-[560px]:col-span-3"
+              index < 3 ? "col-span-2" : "col-span-6 min-[560px]:col-span-3"
             }`}
           >
             <p className="text-sm text-gray-500">{metric.label}</p>

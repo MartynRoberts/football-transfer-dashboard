@@ -60,7 +60,7 @@ function Ranking({
       >
         {title}
       </h3>
-      <div className="mt-4 divide-y">
+      <div className="mt-4 divide-y divide-slate-200">
         {clubs.map((club, index) => (
           <div
             key={club.id}

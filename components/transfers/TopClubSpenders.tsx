@@ -43,7 +43,7 @@ export default function TopClubSpenders({
             return (
               <div
                 key={club.id}
-                className="grid grid-cols-[1.5rem_minmax(0,1fr)] items-center gap-2 border-b p-3 last:border-b-0 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:gap-3 sm:p-4"
+                className="grid grid-cols-[1.5rem_minmax(0,1fr)] items-center gap-2 border-b border-slate-200 p-3 last:border-b-0 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:gap-3 sm:p-4"
               >
                 <span className="text-sm font-bold text-slate-400">
                   {index + 1}

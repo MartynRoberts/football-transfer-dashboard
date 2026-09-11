@@ -84,7 +84,7 @@ export default function MostEfficientClubSpending({
             return (
               <div
                 key={club.id}
-                className="border-b p-3 last:border-b-0 sm:p-4"
+                className="border-b border-slate-200 p-3 last:border-b-0 sm:p-4"
               >
                 <div className="grid grid-cols-[1.5rem_minmax(0,1fr)_auto] items-start gap-2 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:gap-3">
                   <span className="text-sm font-bold text-slate-400">

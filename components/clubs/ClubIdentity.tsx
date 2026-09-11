@@ -35,11 +35,21 @@ export default function ClubIdentity({
         {h1 ? (
           <h1 className="page-title">{club.name}</h1>
         ) : showLeague ? (
-          <p className="font-semibold text-slate-900">{club.name}</p>
+          <p
+            className={`font-semibold text-slate-900 ${link ? "entity-title" : ""}`}
+          >
+            {club.name}
+          </p>
         ) : playerProfile ? (
-          <h1 className="text-xl font-semibold">{club.name}</h1>
+          <h1 className={`text-xl font-semibold ${link ? "entity-title" : ""}`}>
+            {club.name}
+          </h1>
         ) : (
-          <h1 className="font-semibold text-slate-900">{club.name}</h1>
+          <h1
+            className={`font-semibold text-slate-900 ${link ? "entity-title" : ""}`}
+          >
+            {club.name}
+          </h1>
         )}
 
         {showLeague && club.league && (
@@ -47,10 +57,10 @@ export default function ClubIdentity({
             {linkLeague ? (
               <Link
                 href={`/leagues/${club.league.slug}`}
-                className="hover:text-brand hover:underline"
+                className="entity-link"
                 onClick={(e) => e.stopPropagation()}
               >
-                {club.league.name}
+                <span className="entity-title">{club.league.name}</span>
               </Link>
             ) : (
               club.league.name
@@ -68,7 +78,7 @@ export default function ClubIdentity({
   }
 
   return (
-    <Link href={`/clubs/${club.slug}`} className="transition hover:text-brand">
+    <Link href={`/clubs/${club.slug}`} className="entity-link">
       {content}
     </Link>
   );

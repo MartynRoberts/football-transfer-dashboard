@@ -123,7 +123,7 @@ function StatCard({
 
       <BenchmarkTrack benchmark={data.benchmark} leagueName={leagueName} />
 
-      <dl className="mt-6 divide-y">
+      <dl className="mt-6 divide-y divide-slate-200">
         {data.rows.map((row) => (
           <div
             key={row.label}

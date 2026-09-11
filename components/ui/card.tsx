@@ -10,6 +10,7 @@ export default function Card({ children, className = "" }: CardProps) {
         bg-white 
         border 
         border-slate-200 
+        rounded-xl
         shadow-sm 
         p-4
         ${className}

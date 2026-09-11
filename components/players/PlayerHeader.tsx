@@ -68,7 +68,7 @@ export default function PlayerHeader({
           </div>
         </div>
 
-        <div className="min-w-0 border-t pt-4 sm:border-t-0 sm:pt-0 [&_h1]:text-xl [&_h1]:leading-tight [&_h1]:break-words sm:[&_h1]:text-3xl">
+        <div className="min-w-0 border-t border-slate-200 pt-4 sm:border-t-0 sm:pt-0 [&_h1]:text-xl [&_h1]:leading-tight [&_h1]:break-words sm:[&_h1]:text-3xl">
           {player.currentClub ? (
             <ClubIdentity
               club={player.currentClub}

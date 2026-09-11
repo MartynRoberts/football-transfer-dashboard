@@ -18,7 +18,7 @@ export default async function LeagueClubInjuryAnalytics({
       <p className="mb-4 text-sm text-slate-500">
         {CURRENT_SEASON} · Ranked by reported games missed, then days injured
       </p>
-      <div className="analytics-frame divide-y">
+      <div className="analytics-frame divide-y divide-slate-200">
         {clubs.map((club, index) => (
           <div
             key={club.id}

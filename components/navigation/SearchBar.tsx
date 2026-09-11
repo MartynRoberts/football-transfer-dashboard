@@ -20,9 +20,13 @@ interface SearchResult extends SearchResultCardData {
 }
 
 interface SearchResponse {
-  players: Array<Omit<SearchResult, "type" | "detail"> & { position?: string | null }>;
+  players: Array<
+    Omit<SearchResult, "type" | "detail"> & { position?: string | null }
+  >;
   clubs: Array<Omit<SearchResult, "type" | "detail">>;
-  leagues: Array<Omit<SearchResult, "type" | "detail"> & { country?: string | null }>;
+  leagues: Array<
+    Omit<SearchResult, "type" | "detail"> & { country?: string | null }
+  >;
 }
 
 export default function SearchBar({ mobile = false }: SearchBarProps) {
@@ -38,9 +42,17 @@ export default function SearchBar({ mobile = false }: SearchBarProps) {
   const options = useMemo<SearchResult[]>(() => {
     if (!results) return [];
     return [
-      ...results.players.map((result) => ({ ...result, detail: result.position, type: "player" as const })),
+      ...results.players.map((result) => ({
+        ...result,
+        detail: result.position,
+        type: "player" as const,
+      })),
       ...results.clubs.map((result) => ({ ...result, type: "club" as const })),
-      ...results.leagues.map((result) => ({ ...result, detail: result.country, type: "league" as const })),
+      ...results.leagues.map((result) => ({
+        ...result,
+        detail: result.country,
+        type: "league" as const,
+      })),
     ];
   }, [results]);
 
@@ -55,14 +67,18 @@ export default function SearchBar({ mobile = false }: SearchBarProps) {
       setLoading(true);
       setOpen(true);
       try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}`, {
-          signal: controller.signal,
-        });
+        const response = await fetch(
+          `/api/search?q=${encodeURIComponent(trimmedQuery)}`,
+          {
+            signal: controller.signal,
+          },
+        );
         if (!response.ok) throw new Error("Search failed");
         setResults((await response.json()) as SearchResponse);
         setActiveIndex(-1);
       } catch {
-        if (!controller.signal.aborted) setResults({ players: [], clubs: [], leagues: [] });
+        if (!controller.signal.aborted)
+          setResults({ players: [], clubs: [], leagues: [] });
       } finally {
         if (!controller.signal.aborted) setLoading(false);
       }
@@ -86,7 +102,10 @@ export default function SearchBar({ mobile = false }: SearchBarProps) {
     `/${result.type === "player" ? "players" : result.type === "club" ? "clubs" : "leagues"}/${result.slug}`;
 
   return (
-    <div ref={containerRef} className={`relative ${mobile ? "w-full" : "hidden min-w-[300px] lg:block"}`}>
+    <div
+      ref={containerRef}
+      className={`relative ${mobile ? "w-full" : "hidden min-w-[300px] lg:block"}`}
+    >
       <form action="/search" role="search" className="relative">
         <Search
           aria-hidden="true"
@@ -117,7 +136,9 @@ export default function SearchBar({ mobile = false }: SearchBarProps) {
               setActiveIndex((index) => (index + 1) % options.length);
             } else if (event.key === "ArrowUp" && options.length > 0) {
               event.preventDefault();
-              setActiveIndex((index) => (index <= 0 ? options.length - 1 : index - 1));
+              setActiveIndex((index) =>
+                index <= 0 ? options.length - 1 : index - 1,
+              );
             } else if (event.key === "Enter" && activeIndex >= 0) {
               event.preventDefault();
               window.location.assign(resultHref(options[activeIndex]));
@@ -128,7 +149,9 @@ export default function SearchBar({ mobile = false }: SearchBarProps) {
           aria-autocomplete="list"
           aria-controls={listboxId}
           aria-expanded={open}
-          aria-activedescendant={activeIndex >= 0 ? `${listboxId}-${activeIndex}` : undefined}
+          aria-activedescendant={
+            activeIndex >= 0 ? `${listboxId}-${activeIndex}` : undefined
+          }
           autoComplete="off"
           className="search-bar-input w-full rounded-lg border border-white bg-slate-900 py-2 pl-10 pr-3 text-sm text-white placeholder:text-slate-300 outline-none focus:border-brand"
         />
@@ -140,7 +163,9 @@ export default function SearchBar({ mobile = false }: SearchBarProps) {
             {loading ? (
               <p className="px-3 py-2 text-sm text-slate-500">Searching…</p>
             ) : options.length === 0 ? (
-              <p className="px-3 py-2 text-sm text-slate-500">No results found</p>
+              <p className="px-3 py-2 text-sm text-slate-500">
+                No results found
+              </p>
             ) : (
               options.map((result, index) => (
                 <Link
@@ -160,7 +185,7 @@ export default function SearchBar({ mobile = false }: SearchBarProps) {
           </div>
           <Link
             href={`/search?q=${encodeURIComponent(query.trim())}`}
-            className="mt-1 block border-t px-3 pt-2 text-sm font-medium text-brand"
+            className="mt-1 block border-t border-slate-200 px-3 pt-2 text-sm font-medium text-brand"
             onClick={() => setOpen(false)}
           >
             View all results
