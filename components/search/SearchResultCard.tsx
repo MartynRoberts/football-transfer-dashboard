@@ -79,6 +79,7 @@ function ResultImage({
       width={size}
       height={size}
       sizes={`${size}px`}
+      unoptimized={showPlayerImage}
       aria-hidden={showPlayerImage ? undefined : "true"}
       className="shrink-0 rounded-md object-cover object-top"
       onError={() => setPlayerImageFailed(true)}

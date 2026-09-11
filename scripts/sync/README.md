@@ -75,8 +75,16 @@ npm run sync:player-stats -- --season="25/26" --force
 ```
 
 Player profiles normally refresh only when they have never been synced or
-their last profile sync is more than seven days old. To refresh every eligible
-top-five-league player profile regardless of that timestamp:
+their last profile sync is more than seven days old. Set a different refresh
+window with `--max-age-days`; for example, to refresh only profiles older than
+90 days:
+
+```powershell
+npm run sync:player-profiles -- --max-age-days=90
+```
+
+To refresh every eligible top-five-league player profile regardless of its
+timestamp:
 
 ```powershell
 npm run sync:player-profiles -- --force
