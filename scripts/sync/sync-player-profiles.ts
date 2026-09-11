@@ -85,10 +85,18 @@ export async function syncPlayerProfiles() {
   const delayArgument = process.argv.find((value) =>
     value.startsWith("--delay-ms="),
   );
+  const maxAgeArgument = process.argv.find((value) =>
+    value.startsWith("--max-age-days="),
+  );
   const delayMs = Number(delayArgument?.split("=")[1] ?? 7000);
+  const maxAgeDays = Number(maxAgeArgument?.split("=")[1] ?? 7);
 
   if (!Number.isFinite(delayMs) || delayMs < 1000) {
     throw new Error("--delay-ms must be a number of at least 1000");
+  }
+
+  if (!Number.isFinite(maxAgeDays) || maxAgeDays <= 0) {
+    throw new Error("--max-age-days must be a number greater than 0");
   }
 
   if (force) {
@@ -97,7 +105,9 @@ export async function syncPlayerProfiles() {
     );
   }
 
-  const freshnessCutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const freshnessCutoff = new Date(
+    Date.now() - maxAgeDays * 24 * 60 * 60 * 1000,
+  );
   const clubScope: Prisma.ClubNullableScalarRelationFilter = {
     is: {
       league: {
@@ -124,7 +134,7 @@ export async function syncPlayerProfiles() {
     });
 
     console.log(
-      `Skipping ${skippedCount} profiles synced in the last seven days`,
+      `Skipping ${skippedCount} profiles synced in the last ${maxAgeDays} days`,
     );
   }
 
