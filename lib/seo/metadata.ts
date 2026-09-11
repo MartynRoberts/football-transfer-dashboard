@@ -22,7 +22,7 @@ export function createPageMetadata({
 }: PageMetadataOptions): Metadata {
   const canonicalPath = path.startsWith("/") ? path : `/${path}`;
   const socialTitle = `${title} | ${SITE_NAME}`;
-  const images = [image || "/images/logo.png"];
+  const images = [image || "/images/logo3.png"];
 
   return {
     title,

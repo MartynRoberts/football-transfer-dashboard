@@ -27,14 +27,14 @@ export const metadata: Metadata = {
     description:
       "Explore football transfers, player performance, injuries, market values and squad analytics across Europe's top five leagues.",
     url: "/",
-    images: ["/images/logo.png"],
+    images: ["/images/logo3.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} | Football Transfer Analytics`,
     description:
       "Explore football transfers, player performance, injuries, market values and squad analytics across Europe's top five leagues.",
-    images: ["/images/logo.png"],
+    images: ["/images/logo3.png"],
   },
   appleWebApp: {
     title: SITE_NAME,

@@ -13,21 +13,22 @@ export default function Navbar() {
           className="
             flex
             items-center
-            gap-1.5
+            gap-0
             text-base
             font-black
             tracking-tight
             h-full
-            sm:gap-2
+            sm:gap-0
             sm:text-xl
           "
         >
           <Image
-            src="/images/logo.png"
+            src="/images/logo3.png"
             alt=""
-            width={80}
-            height={80}
-            className="h-10 w-10 rounded-lg object-cover sm:h-14 sm:w-14"
+            width={24}
+            height={24}
+            sizes="(min-width: 640px) 24px, 20px"
+            className="size-5 shrink-0 object-contain sm:size-6"
           />
           <span className="font-[family-name:var(--font-ibm-plex-mono)] font-bold">
             TransferDashboard
