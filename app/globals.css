@@ -131,6 +131,13 @@ header nav a:hover {
   contain-intrinsic-block-size: auto 800px;
 }
 
+/* Large directory grids retain their geometry but do not decode or paint
+   cards until the browser is close to displaying them. */
+.defer-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 112px;
+}
+
 .section-nav {
   position: sticky;
   z-index: 40;

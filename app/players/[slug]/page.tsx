@@ -81,7 +81,7 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
         secondaryPositions={data.secondaryPositions}
         navigation={sectionNav}
       />
-      <div id="market-value" className="section-anchor">
+      <div id="market-value" className="section-anchor defer-offscreen">
         <MarketValueHistory
           histories={player.marketValueHistories}
           chartData={data.marketValueChartData}
@@ -90,19 +90,19 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
           position={player.position}
         />
       </div>
-      <div id="appearances" className="section-anchor">
+      <div id="appearances" className="section-anchor defer-offscreen">
         <AppearanceMetrics metric={player.metric} />
       </div>
-      <div id="performance" className="section-anchor">
+      <div id="performance" className="section-anchor defer-offscreen">
         <GoalsAndAssists seasons={data.seasonPerformances} />
       </div>
-      <div id="discipline" className="section-anchor">
+      <div id="discipline" className="section-anchor defer-offscreen">
         <PlayerDiscipline seasons={data.seasonPerformances} />
       </div>
-      <div id="injuries" className="section-anchor">
+      <div id="injuries" className="section-anchor defer-offscreen">
         <InjuryHistory injuries={player.injuries} metric={player.metric} />
       </div>
-      <div id="transfers" className="section-anchor">
+      <div id="transfers" className="section-anchor defer-offscreen">
         <TransferHistory transfers={player.transfers} />
       </div>
     </main>

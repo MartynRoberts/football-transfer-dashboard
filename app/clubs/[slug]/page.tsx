@@ -55,23 +55,62 @@ export default async function ClubPage({
   const { slug } = await params;
   const club = await prisma.club.findUnique({
     where: { slug },
-    include: {
-      league: true,
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      logoUrl: true,
+      leagueId: true,
+      league: {
+        select: {
+          name: true,
+          slug: true,
+          country: true,
+          transfermarktId: true,
+        },
+      },
       players: {
         orderBy: [
           { shirtNumber: { sort: "asc", nulls: "last" } },
           { name: "asc" },
         ],
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+          shirtNumber: true,
+          position: true,
+          secondaryPositions: true,
+          imageUrl: true,
+          dateOfBirth: true,
+          contract: true,
+        },
       },
       incomingTransfers: {
         where: { season: TRANSFER_SEASON },
-        include: { player: true, fromClub: true, toClub: true },
+        select: {
+          id: true,
+          fee: true,
+          transferType: true,
+          marketValue: true,
+          player: { select: { name: true, slug: true } },
+          fromClub: { select: { name: true, logoUrl: true } },
+          toClub: { select: { name: true, logoUrl: true } },
+        },
         orderBy: { transferDate: "desc" },
         take: 10,
       },
       outgoingTransfers: {
         where: { season: TRANSFER_SEASON },
-        include: { player: true, fromClub: true, toClub: true },
+        select: {
+          id: true,
+          fee: true,
+          transferType: true,
+          marketValue: true,
+          player: { select: { name: true, slug: true } },
+          fromClub: { select: { name: true, logoUrl: true } },
+          toClub: { select: { name: true, logoUrl: true } },
+        },
         orderBy: { transferDate: "desc" },
         take: 10,
       },
@@ -168,24 +207,24 @@ export default async function ClubPage({
         metrics={summaryMetrics}
         navigation={sectionNav}
       />
-      <div id="incoming" className="section-anchor">
+      <div id="incoming" className="section-anchor defer-offscreen">
         <ClubTransferTable
           direction="incoming"
           transfers={club.incomingTransfers}
         />
       </div>
-      <div id="outgoing" className="section-anchor">
+      <div id="outgoing" className="section-anchor defer-offscreen">
         <ClubTransferTable
           direction="outgoing"
           transfers={club.outgoingTransfers}
         />
       </div>
-      <div id="squad-profile" className="section-anchor page-stack">
+      <div id="squad-profile" className="section-anchor defer-offscreen page-stack">
         <SquadPositionCounts players={club.players} />
         <SquadPyramids players={club.players} />
       </div>
       {club.leagueId && (
-        <div id="availability" className="section-anchor">
+        <div id="availability" className="section-anchor defer-offscreen">
           <Suspense fallback={<ClubAvailabilitySkeleton />}>
             <ClubAvailabilitySection
               clubId={club.id}
@@ -196,7 +235,7 @@ export default async function ClubPage({
           </Suspense>
         </div>
       )}
-      <div id="players" className="section-anchor">
+      <div id="players" className="section-anchor defer-offscreen">
         <SquadMembers players={club.players} />
       </div>
     </main>

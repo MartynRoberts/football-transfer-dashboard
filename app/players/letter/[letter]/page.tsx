@@ -124,7 +124,7 @@ export default async function PlayersByLetterPage({
             <Link
               key={player.id}
               href={`/players/${player.slug}`}
-              className="card-link relative flex min-h-28 items-stretch overflow-hidden !py-0 !pr-0"
+              className="card-link defer-card relative flex min-h-28 items-stretch overflow-hidden !py-0 !pr-0"
             >
               <div className="min-w-0 flex-1 py-4 pr-28">
                 <h2 className="font-bold break-words">

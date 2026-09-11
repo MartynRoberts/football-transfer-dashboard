@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { useState } from "react";
 
 interface PlayerCardImageProps {
   src: string | null;
@@ -18,9 +15,7 @@ export default function PlayerCardImage({
   fillCard = false,
   overlayCard = false,
 }: PlayerCardImageProps) {
-  const [failed, setFailed] = useState(false);
-
-  const showPlayerImage = Boolean(src) && !failed;
+  const showPlayerImage = Boolean(src);
 
   if (fillCard) {
     return (
@@ -38,7 +33,6 @@ export default function PlayerCardImage({
             ? "absolute inset-y-0 right-0 h-full w-24 object-cover object-top"
             : "ml-auto h-full w-24 shrink-0 self-stretch object-cover object-top"
         }
-        onError={() => setFailed(true)}
       />
     );
   }
@@ -63,7 +57,6 @@ export default function PlayerCardImage({
           preload={preload}
           fetchPriority={preload ? "high" : "auto"}
           className="object-contain"
-          onError={() => setFailed(true)}
         />
       )}
     </div>

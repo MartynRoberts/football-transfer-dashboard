@@ -19,7 +19,7 @@ export default function SquadMembers({ players }: { players: SquadPlayer[] }) {
           <Link
             key={player.id}
             href={`/players/${player.slug}`}
-            className="card-link flex min-h-28 items-stretch overflow-hidden !py-0 !pr-0"
+            className="card-link defer-card flex min-h-28 items-stretch overflow-hidden !py-0 !pr-0"
           >
             <div className="min-w-0 flex-1 py-4 pr-2">
               <p className="font-semibold break-words leading-5">
