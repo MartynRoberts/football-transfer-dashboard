@@ -26,6 +26,11 @@ a:hover {
   cursor: pointer;
 }
 
+.search-bar-input::-webkit-search-cancel-button {
+  cursor: pointer;
+  filter: brightness(0) invert(1);
+}
+
 a,
 a:visited {
   text-decoration-line: underline;

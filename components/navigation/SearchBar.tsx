@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import SearchResultCard, {
   type SearchResultCardData,
@@ -86,7 +87,11 @@ export default function SearchBar({ mobile = false }: SearchBarProps) {
 
   return (
     <div ref={containerRef} className={`relative ${mobile ? "w-full" : "hidden min-w-[300px] lg:block"}`}>
-      <form action="/search" role="search">
+      <form action="/search" role="search" className="relative">
+        <Search
+          aria-hidden="true"
+          className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-300"
+        />
         <input
           type="search"
           name="q"
@@ -125,7 +130,7 @@ export default function SearchBar({ mobile = false }: SearchBarProps) {
           aria-expanded={open}
           aria-activedescendant={activeIndex >= 0 ? `${listboxId}-${activeIndex}` : undefined}
           autoComplete="off"
-          className="w-full rounded-lg border border-white bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-300 outline-none focus:border-brand"
+          className="search-bar-input w-full rounded-lg border border-white bg-slate-900 py-2 pl-10 pr-3 text-sm text-white placeholder:text-slate-300 outline-none focus:border-brand"
         />
       </form>
 
