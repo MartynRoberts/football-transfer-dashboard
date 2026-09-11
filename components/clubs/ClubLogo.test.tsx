@@ -8,9 +8,18 @@ describe("ClubLogo", () => {
   });
 
   it("renders an optimized image through the logo proxy", () => {
-    render(<ClubLogo name="Aston Villa" url="https://tmssl.akamaized.net/logo.png" size={24} />);
+    render(
+      <ClubLogo
+        name="Aston Villa"
+        url="https://tmssl.akamaized.net/logo3.png"
+        size={24}
+      />,
+    );
     const image = screen.getByRole("img", { name: "Aston Villa badge" });
-    expect(image).toHaveAttribute("src", expect.stringContaining("/api/images/club-logo?url="));
+    expect(image).toHaveAttribute(
+      "src",
+      expect.stringContaining("/api/images/club-logo?url="),
+    );
     expect(image).toHaveAttribute("sizes", "24px");
   });
 });
