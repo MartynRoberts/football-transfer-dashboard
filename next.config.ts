@@ -4,6 +4,14 @@ const nextConfig: NextConfig = {
   images: {
     localPatterns: [
       {
+        pathname: "/images/**",
+        search: "",
+      },
+      {
+        pathname: "/leagues/**",
+        search: "",
+      },
+      {
         pathname: "/api/images/club-logo",
       },
     ],
