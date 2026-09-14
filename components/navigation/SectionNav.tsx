@@ -28,8 +28,9 @@ export default function SectionNav({ items }: { items: SectionNavItem[] }) {
       if (sections.length === 0) return;
 
       const atPageBottom =
+        window.scrollY > 0 &&
         window.scrollY + window.innerHeight >=
-        document.documentElement.scrollHeight - 4;
+          document.documentElement.scrollHeight - 4;
       const navigationTarget = navigationTargetRef.current;
 
       if (navigationTarget) {
