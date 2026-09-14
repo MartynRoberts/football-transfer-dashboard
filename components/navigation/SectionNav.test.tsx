@@ -51,6 +51,40 @@ describe("SectionNav", () => {
     );
   });
 
+  it("ignores a stale restored scroll position while streamed content is loading", () => {
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 600,
+    });
+    Object.defineProperty(document.documentElement, "scrollHeight", {
+      configurable: true,
+      value: 800,
+    });
+
+    renderNav();
+    act(() => fireEvent.scroll(window));
+
+    expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+  });
+
+  it("activates the last section at the real bottom of a scrollable page", () => {
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 2200,
+    });
+
+    renderNav();
+    act(() => fireEvent.scroll(window));
+
+    expect(screen.getByRole("link", { name: "Transfers" })).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+  });
+
   it("activates and scrolls to a clicked section while updating the hash", async () => {
     const user = userEvent.setup();
     renderNav();
