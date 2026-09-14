@@ -33,6 +33,24 @@ describe("SectionNav", () => {
     expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "location");
   });
 
+  it("keeps the first section active when the initial document fits in the viewport", () => {
+    Object.defineProperty(document.documentElement, "scrollHeight", {
+      configurable: true,
+      value: 800,
+    });
+
+    renderNav();
+    act(() => fireEvent.scroll(window));
+
+    expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+    expect(screen.getByRole("link", { name: "Transfers" })).not.toHaveAttribute(
+      "aria-current",
+    );
+  });
+
   it("activates and scrolls to a clicked section while updating the hash", async () => {
     const user = userEvent.setup();
     renderNav();
