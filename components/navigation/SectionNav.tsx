@@ -11,6 +11,7 @@ export default function SectionNav({ items }: { items: SectionNavItem[] }) {
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
   const [showBackToTop, setShowBackToTop] = useState(false);
   const navRef = useRef<HTMLElement>(null);
+  const hasScrollIntentRef = useRef(false);
   const navigationTargetRef = useRef<string | null>(null);
   const navigationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
@@ -30,6 +31,7 @@ export default function SectionNav({ items }: { items: SectionNavItem[] }) {
       const maximumScrollY =
         document.documentElement.scrollHeight - window.innerHeight;
       const atPageBottom =
+        hasScrollIntentRef.current &&
         maximumScrollY > 0 &&
         Math.abs(window.scrollY - maximumScrollY) <= 4;
       const navigationTarget = navigationTargetRef.current;
@@ -49,15 +51,26 @@ export default function SectionNav({ items }: { items: SectionNavItem[] }) {
         navigationTargetRef.current = null;
       }
 
+      // Streaming content can briefly report zeroed section geometry while
+      // the browser is laying it out. At the top of the page the first item
+      // is unambiguously active, so do not let those transient measurements
+      // select a later section.
+      if (window.scrollY <= 4) {
+        setActiveId(sections[0].id);
+        return;
+      }
+
       if (atPageBottom) {
         setActiveId(sections[sections.length - 1].id);
         return;
       }
 
-      const activationLine = window.scrollY + 130;
+      const activationLine = 130;
       const activeSection = [...sections]
         .reverse()
-        .find((section) => section.offsetTop <= activationLine);
+        .find(
+          (section) => section.getBoundingClientRect().top <= activationLine,
+        );
 
       setActiveId(activeSection?.id ?? sections[0].id);
     };
@@ -87,13 +100,33 @@ export default function SectionNav({ items }: { items: SectionNavItem[] }) {
       setShowBackToTop(window.scrollY > 700);
       updateActiveSection();
     };
+    const recordScrollIntent = () => {
+      hasScrollIntentRef.current = true;
+    };
+    const recordKeyboardScrollIntent = (event: KeyboardEvent) => {
+      if (
+        ["ArrowDown", "ArrowUp", "End", "Home", "PageDown", "PageUp", " "].includes(
+          event.key,
+        )
+      ) {
+        recordScrollIntent();
+      }
+    };
     updateNavigationState();
     window.addEventListener("scroll", updateNavigationState, { passive: true });
+    window.addEventListener("wheel", recordScrollIntent, { passive: true });
+    window.addEventListener("touchstart", recordScrollIntent, { passive: true });
+    window.addEventListener("pointerdown", recordScrollIntent, { passive: true });
+    window.addEventListener("keydown", recordKeyboardScrollIntent);
 
     return () => {
       observer.disconnect();
       mutationObserver.disconnect();
       window.removeEventListener("scroll", updateNavigationState);
+      window.removeEventListener("wheel", recordScrollIntent);
+      window.removeEventListener("touchstart", recordScrollIntent);
+      window.removeEventListener("pointerdown", recordScrollIntent);
+      window.removeEventListener("keydown", recordKeyboardScrollIntent);
 
       if (navigationTimeoutRef.current) {
         clearTimeout(navigationTimeoutRef.current);
@@ -118,6 +151,7 @@ export default function SectionNav({ items }: { items: SectionNavItem[] }) {
   }, [activeId]);
 
   function navigateTo(id: string) {
+    hasScrollIntentRef.current = true;
     navigationTargetRef.current = id;
 
     if (navigationTimeoutRef.current) {

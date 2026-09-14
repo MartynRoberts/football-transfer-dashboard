@@ -15,7 +15,16 @@ function renderNav() {
       <SectionNav items={items} />
     </>,
   );
-  Object.defineProperty(document.getElementById("transfers"), "offsetTop", { value: 1000 });
+  Object.defineProperty(document.getElementById("transfers"), "offsetTop", {
+    configurable: true,
+    value: 1000,
+  });
+  document.getElementById("overview")!.getBoundingClientRect = jest.fn(() => ({
+    top: 0,
+  }) as DOMRect);
+  document.getElementById("transfers")!.getBoundingClientRect = jest.fn(() => ({
+    top: 1000,
+  }) as DOMRect);
   return result;
 }
 
@@ -51,6 +60,35 @@ describe("SectionNav", () => {
     );
   });
 
+  it("uses viewport geometry when section offset parents differ", () => {
+    renderNav();
+    Object.defineProperty(document.getElementById("transfers"), "offsetTop", {
+      configurable: true,
+      value: 0,
+    });
+
+    act(() => fireEvent.scroll(window));
+
+    expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+  });
+
+  it("keeps the first section active at page top during transient layout", () => {
+    renderNav();
+    document.getElementById("transfers")!.getBoundingClientRect = jest.fn(
+      () => ({ top: 0 }) as DOMRect,
+    );
+
+    act(() => fireEvent.scroll(window));
+
+    expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+  });
+
   it("ignores a stale restored scroll position while streamed content is loading", () => {
     Object.defineProperty(window, "scrollY", {
       configurable: true,
@@ -77,9 +115,39 @@ describe("SectionNav", () => {
     });
 
     renderNav();
+    Object.defineProperty(document.getElementById("transfers"), "offsetTop", {
+      configurable: true,
+      value: 2500,
+    });
+    document.getElementById("transfers")!.getBoundingClientRect = jest.fn(
+      () => ({ top: 300 }) as DOMRect,
+    );
+    fireEvent.wheel(window);
     act(() => fireEvent.scroll(window));
 
     expect(screen.getByRole("link", { name: "Transfers" })).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+  });
+
+  it("does not force the last section active at the bottom without user scroll intent", () => {
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 2200,
+    });
+
+    renderNav();
+    Object.defineProperty(document.getElementById("transfers"), "offsetTop", {
+      configurable: true,
+      value: 2500,
+    });
+    document.getElementById("transfers")!.getBoundingClientRect = jest.fn(
+      () => ({ top: 300 }) as DOMRect,
+    );
+    act(() => fireEvent.scroll(window));
+
+    expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute(
       "aria-current",
       "location",
     );
