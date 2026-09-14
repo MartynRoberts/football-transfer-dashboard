@@ -27,26 +27,28 @@ export default function ClubIdentity({
 
   const content = (
     <div
-      className={`flex items-center gap-4 ${playerProfile && "justify-between"}`}
+      className={`flex min-w-0 items-center gap-4 ${playerProfile && "justify-between"}`}
     >
       {!playerProfile && clubBadge}
 
-      <div>
+      <div className="min-w-0">
         {h1 ? (
           <h1 className="page-title">{club.name}</h1>
         ) : showLeague ? (
           <p
-            className={`font-semibold text-slate-900 ${link ? "entity-title" : ""}`}
+            className={`break-words font-semibold text-slate-900 ${link ? "entity-title" : ""}`}
           >
             {club.name}
           </p>
         ) : playerProfile ? (
-          <h1 className={`text-xl font-semibold ${link ? "entity-title" : ""}`}>
+          <h1
+            className={`break-words text-xl font-semibold ${link ? "entity-title" : ""}`}
+          >
             {club.name}
           </h1>
         ) : (
           <h1
-            className={`font-semibold text-slate-900 ${link ? "entity-title" : ""}`}
+            className={`break-words font-semibold text-slate-900 ${link ? "entity-title" : ""}`}
           >
             {club.name}
           </h1>

@@ -65,7 +65,7 @@ export default async function LeaguePage({ params }: LeaguePageProps) {
   }
 
   return (
-    <main className="app-page page-stack">
+    <main className="app-page page-stack min-w-0 overflow-x-clip">
       {/* Header */}
       <section id="overview" className="section-anchor">
         <LeagueIdentity league={league} h1 country imagePreload />
@@ -87,7 +87,7 @@ export default async function LeaguePage({ params }: LeaguePageProps) {
       <section id="clubs" className="section-anchor">
         <h2 className="section-title">Clubs</h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid gap-4 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {league.clubs.map((club) => (
             <Link
               key={club.id}
