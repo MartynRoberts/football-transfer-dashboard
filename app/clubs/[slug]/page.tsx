@@ -13,6 +13,8 @@ import {
   formatNetSpend,
   getLastThreeSeasons,
 } from "@/lib/clubs/transfer-summary";
+import { getCurrentSquadPlayers } from "@/lib/clubs/current-squad";
+import { effectiveTransferDateFilter } from "@/lib/clubs/effective-transfers";
 import { prisma } from "@/lib/prisma";
 import { CURRENT_SEASON, TRANSFER_SEASON } from "@/lib/sync/scope";
 import { createPageMetadata } from "@/lib/seo/metadata";
@@ -49,10 +51,10 @@ export async function generateMetadata({
   });
 }
 
-export default async function ClubPage({
-  params,
-}: ClubPageProps) {
+export default async function ClubPage({ params }: ClubPageProps) {
   const { slug } = await params;
+  const now = new Date();
+  const effectiveTransferFilter = effectiveTransferDateFilter(now);
   const club = await prisma.club.findUnique({
     where: { slug },
     select: {
@@ -87,7 +89,7 @@ export default async function ClubPage({
         },
       },
       incomingTransfers: {
-        where: { season: TRANSFER_SEASON },
+        where: { season: TRANSFER_SEASON, ...effectiveTransferFilter },
         select: {
           id: true,
           fee: true,
@@ -101,7 +103,7 @@ export default async function ClubPage({
         take: 10,
       },
       outgoingTransfers: {
-        where: { season: TRANSFER_SEASON },
+        where: { season: TRANSFER_SEASON, ...effectiveTransferFilter },
         select: {
           id: true,
           fee: true,
@@ -116,9 +118,12 @@ export default async function ClubPage({
       },
       _count: {
         select: {
-          players: true,
-          incomingTransfers: { where: { season: TRANSFER_SEASON } },
-          outgoingTransfers: { where: { season: TRANSFER_SEASON } },
+          incomingTransfers: {
+            where: { season: TRANSFER_SEASON, ...effectiveTransferFilter },
+          },
+          outgoingTransfers: {
+            where: { season: TRANSFER_SEASON, ...effectiveTransferFilter },
+          },
         },
       },
     },
@@ -126,6 +131,35 @@ export default async function ClubPage({
 
   if (!club) notFound();
 
+  const scheduledTransfers = await prisma.transfer.findMany({
+    where: {
+      transferDate: { gt: now },
+      OR: [{ fromClubId: club.id }, { toClubId: club.id }],
+    },
+    select: {
+      fromClubId: true,
+      toClubId: true,
+      player: {
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+          shirtNumber: true,
+          position: true,
+          secondaryPositions: true,
+          imageUrl: true,
+          dateOfBirth: true,
+          contract: true,
+        },
+      },
+    },
+    orderBy: { transferDate: "asc" },
+  });
+  const currentSquadPlayers = getCurrentSquadPlayers(
+    club.id,
+    club.players,
+    scheduledTransfers,
+  );
   const lastThreeTransferSeasons = getLastThreeSeasons(TRANSFER_SEASON);
   const [
     currentSeasonIncoming,
@@ -134,7 +168,12 @@ export default async function ClubPage({
     threeYearOutgoing,
   ] = await Promise.all([
     prisma.transfer.aggregate({
-      where: { toClubId: club.id, season: TRANSFER_SEASON, fee: { not: null } },
+      where: {
+        toClubId: club.id,
+        season: TRANSFER_SEASON,
+        fee: { not: null },
+        ...effectiveTransferFilter,
+      },
       _sum: { fee: true },
     }),
     prisma.transfer.aggregate({
@@ -142,6 +181,7 @@ export default async function ClubPage({
         fromClubId: club.id,
         season: TRANSFER_SEASON,
         fee: { not: null },
+        ...effectiveTransferFilter,
       },
       _sum: { fee: true },
     }),
@@ -150,6 +190,7 @@ export default async function ClubPage({
         toClubId: club.id,
         season: { in: lastThreeTransferSeasons },
         fee: { not: null },
+        ...effectiveTransferFilter,
       },
       _sum: { fee: true },
     }),
@@ -158,6 +199,7 @@ export default async function ClubPage({
         fromClubId: club.id,
         season: { in: lastThreeTransferSeasons },
         fee: { not: null },
+        ...effectiveTransferFilter,
       },
       _sum: { fee: true },
     }),
@@ -171,7 +213,7 @@ export default async function ClubPage({
     (threeYearIncoming._sum.fee ?? 0) - (threeYearOutgoing._sum.fee ?? 0),
   );
   const summaryMetrics = [
-    { label: "Squad Size", value: club._count.players },
+    { label: "Squad Size", value: currentSquadPlayers.length },
     { label: "Arrivals", value: club._count.incomingTransfers },
     { label: "Departures", value: club._count.outgoingTransfers },
     {
@@ -219,9 +261,12 @@ export default async function ClubPage({
           transfers={club.outgoingTransfers}
         />
       </div>
-      <div id="squad-profile" className="section-anchor defer-offscreen page-stack">
-        <SquadPositionCounts players={club.players} />
-        <SquadPyramids players={club.players} />
+      <div
+        id="squad-profile"
+        className="section-anchor defer-offscreen page-stack"
+      >
+        <SquadPositionCounts players={currentSquadPlayers} />
+        <SquadPyramids players={currentSquadPlayers} />
       </div>
       {club.leagueId && (
         <div id="availability" className="section-anchor defer-offscreen">
@@ -236,7 +281,7 @@ export default async function ClubPage({
         </div>
       )}
       <div id="players" className="section-anchor defer-offscreen">
-        <SquadMembers players={club.players} />
+        <SquadMembers players={currentSquadPlayers} />
       </div>
     </main>
   );

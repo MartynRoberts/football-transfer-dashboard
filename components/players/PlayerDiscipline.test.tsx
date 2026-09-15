@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import PlayerDiscipline from "@/components/players/PlayerDiscipline";
 import type { SeasonPerformance } from "@/lib/players/types";
 
@@ -29,7 +29,7 @@ function season(overrides: Partial<SeasonPerformance> = {}): SeasonPerformance {
 }
 
 describe("PlayerDiscipline", () => {
-  it("shows career totals and season-level disciplinary rates", () => {
+  it("shows season-level disciplinary statistics", () => {
     render(
       <PlayerDiscipline
         seasons={[
@@ -48,13 +48,24 @@ describe("PlayerDiscipline", () => {
     );
 
     expect(
-      screen.getByText("Career yellow cards").nextSibling,
-    ).toHaveTextContent("6");
-    expect(screen.getByText("Career red cards").nextSibling).toHaveTextContent(
-      "1",
+      screen.getByRole("heading", { name: "Discipline" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("columnheader", { name: "Yellow cards" }),
+    ).toBeInTheDocument();
+
+    const currentSeason = within(
+      screen.getByRole("row", { name: "25/26 20 4 1 0.25 0.25" }),
     );
-    expect(screen.getByText("24/25")).toBeInTheDocument();
-    expect(screen.getAllByText("0.20")).toHaveLength(2);
+    expect(currentSeason.getByText("4")).toBeInTheDocument();
+    expect(currentSeason.getByText("1")).toBeInTheDocument();
+
+    const previousSeason = within(
+      screen.getByRole("row", { name: "24/25 10 2 0 0.20 0.20" }),
+    );
+    expect(previousSeason.getByText("2")).toBeInTheDocument();
+    expect(previousSeason.getByText("0")).toBeInTheDocument();
+    expect(previousSeason.getAllByText("0.20")).toHaveLength(2);
   });
 
   it("shows an empty state", () => {

@@ -14,47 +14,9 @@ export default function PlayerDiscipline({
     );
   }
 
-  const career = seasons.reduce(
-    (totals, season) => ({
-      appearances: totals.appearances + season.appearances,
-      minutesPlayed: totals.minutesPlayed + season.minutesPlayed,
-      yellowCards: totals.yellowCards + season.yellowCards,
-      redCards: totals.redCards + season.redCards,
-    }),
-    { appearances: 0, minutesPlayed: 0, yellowCards: 0, redCards: 0 },
-  );
-  const careerCards = career.yellowCards + career.redCards;
-
   return (
     <section>
       <h2 className="section-title">Discipline</h2>
-      <p className="mb-4 text-sm text-slate-500">
-        Yellow and red cards from recorded appearances
-      </p>
-
-      <div className="mb-6 grid gap-4 grid-cols-2 lg:grid-cols-4">
-        <DisciplineCard
-          label="Career yellow cards"
-          value={career.yellowCards}
-        />
-        <DisciplineCard label="Career red cards" value={career.redCards} />
-        <DisciplineCard
-          label="Cards per appearance"
-          value={
-            career.appearances > 0
-              ? (careerCards / career.appearances).toFixed(2)
-              : "-"
-          }
-        />
-        <DisciplineCard
-          label="Cards per 90"
-          value={
-            career.minutesPlayed > 0
-              ? ((careerCards * 90) / career.minutesPlayed).toFixed(2)
-              : "-"
-          }
-        />
-      </div>
 
       <div className="mobile-card-table overflow-x-auto">
         <table className="w-full border">
@@ -95,20 +57,5 @@ export default function PlayerDiscipline({
         </table>
       </div>
     </section>
-  );
-}
-
-function DisciplineCard({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) {
-  return (
-    <div className="analytics-panel">
-      <div className="text-sm text-slate-500">{label}</div>
-      <div className="mt-1 text-2xl font-semibold">{value}</div>
-    </div>
   );
 }
