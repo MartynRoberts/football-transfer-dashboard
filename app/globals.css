@@ -547,3 +547,90 @@ header nav a:hover {
     text-align: right;
   }
 }
+
+/* A seven-column transfer table does not fit comfortably in the tablet-sized
+   page container. Keep every value in view instead of making people find a
+   horizontal scrollbar at the bottom of a long table. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .mobile-card-table {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .analytics-frame.mobile-card-table {
+    border: 0;
+  }
+
+  .mobile-card-table table,
+  .mobile-card-table tbody,
+  .mobile-card-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .mobile-card-table table {
+    min-width: 0;
+    border: 0;
+  }
+
+  .mobile-card-table colgroup,
+  .mobile-card-table thead {
+    display: none;
+  }
+
+  .mobile-card-table tbody {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .mobile-card-table tr {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-surface);
+    background: white;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
+    padding: 0.25rem 0.875rem;
+  }
+
+  .mobile-card-table td {
+    display: grid;
+    grid-template-columns: minmax(6.75rem, 0.8fr) minmax(0, 1.2fr);
+    align-items: start;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    padding: 0.7rem 0;
+    text-align: right;
+    white-space: normal;
+  }
+
+  .mobile-card-table td[data-label="Rating"] {
+    min-width: 0;
+    padding-block: 0.9rem;
+  }
+
+  .mobile-card-table td:last-child {
+    border-bottom: 0;
+  }
+
+  .mobile-card-table td::before {
+    content: attr(data-label);
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .mobile-card-table td > a,
+  .mobile-card-table td > .inline-flex {
+    min-width: 0;
+    max-width: 100%;
+    justify-self: end;
+    text-align: right;
+  }
+}

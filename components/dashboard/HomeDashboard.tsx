@@ -19,7 +19,7 @@ export default function HomeDashboard({ data }: { data: HomeDashboardData }) {
         className="section-anchor relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[url('/hero.jpg')] bg-cover bg-bottom text-white"
       >
         <div className="absolute inset-0 bg-slate-950/60" aria-hidden="true" />
-        <div className="relative mx-auto flex min-h-[38rem] max-w-5xl flex-col items-center justify-start px-4 pt-28 pb-56 text-center sm:min-h-[44rem] sm:px-6 sm:pt-32 sm:pb-64 lg:min-h-[48rem] lg:pt-36">
+        <div className="relative mx-auto flex min-h-[38rem] max-w-5xl flex-col items-center justify-start px-4 pt-50 pb-56 text-center sm:min-h-[44rem] sm:px-6 sm:pt-60 sm:pb-64 lg:min-h-[48rem] lg:pt-64">
           <div className="mb-5 flex items-center justify-center gap-0 sm:mb-6">
             <Image
               src="/images/logo3.png"
