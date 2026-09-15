@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { fetchFromApi } from "../../lib/sync/api";
+import { assertApiIsReachable, fetchFromApi } from "../../lib/sync/api";
 import {
   getTopFiveFirstTeamClubIds,
   TOP_FIVE_LEAGUE_IDS,
@@ -89,6 +89,8 @@ export async function syncPlayerStats(): Promise<void> {
 
   console.log(`📊 Syncing player stats for ${selectedSeason}`);
   console.log(`Mode: ${force ? "force refresh" : "missing only"}\n`);
+
+  await assertApiIsReachable();
 
   const players = await prisma.player.findMany({
     where: {

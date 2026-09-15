@@ -11,6 +11,9 @@ TRANSFERMARKT_API_URL=http://localhost:8000
 ```
 
 The Transfermarkt API must be running and reachable before starting an import.
+If using the local URL above, start the API in a separate terminal first. The
+sync commands perform a startup connectivity check and exit immediately when
+the configured API cannot be reached.
 
 ## Import scope
 
